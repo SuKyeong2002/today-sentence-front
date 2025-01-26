@@ -113,8 +113,8 @@ export default function LandingPage({ navigation }: LandingPageProps) {
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={currentIndex === slides.length - 1 ? styles.buttonEnabled : styles.buttonDisabled}
-          disabled={currentIndex !== slides.length - 1}
+          style={currentIndex === slides.length - 3 ? styles.buttonEnabled : styles.buttonDisabled}
+          disabled={currentIndex !== slides.length - 3}
           onPress={handleStart}
         >
           <Text style={styles.buttonText}>건너뛰기</Text>

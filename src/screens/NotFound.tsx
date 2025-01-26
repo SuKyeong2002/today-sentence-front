@@ -6,14 +6,10 @@ type Props = {
   navigation: NavigationProp<any>;
 };
 
-export default function EmailFindPage({ navigation }: Props) {
+export default function NotFoundPage({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to My App!</Text>
-      <Button
-        title="Go to Main Page"
-        onPress={() => navigation.navigate('MainPage')} 
-      />
+      <Text style={styles.title}>404 Not Found!</Text>
     </View>
   );
 }
