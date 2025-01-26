@@ -7,7 +7,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = async () => {
+    /*const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert('비밀번호와 이메일이 일치하지 않습니다.');
             return;
@@ -23,7 +23,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
         } finally {
             setIsLoading(false);
         }
-    };
+    };*/
 
   return (
     <View style={styles.container}>
@@ -69,6 +69,10 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
 }
 
 const styles = StyleSheet.create({
+    logoImage : {
+        justifyContent: 'center',
+        padding: 20,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
