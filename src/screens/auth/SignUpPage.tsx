@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
+import { validateEmail, validateNickname, validatePassword } from '../../utils/validation';
 
 export default function SignUpSteps() {
   const [step, setStep] = useState(1); 
@@ -17,18 +18,19 @@ export default function SignUpSteps() {
   const [isNicknameValid, setIsNicknameValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-  const validateEmail = (text: string) => {
-    const emailRegex =
-      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    setIsEmailValid(emailRegex.test(text));
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    setIsEmailValid(validateEmail(text)); // 이메일 유효성 검사
   };
 
-  const validateNickname = (text: string) => {
-    setIsNicknameValid(text.length >= 2); 
+  const handleNicknameChange = (text: string) => {
+    setNickname(text);
+    setIsNicknameValid(validateNickname(text)); // 닉네임 유효성 검사
   };
 
-  const validatePassword = (text: string) => {
-    setIsPasswordValid(text.length >= 8); 
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+    setIsPasswordValid(validatePassword(text)); // 비밀번호 유효성 검사
   };
 
 
@@ -62,10 +64,7 @@ export default function SignUpSteps() {
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                validateEmail(text);
-              }}
+              onChangeText={handleEmailChange}
             />
             <TouchableOpacity
               style={styles.checkButton}
@@ -88,10 +87,7 @@ export default function SignUpSteps() {
               placeholderTextColor="#aaa"
               autoCapitalize="none"
               value={nickname}
-              onChangeText={(text) => {
-                setNickname(text);
-                validateNickname(text);
-              }}
+              onChangeText={handleNicknameChange}
             />
             <TouchableOpacity
               style={styles.checkButton}
@@ -113,10 +109,7 @@ export default function SignUpSteps() {
             placeholderTextColor="#aaa"
             secureTextEntry
             value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              validatePassword(text);
-            }}
+            onChangeText={handlePasswordChange}
           />
         </View>
       )}
