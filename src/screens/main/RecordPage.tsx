@@ -11,6 +11,8 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { TextInput } from "react-native-gesture-handler";
 import BookCard from "@/components/bookCard";
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { Calendar } from "react-native-calendars";
 
 export default function RecordPage({ navigation }: { navigation: any }) {
   const [activeTab, setActiveTab] = useState("기록");
@@ -150,9 +152,91 @@ function SavedContent() {
 }
 
 function StatsContent() {
+    const [selectedDate, setSelectedDate] = useState("");
+    const [readBooks, setReadBooks] = useState([
+        {id: "1", date: "2024-12-10", category: "철학/심리학"},
+        { id: "2", date: "2024-12-27", category: "시/소설/에세이"},
+    ])
+
+    const categories = [
+        "시/소설/에세이",
+        "경제/경영",
+        "역사/사회",
+        "철학/심리학",
+        "자기계발",
+        "예체능",
+        "아동/청소년",
+        "여행/문화",
+        "기타",
+      ];
+
+      const COLORS = [
+        "#FF6F61",
+        "#FFD700",
+        "#6A5ACD",
+        "#1E90FF",
+        "#32CD32",
+        "#FF69B4",
+        "#FF4500",
+        "#DA70D6",
+        "#808080",
+      ];
+
+      const categoryData = categories.map((category) => ({
+        category,
+        count: readBooks.filter((book) => book.category === category).length,
+      }));
+    
+      const markedDates = readBooks.reduce((acc: any, book) => {
+        acc[book.date] = {
+          marked: true,
+          selected: selectedDate === book.date,
+          selectedColor: "#8B4513",
+        };
+        return acc;
+      }, {});
+
   return (
-    <View>
-      <Text style={styles.contentText}>통계 화면입니다.</Text>
+    <View style={styles.Calendercontainer}>
+      <Calendar
+        onDayPress={(day :any) => setSelectedDate(day.dateString)}
+        markedDates={markedDates}
+        theme={{
+          selectedDayBackgroundColor: "#8B4513",
+          arrowColor: "#8B4513",
+        }}
+      />
+
+      <View style={styles.chartContainer}>
+      <PieChart width={300} height={300}>
+        <Pie
+          data={categoryData}
+          dataKey="value"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          innerRadius={60}
+          outerRadius={100}
+          fill="#8884d8"
+          label={({ name, value }) => (value > 0 ? `${name} (${value})` : "")}
+        >
+          {categoryData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+      </PieChart>
+      </View>
+
+      <FlatList
+        data={readBooks.filter((book) => book.date === selectedDate)}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.bookDetail}>
+            <Text style={styles.bookText}>카테고리: {item.category}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
@@ -263,5 +347,21 @@ const styles = StyleSheet.create({
   searchContainer: {
     flex:1,
     padding: 10
+  },
+  Calendercontainer:{
+    width: 350,
+    height: 290,
+  },
+  chartContainer: {
+    paddingTop: 20,
+    width: 350,
+    height: 280,
+  },
+  bookDetail : {
+    flex: 1,
+    padding: 20
+  },
+  bookText : {
+    fontSize: 16
   }
 });
