@@ -20,19 +20,19 @@ export default function Footer() {
 
                         switch (route.name) {
                             case 'Home':
-                                iconName = require('../../assets/image/home.png');
+                                iconName = require('../assets/image/home.png');
                                 break;
                             case 'Record':
-                                iconName = require('../../assets/image/record.png');
+                                iconName = require('../assets/image/record.png');
                                 break;
                             case 'Search':
-                                iconName = require('../../assets/image/search.png');
+                                iconName = require('../assets/image/search.png');
                                 break;
                             case 'Chat':
-                                iconName = require('../../assets/image/messages.png');
+                                iconName = require('../assets/image/messages.png');
                                 break;
                             case 'My':
-                                iconName = require('../../assets/image/user.png');
+                                iconName = require('../assets/image/user.png');
                                 break;
                         }
 

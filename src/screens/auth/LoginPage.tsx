@@ -7,7 +7,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    /*const handleLogin = async () => {
+    const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert('비밀번호와 이메일이 일치하지 않습니다.');
             return;
@@ -23,30 +23,26 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
         } finally {
             setIsLoading(false);
         }
-    };*/
+    }
 
   return (
     <View style={styles.container}>
         <View style={styles.header}>
       <Text style={styles.subtitle}>당신의 하루를 특별하게 만들어 줄 한 문장</Text>
       <Image source={require('../../assets/image/LOGO.png')} style={styles.logoImage}/>
-      <Button
-        title="로그인"
-        onPress={() => navigation.navigate('MainPage')} 
-      />
       </View>
       <TextInput
         style={styles.input}
-        placeholder='Email'
+        placeholder="Email"
         placeholderTextColor="#BDBDBD"
-        keyboardType='email-address'
-        autoCapitalize='none'/>
+        keyboardType="email-address"
+        autoCapitalize="none"/>
         <TextInput
         style={styles.input}
-        placeholder='password'
+        placeholder="password"
         placeholderTextColor="#BDBDBD"
         secureTextEntry
-        autoCapitalize='none'/>
+        autoCapitalize="none"/>
         <View style={styles.footerLinks}>
         <TouchableOpacity>
           <Text style={styles.footerLinkText}>이메일 찾기</Text>
