@@ -44,11 +44,11 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
         secureTextEntry
         autoCapitalize="none"/>
         <View style={styles.footerLinks}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("EmailFind")}>
           <Text style={styles.footerLinkText}>이메일 찾기</Text>
         </TouchableOpacity>
         <Text style={styles.footerDivider}> | </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("PasswordFind")}>
           <Text style={styles.footerLinkText}>비밀번호 찾기</Text>
         </TouchableOpacity>
         <Text style={styles.footerDivider}> | </Text>

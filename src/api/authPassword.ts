@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://your-backend-url.com/api";
+const BASE_URL = "https://43.201.20.84";
 
 export const sendResetCode = async (email: string) => {
   try {
