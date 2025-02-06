@@ -10,7 +10,7 @@ import {
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { TextInput } from "react-native-gesture-handler";
-import BookCard from "@/components/bookCard";
+import BookCard from "../../components/bookCard";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { Calendar } from "react-native-calendars";
 
@@ -65,19 +65,19 @@ function RecordContent({ navigation }: { navigation: any }) {
   const data = [
     {
       id: "1",
-      image : require("../assets/image/Landing3.png"),
+      image : require("../../assets/image/Landing1.png"),
       title: "React Native in Action",
       author: "Nader Dabit",
     },
     {
       id: "2",
-      image : require("../assets/image/Landing3.png"),
+      image : require("../../assets/image/Landing2.png"),
       title: "Learning React",
       author: "Alex Banks & Eve Porcello",
     },
     {
       id: "3",
-      image : require("../assets/image/Landing3.png"),
+      image : require("../../assets/image/Landing3.png"),
       title: "JavaScript: The Good Parts",
       author: "Douglas Crockford",
     },
