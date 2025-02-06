@@ -1,10 +1,10 @@
 {
   "extends": "@react-native/typescript-config/tsconfig.json",
-    "compilerOptions": {
-      "baseUrl": "./",
-      "paths": {
-        "@/*": ["src/*"]
-      }
-    },
-    "include": ["src"]
+  "compilerOptions": {
+    "baseUrl": "./src",  // 수정된 부분
+    "paths": {
+      "@/*": ["*"]  // 수정된 부분
+    }
+  },
+  "include": ["src"]
 }
