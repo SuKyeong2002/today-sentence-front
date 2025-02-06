@@ -28,8 +28,8 @@ export default function Footer() {
                             case 'Search':
                                 iconName = require('../assets/image/search.png');
                                 break;
-                            case 'Chat':
-                                iconName = require('../assets/image/messages.png');
+                            case 'Category':
+                                iconName = require('../assets/image/category.png');
                                 break;
                             case 'My':
                                 iconName = require('../assets/image/user.png');
@@ -51,8 +51,8 @@ export default function Footer() {
                             case 'Search':
                                 label = 'Search';
                                 break;
-                            case 'Chat':
-                                label = 'Chat';
+                            case 'Category':
+                                label = 'Category';
                                 break;
                             case 'My':
                                 label = 'My';
