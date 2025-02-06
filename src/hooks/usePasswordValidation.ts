@@ -1,38 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const usePasswordValidation = (password: any) => {
-  const [validationResult, setValidationResult] = useState(null);
-  const [error, setError] = useState(null);
+const usePasswordValidation = () => {
+  const [validationResult, setValidationResult] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const validatePassword = async () => {
-      try {
-        const response = await fetch('/api/member/checkPassword', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ password })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message);
-        }
-
-        const data = await response.json();
-        setValidationResult(data.success);
-      } catch (error : any) {
-        setError(error.message);
-      }
-    };
-
-    if (password) {
-      validatePassword();
+  const validatePassword = async (email: string) => {
+    if (!email) {
+      setValidationResult(null);
+      setError(null);
+      return;
     }
-  }, [password]);
 
-  return { validationResult, error };
+    try {
+      const response = await fetch('/api/member/check-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error('네트워크 오류 발생');
+      }
+
+      const data = await response.json();
+      setValidationResult(data.success);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message);
+      setValidationResult(null);
+    }
+  };
+
+  return { validationResult, error, validatePassword };
 };
 
-export default usePasswordValidation;
+export default usePasswordValidation ;

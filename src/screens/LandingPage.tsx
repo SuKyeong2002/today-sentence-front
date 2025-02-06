@@ -81,6 +81,9 @@ export default function LandingPage({ navigation }: LandingPageProps) {
         navigation.navigate("Login");
     }
 
+    const GototheNext = () => {
+      currentIndex + 1;
+  }
   return (
     <View style={[styles.container, currentIndex === 0 && { backgroundColor: '#8A715D' }]}>
       <FlatList
@@ -117,7 +120,7 @@ export default function LandingPage({ navigation }: LandingPageProps) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.firstButton}
-          onPress={handleStart}
+          onPress={GototheNext}
         >
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
@@ -127,7 +130,7 @@ export default function LandingPage({ navigation }: LandingPageProps) {
         style={styles.buttonEnabled}
         onPress={handleStart}
         >
-        <Text style={styles.buttonText}>확인</Text>
+        <Text style={styles.buttonText1}>확인</Text>
         </TouchableOpacity>
       ) : null}
       </View>
@@ -139,6 +142,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    justifyContent: "center", // Center vertically
+    alignItems: "center", // Center horizontally
   },
   horizontalButtons: {
     flexDirection: "row",
@@ -148,7 +153,8 @@ const styles = StyleSheet.create({
   firstButton: {
     backgroundColor: "none",
     width: "50%",
-    color: "#000000"
+    color: "#000000",
+    alignItems: "center", // Center text horizontally
   },
   slide: {
     justifyContent: "center",
@@ -181,10 +187,16 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   buttonText: {
-    color: "#fff",
+    color: "#8A715D",
     fontSize: 16,
     fontWeight: "bold",
-    backgroundColor: "8A715D",
+    backgroundColor: "none",
+  },
+  buttonText1: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    backgroundColor: "none",
   },
   buttonContainer: {
     position: "absolute",

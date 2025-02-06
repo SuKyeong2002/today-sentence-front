@@ -1,37 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const useNicknameValidation = (nickname: any) => {
-  const [validationResult, setValidationResult] = useState(null);
-  const [error, setError] = useState(null);
+const useNicknameValidation = () => {
+  const [validationResult, setValidationResult] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const validateNickname = async () => {
-      try {
-        const response = await fetch('/api/member/check-nickname', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ nickname })
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        setValidationResult(data.success);
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
-
-    if (nickname) {
-      validateNickname();
+  const validateNickname = async (nickname: string) => {
+    if (!nickname) {
+      setValidationResult(null);
+      setError(null);
+      return;
     }
-  }, [nickname]);
 
-  return { validationResult, error };
+    try {
+      const response = await fetch('/api/member/check-nickname', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nickname }),
+      });
+
+      if (!response.ok) {
+        throw new Error('네트워크 오류 발생');
+      }
+
+      const data = await response.json();
+      setValidationResult(data.success);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message);
+      setValidationResult(null);
+    }
+  };
+
+  return { validationResult, error, validateNickname };
 };
 
 export default useNicknameValidation;
