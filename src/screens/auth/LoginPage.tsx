@@ -1,49 +1,33 @@
-import React, {useState} from 'react';
-import { Image ,View, Text, Button, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { Image ,View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
+import useAuth from '../../hooks/useAuth';
 
 export default function LoginPage({ navigation }: { navigation: NavigationProp<any> }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = async () => {
-        if (!email || !password) {
-            Alert.alert('비밀번호와 이메일이 일치하지 않습니다.');
-            return;
-        }
-
-        setIsLoading(true);
-
-        try {
-            const response = await fakeLoginApi(email, password);
-            Alert.alert("로그인 성공");
-        } catch (error) {
-            Alert.alert("로그인 실패");
-        } finally {
-            setIsLoading(false);
-        }
-    }
+  const login = useAuth();
 
   return (
     <View style={styles.container}>
-        <View style={styles.header}>
-      <Text style={styles.subtitle}>당신의 하루를 특별하게 만들어 줄 한 문장</Text>
-      <Image source={require('../../assets/image/LOGO.png')} style={styles.logoImage}/>
+      <View style={styles.header}>
+        <Text style={styles.subtitle}>당신의 하루를 특별하게 만들어 줄 한 문장</Text>
+        <Image source={require('../../assets/image/LOGO.png')} style={styles.logoImage} />
       </View>
       <TextInput
         style={styles.input}
         placeholder="Email"
         placeholderTextColor="#BDBDBD"
         keyboardType="email-address"
-        autoCapitalize="none"/>
-        <TextInput
+        autoCapitalize="none"
+      />
+      <TextInput
         style={styles.input}
         placeholder="password"
         placeholderTextColor="#BDBDBD"
         secureTextEntry
-        autoCapitalize="none"/>
-        <View style={styles.footerLinks}>
+        autoCapitalize="none"
+      />
+      <View style={styles.footerLinks}>
         <TouchableOpacity onPress={() => navigation.navigate("EmailFind")}>
           <Text style={styles.footerLinkText}>이메일 찾기</Text>
         </TouchableOpacity>
@@ -57,7 +41,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={login}>
         <Text style={styles.loginButtonText}>로그인</Text>
       </TouchableOpacity>
     </View>

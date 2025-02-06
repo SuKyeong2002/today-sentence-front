@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const BASE_URL = "https://your-backend-url.com/api"; // 백엔드 URL
+const BASE_URL = "https://43.201.20.84/api/member"; // 백엔드 URL
 
-export const findEmailByUsername = async (username: string) => {
+export const authEmail = async (username: string) => {
   try {
-    const response = await axios.post(`${BASE_URL}/find-email`, { username });
+    const response = await axios.post(`${BASE_URL}/check-email`, { username });
     return response.data; 
   } catch (error) {
     if (axios.isAxiosError(error)) {

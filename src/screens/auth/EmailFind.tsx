@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useFindEmail } from "../../hooks/useFindEmail";
+import { useCheckEmail } from "../../hooks/usecheckEmail";
 import Loading from "../../components/Loading";
 
 export default function App() {
   const [nickname, setNickname] = useState(""); 
-  const { email, isLoading, error, fetchEmail } = useFindEmail();
+  const { email, isLoading, error, fetchEmail } = useCheckEmail();
   const [emailFound, setEmailFound] = useState(false);
 
   const handleFindEmail = async () => {

@@ -7,9 +7,11 @@ export interface AuthResponse {
 }
 
 export const signUpUser = (username: string, password: string): Promise<AuthResponse> => {
-  return axios.post<AuthResponse>(`${API_URL}/api/member/sign-up`, { username, password });
+  return axios.post<AuthResponse>(`${API_URL}/api/member/sign-up`, { username, password })
+    .then(response => response.data);
 };
 
-export const loginUser = (username: string, password: string): Promise<AuthResponse> => {
-  return axios.post<AuthResponse>(`${API_URL}/api/member/sign-in`, { username, password });
+export const signInUser = (username: string, password: string): Promise<AuthResponse> => {
+  return axios.post<AuthResponse>(`${API_URL}/api/member/sign-in`, { username, password })
+    .then(response => response.data);
 };

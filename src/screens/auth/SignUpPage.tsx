@@ -7,39 +7,43 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import { validateEmail, validateNickname, validatePassword } from '../../utils/validation';
+import useEmailValidation from '../../hooks/useEmailValidation';
+import usePasswordValidation from '../../hooks/usePasswordValidation';
+import useNickNameValidation from '../../hooks/useNicknameValidation';
 
 export default function SignUpSteps() {
-  const [step, setStep] = useState(1); 
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isNicknameValid, setIsNicknameValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [emailValidationResult, setEmailValidationResult] = useState({ validationResult: null, error: null });
+  const [nicknameValidationResult, setNicknameValidationResult] = useState({ validationResult: null, error: null });
+  const [PasswordValidationResult, setPasswordValidationResult] = useState({ validationResult: null, error: null });
 
-  const handleEmailChange = (text: string) => {
+  const handleEmailCheck = async (text: any) => {
     setEmail(text);
-    setIsEmailValid(validateEmail(text)); // 이메일 유효성 검사
+    const validationResult = await useEmailValidation(email); // 이메일 유효성 검사
+    setEmailValidationResult(validationResult);
   };
 
-  const handleNicknameChange = (text: string) => {
+  const handleNicknameCheck = async (text: any) => {
     setNickname(text);
-    setIsNicknameValid(validateNickname(text)); // 닉네임 유효성 검사
+    const validationResult = await useNickNameValidation(nickname); // 닉네임 유효성 검사
+    setNicknameValidationResult(validationResult);
   };
 
-  const handlePasswordChange = (text: string) => {
+  const handlePasswordCheck = async (text: any) => {
     setPassword(text);
-    setIsPasswordValid(validatePassword(text)); // 비밀번호 유효성 검사
+    const validationResult = await usePasswordValidation(password); // 비밀번호 유효성 검사
+    setPasswordValidationResult(validationResult);
   };
-
 
   const handleNextStep = () => {
-    if (step === 1 && isEmailValid) {
-      setStep(2); 
-    } else if (step === 2 && isNicknameValid) {
-      setStep(3); 
-    } else if (step === 3 && isPasswordValid) {
+    if (step === 1 && emailValidationResult.validationResult) {
+      setStep(2);
+    } else if (step === 2 && nicknameValidationResult.validationResult) {
+      setStep(3);
+    } else if (step === 3 && PasswordValidationResult.validationResult) {
       Alert.alert('회원가입 완료', '모든 단계를 완료했습니다!');
     }
   };
@@ -64,7 +68,7 @@ export default function SignUpSteps() {
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}
-              onChangeText={handleEmailChange}
+              onChangeText={handleEmailCheck}
             />
             <TouchableOpacity
               style={styles.checkButton}
@@ -87,7 +91,7 @@ export default function SignUpSteps() {
               placeholderTextColor="#aaa"
               autoCapitalize="none"
               value={nickname}
-              onChangeText={handleNicknameChange}
+              onChangeText={handleNicknameCheck}
             />
             <TouchableOpacity
               style={styles.checkButton}
@@ -109,7 +113,7 @@ export default function SignUpSteps() {
             placeholderTextColor="#aaa"
             secureTextEntry
             value={password}
-            onChangeText={handlePasswordChange}
+            onChangeText={handlePasswordCheck}
           />
         </View>
       )}
@@ -117,17 +121,17 @@ export default function SignUpSteps() {
       <TouchableOpacity
         style={[
           styles.nextButton,
-          (step === 1 && isEmailValid) ||
-          (step === 2 && isNicknameValid) ||
-          (step === 3 && isPasswordValid)
+          (step === 1 && emailValidationResult.validationResult) ||
+          (step === 2 && nicknameValidationResult.validationResult) ||
+          (step === 3 && PasswordValidationResult.validationResult)
             ? styles.nextButtonEnabled
             : styles.nextButtonDisabled,
         ]}
         onPress={handleNextStep}
         disabled={
-          (step === 1 && !isEmailValid) ||
-          (step === 2 && !isNicknameValid) ||
-          (step === 3 && !isPasswordValid)
+          (step === 1 && !emailValidationResult.validationResult) ||
+          (step === 2 && !nicknameValidationResult.validationResult) ||
+          (step === 3 && !PasswordValidationResult.validationResult)
         }
       >
         <Text style={styles.nextButtonText}>다음</Text>

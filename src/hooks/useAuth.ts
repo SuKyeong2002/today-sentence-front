@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { loginUser, signUpUser } from '../api/auth';
+import { signInUser, signUpUser } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface UseAuthReturn {
@@ -19,7 +19,7 @@ const useAuth = (): UseAuthReturn => {
 
   const handleSignUp = async () => {
     try {
-      const response = await signUpUser(username, password);
+      await signUpUser(username, password);
       setMessage('회원가입 성공!');
     } catch (error) {
       setMessage('회원가입 실패.');
@@ -28,8 +28,8 @@ const useAuth = (): UseAuthReturn => {
 
   const handleLogin = async () => {
     try {
-      const response = await loginUser(username, password);
-      await AsyncStorage.setItem('token', response.data.token);
+      const response = await signInUser(username, password);
+      await AsyncStorage.setItem('token', response.token);
       setMessage('로그인 성공!');
     } catch (error) {
       setMessage('로그인 실패.');
