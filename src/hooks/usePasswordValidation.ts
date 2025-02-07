@@ -12,7 +12,7 @@ const usePasswordValidation = () => {
     }
 
     try {
-      const response = await fetch('https://43.201.20.84/api/member/checkPassword', {
+      const response = await fetch('http://43.201.20.84/api/member/checkPassword', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

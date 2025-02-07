@@ -12,7 +12,7 @@ const useNicknameValidation = () => {
     }
 
     try {
-      const response = await fetch('https://43.201.20.84/api/member/check-nickname', {
+      const response = await fetch('http://43.201.20.84/api/member/check-nickname', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

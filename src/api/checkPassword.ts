@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://43.201.20.84/api/member"; // 백엔드 URL
+const BASE_URL = "http://43.201.20.84/api/member"; // 백엔드 URL
 
 export const checkPassword = async (username: string) => {
   try {
