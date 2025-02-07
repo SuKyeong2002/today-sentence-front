@@ -65,13 +65,13 @@ function RecordContent({ navigation }: { navigation: any }) {
   const data = [
     {
       id: "1",
-      image : require("../../assets/image/Landing1.png"),
+      image : require("../../assets/image/Landing3.png"),
       title: "React Native in Action",
       author: "Nader Dabit",
     },
     {
       id: "2",
-      image : require("../../assets/image/Landing2.png"),
+      image : require("../../assets/image/Landing3.png"),
       title: "Learning React",
       author: "Alex Banks & Eve Porcello",
     },
