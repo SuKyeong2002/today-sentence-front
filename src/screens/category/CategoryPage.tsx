@@ -15,10 +15,10 @@ const TextStyle = styled.Text`
   color: ${({theme}) => theme.colors.text};
 `;
 
-export default function HomePage() {
+export default function CategoryPage() {
   return (
     <Container>
-      <TextStyle>홈</TextStyle>
+      <TextStyle>카테고리</TextStyle>
     </Container>
   );
 }

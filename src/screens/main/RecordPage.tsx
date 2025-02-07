@@ -8,7 +8,6 @@ import {
   Image,
 } from "react-native";
 import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { TextInput } from "react-native-gesture-handler";
 import BookCard from "../../components/bookCard";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
@@ -52,7 +51,6 @@ export default function RecordPage({ navigation }: { navigation: any }) {
         ))}
       </View>
       <View style={styles.content}>{renderContent()}</View>
-      <Footer />
     </View>
   );
 }

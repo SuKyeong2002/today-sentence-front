@@ -15,10 +15,10 @@ const TextStyle = styled.Text`
   color: ${({theme}) => theme.colors.text};
 `;
 
-export default function HomePage() {
+export default function SearchPage() {
   return (
     <Container>
-      <TextStyle>홈</TextStyle>
+      <TextStyle>검색</TextStyle>
     </Container>
   );
 }
