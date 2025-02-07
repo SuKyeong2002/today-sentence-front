@@ -41,7 +41,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.loginButton} onPress={login}>
+      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate("Home")}>
         <Text style={styles.loginButtonText}>로그인</Text>
       </TouchableOpacity>
     </View>

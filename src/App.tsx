@@ -5,6 +5,7 @@ import {ThemeProvider} from 'styled-components';
 import LandingScreen from './screens/LandingPage';
 import LoginScreen from './screens/auth/LoginPage';
 import SignUpScreen from './screens/auth/SignUpPage';
+import HomeScreen from './screens/home/HomePage';
 import RecordScreen from './screens/main/RecordPage';
 import EmailFindPage from './screens/auth/EmailFind';
 import PasswordFindPage from './screens/auth/PasswordFind';
@@ -12,10 +13,10 @@ import NotFoundPage from './screens/NotFound';
 
 const theme = {
   fonts: {
-    Light: 'Pretendard-Light',
-    Medium: 'Pretendard-Medium',
+    light: 'Pretendard-Light',
+    medium: 'Pretendard-Medium',
     regular: 'Pretendard-Regular',
-    SemiBold: 'Pretendard-SemiBold',
+    semiBold: 'Pretendard-SemiBold',
     bold: 'Pretendard-Bold',
   },
   fontSizes: {
@@ -24,7 +25,21 @@ const theme = {
     medium: 16,
     large: 18,
     xLarge: 20,
-    title: 24
+    title: 24,
+  },
+  colors: {
+    white: '#FFF',
+    text: '#262627',
+    darkGray: '#828183',
+    gray: '#505050',
+    lightGray: '#A9A9A9',
+    red: '#F33F31',
+    green: '#5BAF63',
+    primary: '#8A715D',
+    secondary: '#B9AA9E',
+    secondary2: '#ECD6C4',
+    secondary3: '#F8F1E9',
+    background: '#F5F4F5',
   },
 };
 
@@ -38,6 +53,7 @@ export default function App() {
           <Stack.Screen name="Landing" component={LandingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Record" component={RecordScreen} />
           <Stack.Screen name="EmailFind" component={EmailFindPage} />
           <Stack.Screen name="PasswordFind" component={PasswordFindPage} />
