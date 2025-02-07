@@ -162,21 +162,23 @@ export default function SignUpSteps() {
         <View>
           <Text style={styles.title}>비밀번호를 설정해주세요</Text>
           <Text style={styles.title}>영문자, 숫자, 특문 조합의 10자 이상 16자 이하여야 합니다.</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="비밀번호"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity
-            style={[styles.checkButton, password.length >= 8 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
-            onPress={handlePasswordCheck}
-            disabled={password.length < 8}
-          >
-            <Text style={styles.checkButtonText}>확인</Text>
-          </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="비밀번호"
+              placeholderTextColor="#aaa"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity
+              style={[styles.checkButton, password.length >= 8 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
+              onPress={handlePasswordCheck}
+              disabled={password.length < 8}
+            >
+              <Text style={styles.checkButtonText}>확인</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 
@@ -184,13 +186,15 @@ export default function SignUpSteps() {
         <View>
           <Text style={styles.title}>비밀번호를 재확인해주세요</Text>
           <Text style={styles.title}>방금 설정한 비밀번호를 다시 입력해주세요!</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="비밀번호"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            onChangeText={handlePasswordRecheck}
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="비밀번호"
+              placeholderTextColor="#aaa"
+              secureTextEntry
+              onChangeText={handlePasswordRecheck}
+            />
+          </View>
         </View>
       )}
 
