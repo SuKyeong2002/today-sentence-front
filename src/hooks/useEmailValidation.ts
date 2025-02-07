@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const useEmailValidation = () => {
-  const [validationResult, setValidationResult] = useState<boolean | null>(null);
+  const [validationResult, setValidationResult] = useState<string | boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const validateEmail = async (email: string) => {
@@ -12,7 +12,7 @@ const useEmailValidation = () => {
     }
 
     try {
-      const response = await fetch('/api/member/check-email', {
+      const response = await fetch('https://43.201.20.84/api/member/check-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -20,13 +20,16 @@ const useEmailValidation = () => {
         body: JSON.stringify({ email }),
       });
 
-      if (!response.ok) {
+      if (response.status === 204) {
+        setValidationResult(true); 
+        setError(null);
+      } else if (!response.ok) {
         throw new Error('네트워크 오류 발생');
+      } else {
+        const data = await response.json();
+        setValidationResult(data.data.success);
+        setError(null);
       }
-
-      const data = await response.json();
-      setValidationResult(data.success);
-      setError(null);
     } catch (err: any) {
       setError(err.message);
       setValidationResult(null);
@@ -36,4 +39,4 @@ const useEmailValidation = () => {
   return { validationResult, error, validateEmail };
 };
 
-export default useEmailValidation ;
+export default useEmailValidation;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -26,37 +26,67 @@ export default function SignUpSteps() {
   const handleEmailCheck = async () => {
     if (!email.includes('@')) {
       Alert.alert('오류', '유효한 이메일을 입력하세요.');
+      console.log("duplicate buttonOnClickEvent");
       return;
     }
-    await validateEmail(email);
+    await validateEmail(email); //
+  };
+
+  useEffect(() => {
+    if (emailValidationResult === null) return;
+
     if (emailValidationResult) {
       Alert.alert('확인 완료', '사용 가능한 이메일입니다.');
     } else {
       Alert.alert('중복된 이메일', '이미 존재하는 이메일입니다.');
     }
-  };
+  }, [emailValidationResult]);
 
   // ✅ 닉네임 검증
   const handleNicknameCheck = async () => {
-    if (nickname.length < 3) {
-      Alert.alert('오류', '닉네임은 3자 이상이어야 합니다.');
+    if (!nickname.includes('')) {
+      Alert.alert('오류', '유효한 닉네임을 입력하세요.');
+      console.log('duplicate buttonOnClickEvent');
       return;
     }
     await validateNickname(nickname);
-    if (nicknameValidationResult) {
-      Alert.alert('확인 완료', '사용 가능한 닉네임입니다.');
-    } else {
-      Alert.alert('중복된 닉네임', '이미 존재하는 닉네임입니다.');
-    }
   };
+
+  useEffect(() => {
+    if (nicknameValidationResult == null) return;
+    if (nicknameValidationResult) {
+      Alert.alert('확인완료', '사용가능한 닉네임입니다!');
+    } else {
+      Alert.alert('중복된 닉네임', '이미 존재하는 닉네임입니다!');
+    }
+  }, [nicknameValidationResult]);
 
   // ✅ 비밀번호 검증
   const handlePasswordCheck = async () => {
-    if (password.length < 8) {
-      Alert.alert('오류', '비밀번호는 8자 이상이어야 합니다.');
+    if (!password.includes('')) {
+      Alert.alert('오류', '유효한 비밀번호를 입력하세요.');
+      console.log('duplicate buttonOnClickEvent');
       return;
     }
     await validatePassword(password);
+  };
+
+  useEffect(() => {
+    if (passwordValidationResult == null) return;
+    if (passwordValidationResult) {
+      Alert.alert('확인완료', '사용가능한 비밀번호입니다!');
+    } else {
+      Alert.alert('중복된 비밀번호', '이미 존재하는 비밀번호입니다!');
+    }
+  }, [passwordValidationResult]);
+
+  // 비밀번호 재검증 로직
+  const handlePasswordRecheck = async (returnPassword: string) => {
+    if (returnPassword !== password) {
+      Alert.alert('오류', '비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    Alert.alert('확인완료', '비밀번호가 일치합니다.');
   };
 
   // ✅ 회원가입 단계 진행
@@ -159,16 +189,8 @@ export default function SignUpSteps() {
             placeholder="비밀번호"
             placeholderTextColor="#aaa"
             secureTextEntry
-            value={password}
-            onChangeText={setPassword}
+            onChangeText={handlePasswordRecheck}
           />
-          <TouchableOpacity
-            style={[styles.checkButton, password.length >= 8 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
-            onPress={handlePasswordCheck}
-            disabled={password.length < 8}
-          >
-            <Text style={styles.checkButtonText}>확인</Text>
-          </TouchableOpacity>
         </View>
       )}
 
@@ -210,7 +232,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: '#505050',
+    color: '#',
     marginBottom: 10,
   },
   inputContainer: {

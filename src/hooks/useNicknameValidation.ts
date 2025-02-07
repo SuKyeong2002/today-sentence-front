@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const useNicknameValidation = () => {
-  const [validationResult, setValidationResult] = useState<boolean | null>(null);
+  const [validationResult, setValidationResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const validateNickname = async (nickname: string) => {
@@ -12,7 +12,7 @@ const useNicknameValidation = () => {
     }
 
     try {
-      const response = await fetch('/api/member/check-nickname', {
+      const response = await fetch('https://43.201.20.84/api/member/check-nickname', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ const useNicknameValidation = () => {
       }
 
       const data = await response.json();
-      setValidationResult(data.success);
+      setValidationResult(data.data.success);
       setError(null);
     } catch (err: any) {
       setError(err.message);

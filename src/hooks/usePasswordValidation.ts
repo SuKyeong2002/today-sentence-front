@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const usePasswordValidation = () => {
-  const [validationResult, setValidationResult] = useState<boolean | null>(null);
+  const [validationResult, setValidationResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const validatePassword = async (email: string) => {
@@ -12,7 +12,7 @@ const usePasswordValidation = () => {
     }
 
     try {
-      const response = await fetch('/api/member/check-email', {
+      const response = await fetch('https://43.201.20.84/api/member/checkPassword', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ const usePasswordValidation = () => {
       }
 
       const data = await response.json();
-      setValidationResult(data.success);
+      setValidationResult(data.data.success);
       setError(null);
     } catch (err: any) {
       setError(err.message);
