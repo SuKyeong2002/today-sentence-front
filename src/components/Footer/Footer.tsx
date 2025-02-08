@@ -16,6 +16,7 @@ export default function Footer() {
       initialRouteName="Home"
       screenOptions={({route}) => ({
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarIcon: ({focused}) => {
           let iconName;
 
