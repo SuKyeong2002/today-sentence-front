@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {ThemeProvider} from 'styled-components';
 import LandingScreen from './screens/LandingPage';
@@ -9,7 +9,7 @@ import RecordScreen from './screens/main/RecordPage';
 import EmailFindPage from './screens/auth/EmailFind';
 import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
-import Footer from './components/Footer';
+import Footer from './components/Footer/Footer';
 
 const theme = {
   fonts: {
@@ -18,6 +18,7 @@ const theme = {
     regular: 'Pretendard-Regular',
     semiBold: 'Pretendard-SemiBold',
     bold: 'Pretendard-Bold',
+    extraBold: 'Pretendard-ExtraBold',
   },
   fontSizes: {
     small: 12,
@@ -45,10 +46,18 @@ const theme = {
 
 const Stack = createStackNavigator();
 
+const MyNavigationTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: theme.colors.background,  
+  },
+};
+
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
-      <NavigationContainer>
+      <NavigationContainer theme={MyNavigationTheme}>
           <Stack.Navigator screenOptions={{headerShown: false}}>
             <Stack.Screen name="Landing" component={LandingScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />

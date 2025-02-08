@@ -8,6 +8,7 @@ declare module 'styled-components' {
       regular: string;
       semiBold: string;
       bold: string;
+      extraBold: string;
     };
     fontSizes: {
       small: number;

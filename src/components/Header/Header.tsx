@@ -5,11 +5,11 @@ export default function Header() {
   return (
     <View style={styles.container}>
       <View style={styles.leftIcon}>
-        <Image source={require('../assets/image/LOGO2.png')} style={styles.logoImage}/>
+        <Image source={require('../../assets/image/LOGO2.png')} style={styles.logoImage}/>
       </View>
 
       <View style={styles.rightIcon}>
-        <Image source={require('../assets/image/notification.png')} style={styles.logoImage}/>
+        <Image source={require('../../assets/image/notification.png')} style={styles.logoImage}/>
       </View>
     </View>
   );

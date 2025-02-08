@@ -7,7 +7,7 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import Header from "../../components/Header";
+import Header from "../../components/Header/Header";
 import { TextInput } from "react-native-gesture-handler";
 import BookCard from "../../components/bookCard";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';

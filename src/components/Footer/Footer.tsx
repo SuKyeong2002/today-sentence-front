@@ -2,11 +2,11 @@ import React from 'react';
 import {Image, StyleSheet, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
-import HomeScreen from '../screens/home/HomePage';
-import RecordScreen from '../screens/main/RecordPage';
-import SearchScreen from '../screens/search/SearchPage';
-import CategoryScreen from '../screens/category/CategoryPage';
-import MyScreen from '../screens/mypage/MyPage';
+import HomeScreen from '../../screens/home/HomePage';
+import RecordScreen from '../../screens/main/RecordPage';
+import SearchScreen from '../../screens/search/SearchPage';
+import CategoryScreen from '../../screens/category/CategoryPage';
+import MyScreen from '../../screens/mypage/MyPage';
 
 const Tab = createBottomTabNavigator();
 
@@ -14,34 +14,35 @@ export default function Footer() {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
+        headerShown: false,
         tabBarIcon: ({focused}) => {
           let iconName;
 
           switch (route.name) {
             case 'Home':
               iconName = focused
-                ? require('../assets/image/clickHome.png')
-                : require('../assets/image/home.png');
+                ? require('../../assets/image/clickHome.png')
+                : require('../../assets/image/home.png');
               break;
             case 'Record':
               iconName = focused
-                ? require('../assets/image/clickRecord.png')
-                : require('../assets/image/record.png');
+                ? require('../../assets/image/clickRecord.png')
+                : require('../../assets/image/record.png');
               break;
             case 'Search':
               iconName = focused
-                ? require('../assets/image/clickSearch.png')
-                : require('../assets/image/search.png');
+                ? require('../../assets/image/clickSearch.png')
+                : require('../../assets/image/search.png');
               break;
             case 'Category':
               iconName = focused
-                ? require('../assets/image/clickCategory.png')
-                : require('../assets/image/category.png');
+                ? require('../../assets/image/clickCategory.png')
+                : require('../../assets/image/category.png');
               break;
             case 'My':
               iconName = focused
-                ? require('../assets/image/clickUser.png')
-                : require('../assets/image/user.png');
+                ? require('../../assets/image/clickUser.png')
+                : require('../../assets/image/user.png');
               break;
           }
 
