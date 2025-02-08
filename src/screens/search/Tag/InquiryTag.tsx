@@ -1,5 +1,14 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import styled from 'styled-components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -14,39 +23,51 @@ export default function InquiryTag() {
   const navigation = useNavigation<NavigationProp>();
 
   return (
-    <RegistrationTagContainer>
-      <RegistrationText>🤎 인기 조회 태그</RegistrationText>
-      <TagContainer>
-        <TagWrapper>
-          <TagText onPress={() => navigation.navigate('BookSearch')}>
-            <Text>오늘의책</Text>
-          </TagText>
-          <TagText>
-            <Text>명언추천</Text>
-          </TagText>
-          <TagText>
-            <Text>1일1독</Text>
-          </TagText>
-        </TagWrapper>
-        <TagWrapper>
-          <TagText>
-            <Text>책추천</Text>
-          </TagText>
-          <TagText>
-            <Text>느좋</Text>
-          </TagText>
-          <TagText>
-            <Text>카페</Text>
-          </TagText>
-        </TagWrapper>
-      </TagContainer>
-    </RegistrationTagContainer>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={{flex: 1}}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{flexGrow: 1}}>
+          <View style={{flex: 1, justifyContent: 'space-between'}}>
+            <RegistrationTagContainer>
+              <RegistrationText>🤎 인기 조회 태그</RegistrationText>
+              <TagContainer>
+                <TagWrapper>
+                  <TagText onPress={() => navigation.navigate('BookSearch')}>
+                    <TagTextLabel>오늘의책</TagTextLabel>
+                  </TagText>
+                  <TagText>
+                    <TagTextLabel>명언추천</TagTextLabel>
+                  </TagText>
+                  <TagText>
+                    <TagTextLabel>1일1독</TagTextLabel>
+                  </TagText>
+                </TagWrapper>
+                <TagWrapper>
+                  <TagText>
+                    <TagTextLabel>책추천</TagTextLabel>
+                  </TagText>
+                  <TagText>
+                    <TagTextLabel>느좋</TagTextLabel>
+                  </TagText>
+                  <TagText>
+                    <TagTextLabel>카페</TagTextLabel>
+                  </TagText>
+                </TagWrapper>
+              </TagContainer>
+            </RegistrationTagContainer>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const RegistrationTagContainer = styled(View)`
   width: 90%;
-  height: 25%;
+  height: auto;
   display: flex;
   padding: 20px;
   flex-wrap: wrap;
@@ -68,6 +89,7 @@ const TagContainer = styled(View)`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: auto;
 `;
 
 const TagWrapper = styled(View)`
