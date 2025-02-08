@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,39 +7,95 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import { validateEmail, validateNickname, validatePassword } from '../../utils/validation';
+import checkEmailValidation from '../../hooks/useEmailValidation';
+import usePasswordValidation from '../../hooks/usePasswordValidation';
+import useNickNameValidation from '../../hooks/useNicknameValidation';
 
 export default function SignUpSteps() {
-  const [step, setStep] = useState(1); 
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isNicknameValid, setIsNicknameValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  
+  // ✅ 커스텀 훅 사용
+  const { validationResult: emailValidationResult, validateEmail } = checkEmailValidation();
+  const { validationResult: nicknameValidationResult, validateNickname } = useNickNameValidation();
+  const { validationResult: passwordValidationResult, validatePassword } = usePasswordValidation();
 
-  const handleEmailChange = (text: string) => {
-    setEmail(text);
-    setIsEmailValid(validateEmail(text)); // 이메일 유효성 검사
+  // ✅ 이메일 검증
+  const handleEmailCheck = async () => {
+    if (!email.includes('@')) {
+      Alert.alert('오류', '유효한 이메일을 입력하세요.');
+      console.log("duplicate buttonOnClickEvent");
+      return;
+    }
+    await validateEmail(email); //
   };
 
-  const handleNicknameChange = (text: string) => {
-    setNickname(text);
-    setIsNicknameValid(validateNickname(text)); // 닉네임 유효성 검사
+  useEffect(() => {
+    if (emailValidationResult === null) return;
+
+    if (emailValidationResult) {
+      Alert.alert('확인 완료', '사용 가능한 이메일입니다.');
+    } else {
+      Alert.alert('중복된 이메일', '이미 존재하는 이메일입니다.');
+    }
+  }, [emailValidationResult]);
+
+  // ✅ 닉네임 검증
+  const handleNicknameCheck = async () => {
+    if (!nickname.includes('')) {
+      Alert.alert('오류', '유효한 닉네임을 입력하세요.');
+      console.log('duplicate buttonOnClickEvent');
+      return;
+    }
+    await validateNickname(nickname);
   };
 
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    setIsPasswordValid(validatePassword(text)); // 비밀번호 유효성 검사
+  useEffect(() => {
+    if (nicknameValidationResult == null) return;
+    if (nicknameValidationResult) {
+      Alert.alert('확인완료', '사용가능한 닉네임입니다!');
+    } else {
+      Alert.alert('중복된 닉네임', '이미 존재하는 닉네임입니다!');
+    }
+  }, [nicknameValidationResult]);
+
+  // ✅ 비밀번호 검증
+  const handlePasswordCheck = async () => {
+    if (!password.includes('')) {
+      Alert.alert('오류', '유효한 비밀번호를 입력하세요.');
+      console.log('duplicate buttonOnClickEvent');
+      return;
+    }
+    await validatePassword(password);
   };
 
+  useEffect(() => {
+    if (passwordValidationResult == null) return;
+    if (passwordValidationResult) {
+      Alert.alert('확인완료', '사용가능한 비밀번호입니다!');
+    } else {
+      Alert.alert('중복된 비밀번호', '이미 존재하는 비밀번호입니다!');
+    }
+  }, [passwordValidationResult]);
 
+  // 비밀번호 재검증 로직
+  const handlePasswordRecheck = async (returnPassword: string) => {
+    if (returnPassword !== password) {
+      Alert.alert('오류', '비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    Alert.alert('확인완료', '비밀번호가 일치합니다.');
+  };
+
+  // ✅ 회원가입 단계 진행
   const handleNextStep = () => {
-    if (step === 1 && isEmailValid) {
-      setStep(2); 
-    } else if (step === 2 && isNicknameValid) {
-      setStep(3); 
-    } else if (step === 3 && isPasswordValid) {
+    if (step === 1 && emailValidationResult) {
+      setStep(2);
+    } else if (step === 2 && nicknameValidationResult) {
+      setStep(3);
+    } else if (step === 3 && passwordValidationResult) {
       Alert.alert('회원가입 완료', '모든 단계를 완료했습니다!');
     }
   };
@@ -50,12 +106,13 @@ export default function SignUpSteps() {
         <Text style={[styles.progressDot, step === 1 ? styles.activeDot : null]}>●</Text>
         <Text style={[styles.progressDot, step === 2 ? styles.activeDot : null]}>●</Text>
         <Text style={[styles.progressDot, step === 3 ? styles.activeDot : null]}>●</Text>
+        <Text style={[styles.progressDot, step === 4 ? styles.activeDot : null]}>●</Text>
       </View>
 
       {step === 1 && (
         <View>
           <Text style={styles.title}>이메일을 입력해주세요</Text>
-          <Text style={styles.subtitle}>6자리의 인증번호를 보내드려요!</Text>
+          <Text style={styles.title}>6자리의 인증번호를 보내드려요!</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -64,11 +121,12 @@ export default function SignUpSteps() {
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}
-              onChangeText={handleEmailChange}
+              onChangeText={setEmail}
             />
             <TouchableOpacity
-              style={styles.checkButton}
-              onPress={() => Alert.alert('중복확인', '이메일 중복 확인')}
+              style={[styles.checkButton, email.includes('@') ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
+              onPress={handleEmailCheck}
+              disabled={!email.includes('@')}
             >
               <Text style={styles.checkButtonText}>중복확인</Text>
             </TouchableOpacity>
@@ -79,7 +137,7 @@ export default function SignUpSteps() {
       {step === 2 && (
         <View>
           <Text style={styles.title}>닉네임을 설정해주세요</Text>
-          <Text style={styles.subtitle}>닉네임은 변경할 수 없어요!</Text>
+          <Text style={styles.title}>닉네임은 변경할 수 없어요!</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -87,11 +145,12 @@ export default function SignUpSteps() {
               placeholderTextColor="#aaa"
               autoCapitalize="none"
               value={nickname}
-              onChangeText={handleNicknameChange}
+              onChangeText={setNickname}
             />
             <TouchableOpacity
-              style={styles.checkButton}
-              onPress={() => Alert.alert('중복확인', '닉네임 중복 확인')}
+              style={[styles.checkButton, nickname.length > 2 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
+              onPress={handleNicknameCheck}
+              disabled={nickname.length <= 2}
             >
               <Text style={styles.checkButtonText}>중복확인</Text>
             </TouchableOpacity>
@@ -102,33 +161,47 @@ export default function SignUpSteps() {
       {step === 3 && (
         <View>
           <Text style={styles.title}>비밀번호를 설정해주세요</Text>
-          <Text style={styles.subtitle}>비밀번호는 8자 이상이어야 합니다.</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="비밀번호"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            value={password}
-            onChangeText={handlePasswordChange}
-          />
+          <Text style={styles.title}>영문자, 숫자, 특문 조합의 10자 이상 16자 이하여야 합니다.</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="비밀번호"
+              placeholderTextColor="#aaa"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity
+              style={[styles.checkButton, password.length >= 8 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
+              onPress={handlePasswordCheck}
+              disabled={password.length < 8}
+            >
+              <Text style={styles.checkButtonText}>확인</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {step === 4 && (
+        <View>
+          <Text style={styles.title}>비밀번호를 재확인해주세요</Text>
+          <Text style={styles.title}>방금 설정한 비밀번호를 다시 입력해주세요!</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="비밀번호"
+              placeholderTextColor="#aaa"
+              secureTextEntry
+              onChangeText={handlePasswordRecheck}
+            />
+          </View>
         </View>
       )}
 
       <TouchableOpacity
-        style={[
-          styles.nextButton,
-          (step === 1 && isEmailValid) ||
-          (step === 2 && isNicknameValid) ||
-          (step === 3 && isPasswordValid)
-            ? styles.nextButtonEnabled
-            : styles.nextButtonDisabled,
-        ]}
+        style={[styles.nextButton, (step === 1 && emailValidationResult) || (step === 2 && nicknameValidationResult) || (step === 3 && passwordValidationResult) ? styles.nextButtonEnabled : styles.nextButtonDisabled]}
         onPress={handleNextStep}
-        disabled={
-          (step === 1 && !isEmailValid) ||
-          (step === 2 && !isNicknameValid) ||
-          (step === 3 && !isPasswordValid)
-        }
+        disabled={(step === 1 && !emailValidationResult) || (step === 2 && !nicknameValidationResult) || (step === 3 && !passwordValidationResult)}
       >
         <Text style={styles.nextButtonText}>다음</Text>
       </TouchableOpacity>
@@ -163,8 +236,8 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: '#888',
-    marginBottom: 20,
+    color: '#',
+    marginBottom: 10,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -183,14 +256,19 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingHorizontal: 15,
     height: 50,
-    backgroundColor: '#E0E0E0',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
   },
+  checkButtonEnabled: {
+    backgroundColor: '#5A403D',
+  },
+  checkButtonDisabled: {
+    backgroundColor: '#E0E0E0',
+  },
   checkButtonText: {
     fontSize: 14,
-    color: '#666',
+    color: '#FFF',
   },
   nextButton: {
     marginTop: 30,
@@ -211,3 +289,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+

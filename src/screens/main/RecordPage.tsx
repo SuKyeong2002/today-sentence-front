@@ -7,8 +7,7 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import Header from "../../components/Header/Header";
 import { TextInput } from "react-native-gesture-handler";
 import BookCard from "../../components/bookCard";
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
@@ -52,7 +51,6 @@ export default function RecordPage({ navigation }: { navigation: any }) {
         ))}
       </View>
       <View style={styles.content}>{renderContent()}</View>
-      <Footer />
     </View>
   );
 }
@@ -65,13 +63,13 @@ function RecordContent({ navigation }: { navigation: any }) {
   const data = [
     {
       id: "1",
-      image : require("../../assets/image/Landing1.png"),
+      image : require("../../assets/image/Landing3.png"),
       title: "React Native in Action",
       author: "Nader Dabit",
     },
     {
       id: "2",
-      image : require("../../assets/image/Landing2.png"),
+      image : require("../../assets/image/Landing3.png"),
       title: "Learning React",
       author: "Alex Banks & Eve Porcello",
     },

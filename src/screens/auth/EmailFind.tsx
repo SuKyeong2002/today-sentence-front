@@ -6,17 +6,30 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useFindEmail } from "../../hooks/useFindEmail";
 import Loading from "../../components/Loading";
 
 export default function App() {
-  const [nickname, setNickname] = useState(""); 
-  const { email, isLoading, error, fetchEmail } = useFindEmail();
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [emailFound, setEmailFound] = useState(false);
 
   const handleFindEmail = async () => {
-    await fetchEmail(nickname);
-    setEmailFound(true);
+    setIsLoading(true);
+    setError("");
+    try {
+      // Simulate an API call
+      await new Promise<void>((resolve) => setTimeout(() => resolve(), 2000));
+      // Simulate email found
+      const foundEmail = "example@example.com";
+      setEmail(foundEmail);
+      setEmailFound(true);
+    } catch (err) {
+      setError("Failed to fetch email");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
