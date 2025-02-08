@@ -5,7 +5,10 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["styled-components", "react-native"], 
+    "types": ["styled-components", "react-native"]
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "src/styles/styled.d.ts"  
+  ]
 }
