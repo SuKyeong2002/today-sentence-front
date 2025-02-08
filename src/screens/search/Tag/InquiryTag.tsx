@@ -52,7 +52,7 @@ const RegistrationTagContainer = styled(View)`
   flex-wrap: wrap;
   border-radius: 10px;
   gap: 20px;
-  margin: 20px 20px;
+  margin: 10px 20px;
   flex-direction: row;
   background: ${({theme}) => theme.colors.white};
 `;
