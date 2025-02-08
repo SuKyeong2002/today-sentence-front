@@ -46,7 +46,7 @@ export default function RegistrationTag() {
 
 const RegistrationTagContainer = styled(View)`
   width: 90%;
-  height: 20%;
+  height: 25%;
   display: flex;
   padding: 20px;
   flex-wrap: wrap;
@@ -59,7 +59,7 @@ const RegistrationTagContainer = styled(View)`
 
 const RegistrationText = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
-  font-weight: 400;
+  font-weight: 700;
   color: ${({theme}) => theme.colors.text};
 `;
 
@@ -67,7 +67,7 @@ const TagContainer = styled(View)`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 `;
 
 const TagWrapper = styled(View)`
@@ -75,17 +75,17 @@ const TagWrapper = styled(View)`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 `;
 
 const TagText = styled(TouchableOpacity)`
   display: flex;
-  width: 85px;
-  height: 25px;
+  width: 30%;
+  height: 40px;
   padding: 4px 10px;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
+  border-radius: 30px;
   background: ${({theme}) => theme.colors.background};
   text-align: center;
 `;
