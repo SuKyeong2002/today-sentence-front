@@ -13,6 +13,7 @@ const Tab = createBottomTabNavigator();
 export default function Footer() {
   return (
     <Tab.Navigator
+      initialRouteName="Search"
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarIcon: ({focused}) => {
@@ -21,28 +22,28 @@ export default function Footer() {
           switch (route.name) {
             case 'Home':
               iconName = focused
-                ? require('../../assets/image/clickHome.png')
-                : require('../../assets/image/home.png');
+                ? require('../assets/image/clickHome.png')
+                : require('../assets/image/home.png');
               break;
             case 'Record':
               iconName = focused
-                ? require('../../assets/image/clickRecord.png')
-                : require('../../assets/image/record.png');
+                ? require('../assets/image/clickRecord.png')
+                : require('../assets/image/record.png');
               break;
             case 'Search':
               iconName = focused
-                ? require('../../assets/image/clickSearch.png')
-                : require('../../assets/image/search.png');
+                ? require('../assets/image/clickSearch.png')
+                : require('../assets/image/search.png');
               break;
             case 'Category':
               iconName = focused
-                ? require('../../assets/image/clickCategory.png')
-                : require('../../assets/image/category.png');
+                ? require('../assets/image/clickCategory.png')
+                : require('../assets/image/category.png');
               break;
             case 'My':
               iconName = focused
-                ? require('../../assets/image/clickUser.png')
-                : require('../../assets/image/user.png');
+                ? require('../assets/image/clickUser.png')
+                : require('../assets/image/user.png');
               break;
           }
 

@@ -13,6 +13,7 @@ const Tab = createBottomTabNavigator();
 export default function Footer() {
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarIcon: ({focused}) => {
