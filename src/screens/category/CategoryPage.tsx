@@ -1,24 +1,17 @@
+import CustomHeader from '@/components/Header/CustomHeader';
 import React from 'react';
-import {View} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import styled from 'styled-components';
+import CategoryContent from './content/CategoryContent';
 
-const Container = styled(View)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: ${({theme}) => theme.colors.background};
-`;
-
-const TextStyle = styled.Text`
-  font-size: ${({theme}) => theme.fontSizes.title}px;
-  font-weight: ${({theme}) => theme.fonts.bold};
-  color: ${({theme}) => theme.colors.text};
-`;
-
-export default function CategoryPage() {
+export default function CategrySearchPage() {
   return (
-    <Container>
-      <TextStyle>카테고리</TextStyle>
-    </Container>
+    <View style={{flex: 1}}>
+      <CustomHeader
+        showLogo={true}
+        onNotificationPress={() => console.log('Notification clicked!')}
+      />
+      <CategoryContent />
+    </View>
   );
 }

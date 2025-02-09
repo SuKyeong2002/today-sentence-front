@@ -12,6 +12,7 @@ import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
 import SearchPage from './screens/search/SearchPage';
+import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
 
 const theme = {
   fonts: {
@@ -69,6 +70,7 @@ export default function App() {
             <Stack.Screen name="Search" component={Footer} />
             <Stack.Screen name="BookSearch" component={BookSearchScreen} />
             <Stack.Screen name="Category" component={Footer} />
+            <Stack.Screen name="CategorySearch" component={CategorySearchScreen} />
             <Stack.Screen name="My" component={Footer} />
             <Stack.Screen name="EmailFind" component={EmailFindPage} />
             <Stack.Screen name="PasswordFind" component={PasswordFindPage} />
