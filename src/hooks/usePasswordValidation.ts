@@ -27,7 +27,7 @@ const usePasswordValidation = () => {
       const data = await response.json();
       setValidationResult(data.data.success);
       setError(null);
-    } catch (err: any) {
+    } catch (err :any) {
       setError(err.message);
       setValidationResult(null);
     }
