@@ -97,6 +97,8 @@ const CategoryUserNumber = styled(Text)`
 const BookImage = styled(Image)`
   width: 94px;
   height: 136px;
+  border-radius: 10px;
+  overflow: hidden;
 `;
 const CategoryUserImage = styled(Image)`
   width: 14px;
