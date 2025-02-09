@@ -1,25 +1,20 @@
+import CustomHeader from '@/components/Header/CustomHeader';
 import React from 'react';
-import {View, Text} from 'react-native';
-import styled from 'styled-components';
+import {View} from 'react-native';
+import Input from './Input/Input';
+import RegistrationTag from './Tag/RegistrationTag';
+import InquiryTag from './Tag/InquiryTag';
 
 export default function SearchPage() {
   return (
-    <Container>
-      <TodayDate>검색</TodayDate>
-    </Container>
+    <View style={{flex: 1}}>
+      <CustomHeader
+        showLogo={true}
+        onNotificationPress={() => console.log('Notification clicked!')}
+      />
+      <Input />
+      <RegistrationTag />
+      <InquiryTag />
+    </View>
   );
 }
-
-
-const Container = styled(View)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: ${({theme}) => theme.colors.background};
-`;
-
-const TodayDate = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.title}px;
-  font-weight: ${({theme}) => theme.fonts.bold};
-  color: ${({theme}) => theme.colors.text};
-`;

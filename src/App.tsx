@@ -6,10 +6,12 @@ import LandingScreen from './screens/LandingPage';
 import LoginScreen from './screens/auth/LoginPage';
 import SignUpScreen from './screens/auth/SignUpPage';
 import RecordScreen from './screens/main/RecordPage';
+import BookSearchScreen from './screens/bookSearch/BookSearchPage';
 import EmailFindPage from './screens/auth/EmailFind';
 import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
+import SearchPage from './screens/search/SearchPage';
 
 const theme = {
   fonts: {
@@ -64,6 +66,8 @@ export default function App() {
             <Stack.Screen name="SignUp" component={SignUpScreen} />
             <Stack.Screen name="Home" component={Footer} />
             <Stack.Screen name="Record" component={Footer} />
+            <Stack.Screen name="Search" component={Footer} />
+            <Stack.Screen name="BookSearch" component={BookSearchScreen} />
             <Stack.Screen name="Category" component={Footer} />
             <Stack.Screen name="My" component={Footer} />
             <Stack.Screen name="EmailFind" component={EmailFindPage} />

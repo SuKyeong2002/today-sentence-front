@@ -14,10 +14,10 @@ export default function HomePage() {
       />
       <Title />
       
-      {/*
       <Content />
-      */}
+      {/*
       <EmptyContent />
+      */}
       
     </View>
   );
