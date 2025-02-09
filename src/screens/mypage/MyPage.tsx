@@ -2,23 +2,25 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import Profile from './profile/Profile';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import ProfileEditItem from '@/components/Button/ProfileEditItem';
 
-export const ProfileEditItem = ({ title, onPress }: { title: string; onPress: () => void }) => {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <ProfileEditContainer>
-        <ProfileEditText>{title}</ProfileEditText>
-        <SettingImage source={require('@/assets/image/rightArrow.png')} resizeMode="contain" />
-      </ProfileEditContainer>
-    </TouchableOpacity>
-  );
+type RootStackParamList = {
+  Setting: undefined;
 };
 
+type NavigationProp = StackNavigationProp<RootStackParamList, 'Setting'>;
+
 export default function MyPage() {
+  const navigation = useNavigation<NavigationProp>();
+
   return (
     <View style={{ flex: 1 }}>
       <SettingContainer>
-        <SettingImage source={require('@/assets/image/setting.png')} resizeMode="contain" />
+        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+          <SettingImage source={require('@/assets/image/setting.png')} resizeMode="contain" />
+        </TouchableOpacity>
       </SettingContainer>
       <Profile />
       <ListContainer>
