@@ -109,8 +109,9 @@ const RegistrationTagContainer = styled(View)`
   align-items: center;
   gap: 32px;
   align-self: stretch;
-  margin: 0px 20px 0px 20px;
+  margin: 0px 20px 10px 20px;
   flex-direction: row;
+  border-radius: 10px;
   background: ${({theme}) => theme.colors.white};
 `;
 
