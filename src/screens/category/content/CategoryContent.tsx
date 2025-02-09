@@ -40,11 +40,11 @@ interface Category {
   category: string;
 }
 
-const CategoryContent: React.FC<{title: string; subtitle: string; onPress: () => void}> = ({
-  title,
-  subtitle,
-  onPress,
-}) => {
+const CategoryContent: React.FC<{
+  title: string;
+  subtitle: string;
+  onPress: () => void;
+}> = ({title, subtitle, onPress}) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <RegistrationTagContainer>
@@ -83,16 +83,20 @@ export default function CategoryList() {
 
   return (
     <ScrollView contentContainerStyle={{paddingBottom: 20}}>
-      <View>
         {categories.map((item, index) => (
           <CategoryContent
             key={index}
             title={categoryMap[item.category] || '알 수 없음'}
             subtitle={categoryDescriptions[item.category] || '설명 없음'}
-            onPress={() => navigation.navigate('CategorySearch', {category: item.category})}
+            onPress={() => {
+              if (item.category === 'POEM_NOVEL_ESSAY') {
+                navigation.navigate('CategorySearch', {
+                  category: item.category,
+                });
+              }
+            }}
           />
         ))}
-      </View>
     </ScrollView>
   );
 }
@@ -105,7 +109,7 @@ const RegistrationTagContainer = styled(View)`
   align-items: center;
   gap: 32px;
   align-self: stretch;
-  margin: 10px 20px 0px 20px;
+  margin: 0px 20px 0px 20px;
   flex-direction: row;
   background: ${({theme}) => theme.colors.white};
 `;
