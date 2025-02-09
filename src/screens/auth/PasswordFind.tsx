@@ -7,12 +7,30 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { usePasswordReset } from "../../hooks/usePasswordReset";
 import Loading from "../../components/Loading";
 
 export default function PasswordReset() {
   const [temporaryPassword, setTemporaryPassword] = useState(""); // 임시 비밀번호
-  const { isLoading, error, verifyCode } = usePasswordReset();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const verifyCode = async (password: string, secondArgument: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // Mock verification logic
+      if (password === "correctPassword") {
+        return Promise.resolve();
+      } else {
+        throw new Error("Invalid password");
+      }
+    } catch (err :any) {
+      setError(err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleVerifyCode = async () => {
     try {

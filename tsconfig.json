@@ -1,10 +1,14 @@
 {
   "extends": "@react-native/typescript-config/tsconfig.json",
-    "compilerOptions": {
-      "baseUrl": "./",
-      "paths": {
-        "@/*": ["src/*"]
-      }
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
     },
-    "include": ["src"]
+    "types": ["styled-components", "react-native"]
+  },
+  "include": [
+    "src",
+    "src/styles/styled.d.ts"  
+  ]
 }
