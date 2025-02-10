@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import styled from 'styled-components';
 
 const Container = styled(View)`
@@ -9,7 +9,7 @@ const Container = styled(View)`
   background-color: ${({theme}) => theme.colors.background};
 `;
 
-const TextStyle = styled.Text`
+const TextStyle = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.title}px;
   font-weight: ${({theme}) => theme.fonts.bold};
   color: ${({theme}) => theme.colors.text};

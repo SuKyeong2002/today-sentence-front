@@ -8,36 +8,23 @@ import {
   Alert,
 } from "react-native";
 import Loading from "../../components/Loading";
+import useAuth from "../../hooks/useAuth";
 
 export default function PasswordReset() {
   const [temporaryPassword, setTemporaryPassword] = useState(""); // 임시 비밀번호
+  const [newPassword, setNewPassword] = useState(""); // 새 비밀번호
+  const { handleResetPassword, message } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  const verifyCode = async (password: string, secondArgument: string) => {
+  const handleReset = async () => {
     setIsLoading(true);
-    setError(null);
     try {
-      // Mock verification logic
-      if (password === "correctPassword") {
-        return Promise.resolve();
-      } else {
-        throw new Error("Invalid password");
-      }
-    } catch (err :any) {
-      setError(err);
-      throw err;
+      await handleResetPassword(temporaryPassword, newPassword);
+      Alert.alert('비밀번호 재설정 성공', message);
+    } catch (err) {
+      Alert.alert('비밀번호 재설정 실패', message);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleVerifyCode = async () => {
-    try {
-      await verifyCode(temporaryPassword, "secondArgument");
-      Alert.alert("임시 비밀번호가 확인되었습니다. 로그인 가능합니다!");
-    } catch (err) {
-      Alert.alert("임시 비밀번호가 잘못되었습니다. 다시 시도해주세요.");
     }
   };
 
@@ -56,15 +43,24 @@ export default function PasswordReset() {
             value={temporaryPassword}
             onChangeText={setTemporaryPassword}
           />
+          <Text style={styles.title}>새 비밀번호를 입력해주세요</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="새 비밀번호"
+            placeholderTextColor="#aaa"
+            secureTextEntry
+            value={newPassword}
+            onChangeText={setNewPassword}
+          />
           <TouchableOpacity
             style={[
               styles.button,
-              temporaryPassword.trim()
+              temporaryPassword.trim() && newPassword.trim()
                 ? styles.activeButton
                 : styles.disabledButton,
             ]}
-            onPress={handleVerifyCode}
-            disabled={!temporaryPassword.trim()}
+            onPress={handleReset}
+            disabled={!temporaryPassword.trim() || !newPassword.trim()}
           >
             <Text style={styles.buttonText}>확인</Text>
           </TouchableOpacity>
