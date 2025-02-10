@@ -35,6 +35,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ThemeProviderWrapper} from '@/context/ThemeContext';
 import {FontProvider} from './context/FontContext';
 import {lightTheme} from '@/styles/theme';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const theme = {
   fonts: {
@@ -73,6 +74,7 @@ const theme = {
 };
 
 const Stack = createStackNavigator();
+const queryClient = new QueryClient();
 
 const MyNavigationTheme = {
   ...DefaultTheme,
@@ -103,6 +105,7 @@ export default function App() {
   };
 
   return (
+    <QueryClientProvider client={queryClient}>
     <I18nextProvider i18n={i18n}>
       <ThemeProviderWrapper>
         <ThemeProvider theme={appTheme}>
@@ -158,5 +161,6 @@ export default function App() {
         </ThemeProvider>
       </ThemeProviderWrapper>
     </I18nextProvider>
+    </QueryClientProvider>
   );
 }
