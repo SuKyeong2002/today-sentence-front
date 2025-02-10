@@ -11,6 +11,17 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		1BA4DB38CF604C93B04C195D /* PretendardExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 73ECCACBBA49438593B4D668 /* PretendardExtraBold.otf */; };
+		E7CF22D48E9F4AE9B6D58054 /* BookendBataanRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F097428F6E942CEBC00E70C /* BookendBataanRegular.ttf */; };
+		5FF09EF4E5F7429A820B5B19 /* HakgyoansimGeurimilgiTTFR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DEE997537FDE4D2284F7FA96 /* HakgyoansimGeurimilgiTTFR.ttf */; };
+		AB20BA0A1F7A4F65BA4BA5D2 /* KyoboHandwriting2020pdy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5CB864BF65844EEF8BF98AA3 /* KyoboHandwriting2020pdy.ttf */; };
+		E998E76D2F2B43BBB451CD47 /* OnggeulipKimkonghae.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4397A1D8099444A0BAEC3B78 /* OnggeulipKimkonghae.ttf */; };
+		3F2756F14825402BB693CC19 /* OnggeulipWicelist.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38E8944012AD4EB5957D4606 /* OnggeulipWicelist.ttf */; };
+		4969BA6BD6AF462FA95F3A57 /* PretendardBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37F9C51DD7B14EB3B24BC1B8 /* PretendardBold.ttf */; };
+		9B04EB3A25D34C208C9CB0EB /* PretendardLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E3AFF25F38A042FA90F4B2D5 /* PretendardLight.ttf */; };
+		C1CCF16479B54C34A3719652 /* PretendardMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD5981CF65A1457EB859E786 /* PretendardMedium.ttf */; };
+		82335F04BB5F4086A0684131 /* PretendardRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB8750644E63473AAEE27D1C /* PretendardRegular.ttf */; };
+		801EF629BA71419CA06B955F /* PretendardSemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9B22300A1A8472FA6DF18A0 /* PretendardSemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +46,17 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TodaySentence/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TodaySentence/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		73ECCACBBA49438593B4D668 /* PretendardExtraBold.otf */ = {isa = PBXFileReference; name = "PretendardExtraBold.otf"; path = "../src/assets/fonts/PretendardExtraBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7F097428F6E942CEBC00E70C /* BookendBataanRegular.ttf */ = {isa = PBXFileReference; name = "BookendBataanRegular.ttf"; path = "../src/assets/fonts/BookendBataanRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DEE997537FDE4D2284F7FA96 /* HakgyoansimGeurimilgiTTFR.ttf */ = {isa = PBXFileReference; name = "HakgyoansimGeurimilgiTTFR.ttf"; path = "../src/assets/fonts/HakgyoansimGeurimilgiTTFR.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5CB864BF65844EEF8BF98AA3 /* KyoboHandwriting2020pdy.ttf */ = {isa = PBXFileReference; name = "KyoboHandwriting2020pdy.ttf"; path = "../src/assets/fonts/KyoboHandwriting2020pdy.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4397A1D8099444A0BAEC3B78 /* OnggeulipKimkonghae.ttf */ = {isa = PBXFileReference; name = "OnggeulipKimkonghae.ttf"; path = "../src/assets/fonts/OnggeulipKimkonghae.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		38E8944012AD4EB5957D4606 /* OnggeulipWicelist.ttf */ = {isa = PBXFileReference; name = "OnggeulipWicelist.ttf"; path = "../src/assets/fonts/OnggeulipWicelist.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		37F9C51DD7B14EB3B24BC1B8 /* PretendardBold.ttf */ = {isa = PBXFileReference; name = "PretendardBold.ttf"; path = "../src/assets/fonts/PretendardBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E3AFF25F38A042FA90F4B2D5 /* PretendardLight.ttf */ = {isa = PBXFileReference; name = "PretendardLight.ttf"; path = "../src/assets/fonts/PretendardLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AD5981CF65A1457EB859E786 /* PretendardMedium.ttf */ = {isa = PBXFileReference; name = "PretendardMedium.ttf"; path = "../src/assets/fonts/PretendardMedium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BB8750644E63473AAEE27D1C /* PretendardRegular.ttf */ = {isa = PBXFileReference; name = "PretendardRegular.ttf"; path = "../src/assets/fonts/PretendardRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F9B22300A1A8472FA6DF18A0 /* PretendardSemiBold.ttf */ = {isa = PBXFileReference; name = "PretendardSemiBold.ttf"; path = "../src/assets/fonts/PretendardSemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +115,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				888CB2BDE2764C468F4BA994 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -115,6 +138,25 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		888CB2BDE2764C468F4BA994 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				73ECCACBBA49438593B4D668 /* PretendardExtraBold.otf */,
+				7F097428F6E942CEBC00E70C /* BookendBataanRegular.ttf */,
+				DEE997537FDE4D2284F7FA96 /* HakgyoansimGeurimilgiTTFR.ttf */,
+				5CB864BF65844EEF8BF98AA3 /* KyoboHandwriting2020pdy.ttf */,
+				4397A1D8099444A0BAEC3B78 /* OnggeulipKimkonghae.ttf */,
+				38E8944012AD4EB5957D4606 /* OnggeulipWicelist.ttf */,
+				37F9C51DD7B14EB3B24BC1B8 /* PretendardBold.ttf */,
+				E3AFF25F38A042FA90F4B2D5 /* PretendardLight.ttf */,
+				AD5981CF65A1457EB859E786 /* PretendardMedium.ttf */,
+				BB8750644E63473AAEE27D1C /* PretendardRegular.ttf */,
+				F9B22300A1A8472FA6DF18A0 /* PretendardSemiBold.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -185,6 +227,17 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				1BA4DB38CF604C93B04C195D /* PretendardExtraBold.otf in Resources */,
+				E7CF22D48E9F4AE9B6D58054 /* BookendBataanRegular.ttf in Resources */,
+				5FF09EF4E5F7429A820B5B19 /* HakgyoansimGeurimilgiTTFR.ttf in Resources */,
+				AB20BA0A1F7A4F65BA4BA5D2 /* KyoboHandwriting2020pdy.ttf in Resources */,
+				E998E76D2F2B43BBB451CD47 /* OnggeulipKimkonghae.ttf in Resources */,
+				3F2756F14825402BB693CC19 /* OnggeulipWicelist.ttf in Resources */,
+				4969BA6BD6AF462FA95F3A57 /* PretendardBold.ttf in Resources */,
+				9B04EB3A25D34C208C9CB0EB /* PretendardLight.ttf in Resources */,
+				C1CCF16479B54C34A3719652 /* PretendardMedium.ttf in Resources */,
+				82335F04BB5F4086A0684131 /* PretendardRegular.ttf in Resources */,
+				801EF629BA71419CA06B955F /* PretendardSemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

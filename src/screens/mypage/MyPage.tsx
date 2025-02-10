@@ -1,10 +1,12 @@
 import {View, Text, Image, TouchableOpacity, Alert} from 'react-native';
 import styled from 'styled-components';
 import Profile from './profile/Profile';
-import React from 'react';
+import Reac, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
+import {useTranslation} from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   Setting: undefined;
@@ -14,6 +16,17 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'Setting'>;
 
 export default function MyPage() {
   const navigation = useNavigation<NavigationProp>();
+  const {t} = useTranslation();
+  const [font, setFont] = useState<string>('PretendardRegular');
+
+  useEffect(() => {
+    (async () => {
+      const storedFont = await AsyncStorage.getItem('selectedFont');
+      if (storedFont) {
+        setFont(storedFont);
+      }
+    })();
+  }, []);
 
   return (
     <View style={{flex: 1}}>
@@ -28,28 +41,31 @@ export default function MyPage() {
       <Profile />
       <ListContainer>
         <ProfileEditItem
-          title="프로필 편집"
+          title={t('프로필 편집')}
           onPress={() => console.log('프로필 편집')}
+          font={font}
         />
         <ProfileEditItem
-          title="프리미엄"
+          title={t('프리미엄')}
           onPress={() =>
             Alert.alert(
-              '추후기능',
-              '오픈 준비 중입니다. 곧 이용하실 수 있어요 :)',
-              [{text: '확인', style: 'default'}],
+              t('추후기능'),
+              t('오픈 준비 중입니다. 곧 이용하실 수 있어요 :)'),
+              [{text: t('확인'), style: 'default'}],
             )
           }
+          font={font}
         />
         <ProfileEditItem
-          title="커스터마이징"
+          title={t('커스터마이징')}
           onPress={() =>
             Alert.alert(
-              '추후기능',
-              '오픈 준비 중입니다. 곧 이용하실 수 있어요 :)',
-              [{text: '확인', style: 'default'}],
+              t('추후기능'),
+              t('오픈 준비 중입니다. 곧 이용하실 수 있어요 :)'),
+              [{text: t('확인'), style: 'default'}],
             )
           }
+          font={font}
         />
       </ListContainer>
     </View>

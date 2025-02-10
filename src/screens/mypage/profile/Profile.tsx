@@ -1,8 +1,11 @@
 import React from 'react';
 import {View, Text, Image} from 'react-native';
 import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
 
 export default function Profile() {
+  const {t} = useTranslation();
+
   return (
     <>
       <ProfileContainer>
@@ -13,14 +16,13 @@ export default function Profile() {
           />
         </ProfileImageContainer>
         <ProfileTextContainer>
-          <ProfileNickname>명언 좀도둑</ProfileNickname>
-          <ProfileState>상태 메시지를 입력해주세요.</ProfileState>
+          <ProfileNickname>{t('명언 좀도둑')}</ProfileNickname>
+          <ProfileState>{t('상태 메시지를 입력해주세요.')}</ProfileState>
         </ProfileTextContainer>
       </ProfileContainer>
     </>
   );
 }
-
 
 const ProfileContainer = styled(View)`
   width: 90%;

@@ -2,14 +2,16 @@ import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
 import { View, TextInput, Image, Alert } from 'react-native';
 import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
 
 export default function Input() {
   const [selectedOption, setSelectedOption] = useState('');
   const [searchText, setSearchText] = useState('');
+  const {t} = useTranslation();
 
   const handleTextChange = (text: string) => {
     if (!selectedOption) {
-      Alert.alert('검색 실패', '검색 기준을 선택해주세요!'); 
+      Alert.alert(t('검색 실패'), t('검색 기준을 선택해주세요!')); 
       return;
     }
     setSearchText(text); 
@@ -24,16 +26,16 @@ export default function Input() {
               selectedValue={selectedOption}
               onValueChange={itemValue => setSelectedOption(itemValue)}
             >
-              <Picker.Item label="선택" value="" />
-              <Picker.Item label="제목" value="title" />
-              <Picker.Item label="저자" value="author" />
-              <Picker.Item label="태그" value="tag" />
+              <Picker.Item label={t('선택')} value="" />
+              <Picker.Item label={t('제목')} value="title" />
+              <Picker.Item label={t('저자')} value="author" />
+              <Picker.Item label={t('태그')} value="tag" />
             </Picker>
           </SelectContainer>
 
           <SearchContainer>
             <StyledTextInput
-              placeholder="입력해주세요"
+              placeholder={t('입력해주세요')}
               value={searchText}
               onChangeText={handleTextChange} 
             />

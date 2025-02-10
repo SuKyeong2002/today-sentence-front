@@ -12,6 +12,7 @@ import {
 import styled from 'styled-components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {useTranslation} from 'react-i18next';
 
 type RootStackParamList = {
   BookSearch: undefined;
@@ -21,6 +22,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'BookSearch'>;
 
 export default function InquiryTag() {
   const navigation = useNavigation<NavigationProp>();
+  const {t} = useTranslation(); 
 
   return (
     <KeyboardAvoidingView
@@ -32,28 +34,28 @@ export default function InquiryTag() {
           contentContainerStyle={{flexGrow: 1}}>
           <View style={{flex: 1, justifyContent: 'space-between'}}>
             <RegistrationTagContainer>
-              <RegistrationText>🤎 인기 조회 태그</RegistrationText>
+              <RegistrationText>🤎 {t('인기 조회 태그')}</RegistrationText>
               <TagContainer>
                 <TagWrapper>
                   <TagText onPress={() => navigation.navigate('BookSearch')}>
-                    <TagTextLabel>오늘의책</TagTextLabel>
+                    <TagTextLabel>{t('오늘의책')}</TagTextLabel>
                   </TagText>
                   <TagText>
-                    <TagTextLabel>명언추천</TagTextLabel>
+                    <TagTextLabel>{t('명언추천')}</TagTextLabel>
                   </TagText>
                   <TagText>
-                    <TagTextLabel>1일1독</TagTextLabel>
+                    <TagTextLabel>{t('1일1독')}</TagTextLabel>
                   </TagText>
                 </TagWrapper>
                 <TagWrapper>
                   <TagText>
-                    <TagTextLabel>책추천</TagTextLabel>
+                    <TagTextLabel>{t('책추천')}</TagTextLabel>
                   </TagText>
                   <TagText>
-                    <TagTextLabel>느좋</TagTextLabel>
+                    <TagTextLabel>{t('느좋')}</TagTextLabel>
                   </TagText>
                   <TagText>
-                    <TagTextLabel>카페</TagTextLabel>
+                    <TagTextLabel>{t('카페')}</TagTextLabel>
                   </TagText>
                 </TagWrapper>
               </TagContainer>

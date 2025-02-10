@@ -12,6 +12,7 @@ import {
 import styled from 'styled-components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {useTranslation} from 'react-i18next';
 
 type RootStackParamList = {
   BookSearch: undefined;
@@ -21,38 +22,44 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'BookSearch'>;
 
 export default function RegistrationTag() {
   const navigation = useNavigation<NavigationProp>();
+  const {t} = useTranslation();
 
   return (
-    <KeyboardAvoidingView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
-          <RegistrationTagContainer>
-            <RegistrationText>🤎 인기 등록 태그</RegistrationText>
-            <TagContainer>
-              <TagWrapper>
-                <TagText onPress={() => navigation.navigate('BookSearch')}>
-                  <TagTextLabel>오늘의책</TagTextLabel>
-                </TagText>
-                <TagText>
-                  <TagTextLabel>명언추천</TagTextLabel>
-                </TagText>
-                <TagText>
-                  <TagTextLabel>1일1독</TagTextLabel>
-                </TagText>
-              </TagWrapper>
-              <TagWrapper>
-                <TagText>
-                  <TagTextLabel>책추천</TagTextLabel>
-                </TagText>
-                <TagText>
-                  <TagTextLabel>느좋</TagTextLabel>
-                </TagText>
-                <TagText>
-                  <TagTextLabel>카페</TagTextLabel>
-                </TagText>
-              </TagWrapper>
-            </TagContainer>
-          </RegistrationTagContainer>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{flexGrow: 1}}>
+          <View>
+            <RegistrationTagContainer>
+              <RegistrationText>🤎 {t('인기 등록 태그')}</RegistrationText>
+              <TagContainer>
+                <TagWrapper>
+                  <TagText onPress={() => navigation.navigate('BookSearch')}>
+                    <TagTextLabel>{t('오늘의책')}</TagTextLabel>
+                  </TagText>
+                  <TagText>
+                    <TagTextLabel>{t('명언추천')}</TagTextLabel>
+                  </TagText>
+                  <TagText>
+                    <TagTextLabel>{t('1일1독')}</TagTextLabel>
+                  </TagText>
+                </TagWrapper>
+                <TagWrapper>
+                  <TagText>
+                    <TagTextLabel>{t('책추천')}</TagTextLabel>
+                  </TagText>
+                  <TagText>
+                    <TagTextLabel>{t('느좋')}</TagTextLabel>
+                  </TagText>
+                  <TagText>
+                    <TagTextLabel>{t('카페')}</TagTextLabel>
+                  </TagText>
+                </TagWrapper>
+              </TagContainer>
+            </RegistrationTagContainer>
+          </View>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -67,7 +74,7 @@ const RegistrationTagContainer = styled(View)`
   flex-wrap: wrap;
   border-radius: 10px;
   gap: 20px;
-  margin: 20px 20px;
+  margin: 10px 20px;
   flex-direction: row;
   background: ${({theme}) => theme.colors.white};
 `;
@@ -83,6 +90,7 @@ const TagContainer = styled(View)`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: auto;
 `;
 
 const TagWrapper = styled(View)`
