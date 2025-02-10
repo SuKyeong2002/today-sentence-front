@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,20 +7,18 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import checkEmailValidation from '../../hooks/useEmailValidation';
-import usePasswordValidation from '../../hooks/usePasswordValidation';
-import useNickNameValidation from '../../hooks/useNicknameValidation';
+import useAuth from '../../hooks/useAuth';
 
 export default function SignUpSteps() {
+  const { handleVerifiedEmail, handleVerifiedNickName, handleVerifiedPassword, handleSignUp, handleCheckPasswordMatch, handleSendAuthCode, handleVerifyAuthCode } = useAuth();
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
-  
-  // ✅ 커스텀 훅 사용
-  const { validationResult: emailValidationResult, validateEmail } = checkEmailValidation();
-  const { validationResult: nicknameValidationResult, validateNickname } = useNickNameValidation();
-  const { validationResult: passwordValidationResult, validatePassword } = usePasswordValidation();
+  const [enteredCode, setEnteredCode] = useState('');
+  const [emailValidationResult, setEmailValidationResult] = useState(false);
+  const [nicknameValidationResult, setNicknameValidationResult] = useState(false);
+  const [passwordValidationResult, setPasswordValidationResult] = useState(false);
 
   // ✅ 이메일 검증
   const handleEmailCheck = async () => {
@@ -29,18 +27,29 @@ export default function SignUpSteps() {
       console.log("duplicate buttonOnClickEvent");
       return;
     }
-    await validateEmail(email); //
+    try {
+      await handleSendAuthCode(email);
+      Alert.alert('성공', '인증번호가 이메일로 전송되었습니다.');
+    } catch (error) {
+      Alert.alert('오류', '인증번호 전송에 실패했습니다.');
+  };
+    await handleVerifiedEmail(email); //
   };
 
-  useEffect(() => {
-    if (emailValidationResult === null) return;
-
-    if (emailValidationResult) {
-      Alert.alert('확인 완료', '사용 가능한 이메일입니다.');
-    } else {
-      Alert.alert('중복된 이메일', '이미 존재하는 이메일입니다.');
-    }
-  }, [emailValidationResult]);
+//이메일 코드 검증
+const handleEmailVerification = async () => {
+  if(!enteredCode.includes('')) {
+    Alert.alert('오류', '유효한 코드를 입력하세요');
+    return;
+  }
+  const isCodeValid = await handleVerifyAuthCode(enteredCode);
+  if (isCodeValid) {
+    setEmailValidationResult(true);
+  } else {
+    Alert.alert('오류', '인증번호가 유효하지 않습니다.');
+  }
+  await handleVerifyAuthCode(enteredCode);
+};
 
   // ✅ 닉네임 검증
   const handleNicknameCheck = async () => {
@@ -49,17 +58,10 @@ export default function SignUpSteps() {
       console.log('duplicate buttonOnClickEvent');
       return;
     }
-    await validateNickname(nickname);
+    await handleVerifiedNickName(nickname);
+    setNicknameValidationResult(true)
   };
 
-  useEffect(() => {
-    if (nicknameValidationResult == null) return;
-    if (nicknameValidationResult) {
-      Alert.alert('확인완료', '사용가능한 닉네임입니다!');
-    } else {
-      Alert.alert('중복된 닉네임', '이미 존재하는 닉네임입니다!');
-    }
-  }, [nicknameValidationResult]);
 
   // ✅ 비밀번호 검증
   const handlePasswordCheck = async () => {
@@ -68,34 +70,27 @@ export default function SignUpSteps() {
       console.log('duplicate buttonOnClickEvent');
       return;
     }
-    await validatePassword(password);
+    await handleVerifiedPassword(password);
+    setPasswordValidationResult(true);
   };
 
-  useEffect(() => {
-    if (passwordValidationResult == null) return;
-    if (passwordValidationResult) {
-      Alert.alert('확인완료', '사용가능한 비밀번호입니다!');
-    } else {
-      Alert.alert('중복된 비밀번호', '이미 존재하는 비밀번호입니다!');
-    }
-  }, [passwordValidationResult]);
 
   // 비밀번호 재검증 로직
-  const handlePasswordRecheck = async (returnPassword: string) => {
-    if (returnPassword !== password) {
-      Alert.alert('오류', '비밀번호가 일치하지 않습니다.');
+  const handlePasswordRecheck = async () => {
+    if (!password) {
+      Alert.alert('오류', '유효한 비밀번호를 입력하세요.');
       return;
     }
-    Alert.alert('확인완료', '비밀번호가 일치합니다.');
+    await handleCheckPasswordMatch(password);
   };
 
   // ✅ 회원가입 단계 진행
-  const handleNextStep = () => {
-    if (step === 1 && emailValidationResult) {
-      setStep(2);
-    } else if (step === 2 && nicknameValidationResult) {
-      setStep(3);
-    } else if (step === 3 && passwordValidationResult) {
+  const handleNextStep = async () => {
+    if (step === 1) setStep(2);
+    else if (step === 2) setStep(3);
+    else if (step === 3) setStep(4);
+    else if (step === 4) {
+      await handleSignUp(email, nickname, password);
       Alert.alert('회원가입 완료', '모든 단계를 완료했습니다!');
     }
   };
@@ -128,9 +123,21 @@ export default function SignUpSteps() {
               onPress={handleEmailCheck}
               disabled={!email.includes('@')}
             >
-              <Text style={styles.checkButtonText}>중복확인</Text>
+              <Text style={styles.checkButtonText}>인증번호 보내기</Text>
             </TouchableOpacity>
           </View>
+          <TextInput 
+            style={styles.input}
+            placeholder='인증번호 입력'
+            placeholderTextColor="#aaa"
+            keyboardType='numeric'
+            value={enteredCode}
+            onChangeText={setEnteredCode}/>
+          <TouchableOpacity
+            style={styles.checkButton}
+            onPress={handleEmailVerification}>
+              <Text style={styles.checkButtonText}>인증번호 확인</Text>
+          </TouchableOpacity>
         </View>
       )}
 
@@ -250,7 +257,6 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderRadius: 8,
     paddingHorizontal: 15,
-    backgroundColor: '#FFF',
   },
   checkButton: {
     marginLeft: 10,
@@ -289,4 +295,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
