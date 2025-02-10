@@ -1,7 +1,6 @@
 import CustomHeader from '@/components/Header/CustomHeader';
 import React from 'react';
-import {View, Text, Image} from 'react-native';
-import styled from 'styled-components';
+import {View} from 'react-native';
 import CategoryContent from './content/CategoryContent';
 
 export default function CategrySearchPage() {
