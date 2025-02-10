@@ -26,7 +26,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.subtitle}>당신의 하루를 특별하게 만들어 줄 한 문장</Text>
-        <Image source={require('../../assets/image/LOGO.png')} style={styles.logoImage} />
+        <Image source={require('../../assets/image/NewLogoFrame.png')} style={styles.logoImage} />
       </View>
       <TextInput
         style={styles.input}
