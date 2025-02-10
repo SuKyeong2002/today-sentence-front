@@ -1,19 +1,21 @@
-import {Alert, View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 import React, {useState, useEffect} from 'react';
-import ProfileEditItem from '@/components/Button/ProfileEditItem';
 import {useTranslation} from 'react-i18next';
 import {changeLanguage, getStoredLanguage} from '@/utils/language';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
+import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
 
 type RootStackParamList = {
-  Font: undefined;
+  Nickname: undefined;
+  Introduction: undefined;
+  
 };
 
-export default function ScreenPage() {
+export default function ProfilePage() {
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
@@ -46,7 +48,7 @@ export default function ScreenPage() {
     })();
   }, []);
 
-  type NavigationProp = StackNavigationProp<RootStackParamList, 'Font'>;
+  type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
 
   return (
     <View style={{flex: 1}}>
@@ -55,30 +57,28 @@ export default function ScreenPage() {
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
+
+      <ProfileWrapper>
+        <ProfileImageContainer>
+          <ProfileImage
+            source={require('@/assets/image/profileUser.png')}
+            resizeMode="contain"
+          />
+        </ProfileImageContainer>
+        <ProfileImgText fontFamily={font}>프로필 이미지</ProfileImgText>
+      </ProfileWrapper>
+
       <ScreenContainer fontFamily={font}>
-        <ProfileEditItem
-          title={t('테마')}
-          onPress={() =>
-            Alert.alert(t('테마 선택'), t('원하는 테마를 선택하세요'), [
-              {text: t('라이트'), style: 'cancel'},
-              {text: t('다크'), style: 'default'},
-            ])
-          }
+        <ProfileTextEdit
+          title={t('닉네임')}
+          title2={t('명언 좀도둑')}
+          onPress={() => navigation.navigate('Nickname')}
           font={font}
         />
-        <ProfileEditItem
-          title={t('폰트')}
-          onPress={() => navigation.navigate('Font')}
-          font={font}
-        />
-        <ProfileEditItem
-          title={t('언어')}
-          onPress={() =>
-            Alert.alert(t('언어 선택'), t('사용할 언어를 선택해주세요'), [
-              {text: t('영어'), onPress: () => handleLanguageChange('en')},
-              {text: t('한국어'), onPress: () => handleLanguageChange('ko')},
-            ])
-          }
+        <ProfileTextEdit
+          title={t('자기소개')}
+          title2={t('')}
+          onPress={() => navigation.navigate('Introduction')}
           font={font}
         />
       </ScreenContainer>
@@ -91,6 +91,43 @@ const ScreenContainer = styled(View)<{fontFamily: string}>`
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+  margin-top: 24px;
   font-family: ${props => props.fontFamily};
+`;
+
+// 프로필
+const ProfileImageContainer = styled(View)`
+  display: flex;
+  width: 60px;
+  height: 60px;
+  padding: 4px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 50px;
+  background: #fff;
+`;
+
+const ProfileWrapper = styled(View)`
+  display: flex;
+  width: 100%;
+  padding: 4px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   margin-top: 20px;
+`;
+
+const ProfileImgText = styled(Text)<{fontFamily: string}>`
+  font-size: ${({theme}) => theme.fontSizes.small}px;
+  font-weight: 400;
+  color: ${({theme}) => theme.colors.blue};
+`;
+
+// 이미지
+const ProfileImage = styled(Image)`
+  width: 68px;
+  height: 68px;
 `;

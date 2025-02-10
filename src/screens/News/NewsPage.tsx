@@ -2,14 +2,14 @@ import {View, Text} from 'react-native';
 import styled from 'styled-components';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
-import BackHeader from '@/components/Header/BackHeader';
+import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
 
 export default function NewsPage() {
   const {t} = useTranslation();
 
   return (
     <View style={{flex: 1}}>
-      <BackHeader
+      <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log(t('뒤로 가기 버튼 클릭됨!'))}
         onNotificationPress={() => console.log(t('알림 버튼 클릭됨!'))}
@@ -33,9 +33,10 @@ const Container = styled(View)`
   align-items: flex-start;
   margin: 0 20px 12px 20px;
   gap: 10px;
-  padding: 10px;
+  padding: 16px;
   border-radius: 10px;
   background: ${({theme}) => theme.colors.white};
+  margin-top: 20px;
 `;
 
 const NewsText = styled(Text)`

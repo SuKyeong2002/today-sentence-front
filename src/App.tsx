@@ -17,10 +17,17 @@ import Footer from './components/Footer/Footer';
 import SearchPage from './screens/search/SearchPage';
 import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
 import SettingScreen from './screens/setting/SettingPage';
-import NewsScreen from './screens/News/NewsPage';
+import NewsScreen from './screens/news/NewsPage';
 import AlertScreen from './screens/alert/AlertPage';
 import ScreenScreen from './screens/screen/ScreenPage';
 import FontScreen from './screens/font/FontPage';
+import ProfileScreen from './screens/profile/ProfilePage';
+import NicknameScreen from './screens/nickname/NicknamePage';
+import IntroductionScreen from './screens/introduction/IntroductionPage';
+import AccountScreen from './screens/account/AccountPage';
+import EmailScreen from './screens/email/EmailPage';
+import PasswordScreen from './screens/password/PasswordPage';
+import AuthenticationScreen from './screens/authentication/AuthenticationPage';
 import i18n from './i18n';
 import {I18nextProvider} from 'react-i18next';
 import {useState, useEffect} from 'react';
@@ -37,7 +44,7 @@ const theme = {
     semiBold: 'PretendardSemiBold',
     bold: 'PretendardBold',
     extraBold: 'PretendardExtraBold',
-     default: 'PretendardRegular'
+    default: 'PretendardRegular',
   },
   fontSizes: {
     small: 12,
@@ -51,17 +58,18 @@ const theme = {
     white: '#FFF',
     text: '#262627',
     darkGray: '#828183',
-    gray: '#505050',
+    gray: '#50505055',
     lightGray: '#A9A9A9',
     red: '#F33F31',
     green: '#5BAF63',
+    blue: '#0E77EA',
     primary: '#8A715D',
     secondary: '#B9AA9E',
     secondary2: '#ECD6C4',
     secondary3: '#F8F1E9',
     background: '#F5F4F5',
   },
-  fontFamily: 'PretendardRegular'
+  fontFamily: 'PretendardRegular',
 };
 
 const Stack = createStackNavigator();
@@ -137,6 +145,13 @@ export default function App() {
                 <Stack.Screen name="Alert" component={AlertScreen} />
                 <Stack.Screen name="Screen" component={ScreenScreen} />
                 <Stack.Screen name="Font" component={FontScreen} />
+                <Stack.Screen name="Profile" component={ProfileScreen} />
+                <Stack.Screen name="Nickname" component={NicknameScreen} />
+                <Stack.Screen name="Introduction" component={IntroductionScreen} />
+                <Stack.Screen name="Account" component={AccountScreen} />
+                <Stack.Screen name="Email" component={EmailScreen} />
+                <Stack.Screen name="Password" component={PasswordScreen} />
+                <Stack.Screen name="Authentication" component={AuthenticationScreen} />
               </Stack.Navigator>
             </NavigationContainer>
           </FontProvider>

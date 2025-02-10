@@ -35,7 +35,7 @@ const Container = styled(View)`
   flex-direction: column;
   align-items: flex-start;
   margin: 0 20px 0 20px;
-  padding: 10px;
+  padding: 16px;
   border-radius: 10px;
   background: ${({theme}) => theme.colors.white};
 `;

@@ -38,7 +38,6 @@ const ProfileEditText = styled(Text)<{ fontFamily: string }>`
   font-size: ${({ theme }) => theme.fontSizes.regular}px;
   font-weight: 400;
   color: ${({ theme }) => theme.colors.text};
-  font-family: ${({ fontFamily }) => fontFamily}; 
 `;
 
 const SettingImage = styled(Image)`

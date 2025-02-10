@@ -2,8 +2,8 @@ import {View} from 'react-native';
 import styled from 'styled-components';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import BackHeader from '@/components/Header/BackHeader';
 import {ToggleSettingItem} from '@/components/Button/ToggleSettingItem';
+import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
 
 export default function SettingPage() {
   const {t} = useTranslation();
@@ -14,7 +14,7 @@ export default function SettingPage() {
 
   return (
     <View style={{flex: 1}}>
-      <BackHeader
+      <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log(t('뒤로 가기 버튼 클릭됨!'))}
         onNotificationPress={() => console.log(t('알림 버튼 클릭됨!'))}
@@ -46,4 +46,5 @@ const ToggleContainer = styled(View)`
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+  margin-top: 20px;
 `;

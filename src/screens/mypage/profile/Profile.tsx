@@ -53,8 +53,6 @@ const ProfileImageContainer = styled(View)`
   align-items: center;
   gap: 10px;
   border-radius: 50px;
-  border: 3px solid ${({theme}) => theme.colors.darkGray};
-  background: #fff;
 `;
 
 const ProfileNickname = styled(Text)`
@@ -71,6 +69,6 @@ const ProfileState = styled(Text)`
 
 // 이미지
 const ProfileImage = styled(Image)`
-  width: 44px;
-  height: 44px;
+  width: 68px;
+  height: 68px;
 `;

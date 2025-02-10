@@ -1,18 +1,20 @@
 import {View, Text, Image, Alert, Linking} from 'react-native';
 import styled from 'styled-components';
 import React, {useEffect, useState} from 'react';
-import BackHeader from '@/components/Header/BackHeader';
 import {SettingItem} from '@/components/Button/SettingItem';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
 
 type RootStackParamList = {
   News: undefined;
   Alert: undefined;
   Screen: undefined;
+  Profile: undefined;
+  Account: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'News'>;
@@ -33,7 +35,7 @@ export default function SettingPage() {
 
   return (
     <View style={{flex: 1}}>
-      <BackHeader
+      <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
@@ -42,12 +44,12 @@ export default function SettingPage() {
         <SettingItem
           title={t('프로필')}
           iconSource={require('@/assets/image/settingProfileUser.png')}
-          onPress={() => console.log('프로필')}
+          onPress={() => navigation.navigate('Profile')}
         />
         <SettingItem
           title={t('계정')}
           iconSource={require('@/assets/image/accountUser.png')}
-          onPress={() => console.log('계정')}
+          onPress={() => navigation.navigate('Account')}
         />
         <SettingItem
           title={t('화면')}
@@ -105,4 +107,5 @@ const ListContainer = styled(View)`
   align-items: flex-start;
   gap: 12px;
   align-self: stretch;
+  margin-top: 20px;
 `;

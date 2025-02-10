@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   Setting: undefined;
+  Profile: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Setting'>;
@@ -42,7 +43,7 @@ export default function MyPage() {
       <ListContainer>
         <ProfileEditItem
           title={t('프로필 편집')}
-          onPress={() => console.log('프로필 편집')}
+          onPress={() => navigation.navigate('Profile')}
           font={font}
         />
         <ProfileEditItem
@@ -88,25 +89,6 @@ const ListContainer = styled(View)`
   align-items: flex-start;
   gap: 12px;
   align-self: stretch;
-`;
-
-// 편집
-const ProfileEditContainer = styled(View)`
-  width: 90%;
-  display: flex;
-  padding: 16px;
-  align-items: center;
-  flex-direction: row;
-  margin: 0 20px;
-  border-radius: 10px;
-  background: ${({theme}) => theme.colors.white};
-`;
-
-const ProfileEditText = styled(Text)`
-  flex: 1;
-  font-size: ${({theme}) => theme.fontSizes.regular}px;
-  font-weight: 400;
-  color: ${({theme}) => theme.colors.text};
 `;
 
 // 이미지

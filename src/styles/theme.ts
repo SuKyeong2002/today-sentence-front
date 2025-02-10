@@ -1,4 +1,4 @@
-import { DefaultTheme } from 'styled-components';
+import {DefaultTheme} from 'styled-components';
 
 export const lightTheme: DefaultTheme = {
   fonts: {
@@ -21,12 +21,13 @@ export const lightTheme: DefaultTheme = {
   colors: {
     white: '#FFFFFF',
     text: '#000000',
-    darkGray: '#2E2E2E',
-    gray: '#7D7D7D',
+    darkGray: '#828183',
+    gray: '#50505055',
     lightGray: '#D3D3D3',
     red: '#E74C3C',
-    green: '#2ECC71',
-    primary: '#3498DB',
+    green: '#5BAF63',
+    blue: '#0E77EA',
+    primary: '#8A715D',
     secondary: '#9B59B6',
     secondary2: '#F39C12',
     secondary3: '#E67E22',
@@ -55,12 +56,13 @@ export const darkTheme: DefaultTheme = {
   colors: {
     white: '#FFFFFF',
     text: '#FFFFFF',
-    darkGray: '#121212',
-    gray: '#7D7D7D',
+    darkGray: '#828183',
+    gray: '#50505055',
     lightGray: '#A9A9A9',
     red: '#E74C3C',
-    green: '#2ECC71',           
-    primary: '#9B59B6',
+    green: '#5BAF63',
+    blue: '#0E77EA',
+    primary: '#8A715D',
     secondary: '#3498DB',
     secondary2: '#F39C12',
     secondary3: '#E67E22',
