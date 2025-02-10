@@ -7,11 +7,15 @@ import LoginScreen from './screens/auth/LoginPage';
 import SignUpScreen from './screens/auth/SignUpPage';
 import RecordScreen from './screens/main/RecordPage';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
+import BookSearchScreen2 from './screens/bookSearch2/BookSearchPage2';
+import BookSearchScreen3 from './screens/bookSearch3/BookSearchPage3';
+import BookSearchScreen4 from './screens/bookSearch4/BookSearchPage4';
 import EmailFindPage from './screens/auth/EmailFind';
 import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
 import SearchPage from './screens/search/SearchPage';
+import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
 
 const theme = {
   fonts: {
@@ -68,7 +72,11 @@ export default function App() {
             <Stack.Screen name="Record" component={Footer} />
             <Stack.Screen name="Search" component={Footer} />
             <Stack.Screen name="BookSearch" component={BookSearchScreen} />
+            <Stack.Screen name="BookSearch2" component={BookSearchScreen2} />
+            <Stack.Screen name="BookSearch3" component={BookSearchScreen3} />
+            <Stack.Screen name="BookSearch4" component={BookSearchScreen4} />
             <Stack.Screen name="Category" component={Footer} />
+            <Stack.Screen name="CategorySearch" component={CategorySearchScreen} />
             <Stack.Screen name="My" component={Footer} />
             <Stack.Screen name="EmailFind" component={EmailFindPage} />
             <Stack.Screen name="PasswordFind" component={PasswordFindPage} />
