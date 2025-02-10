@@ -2,12 +2,12 @@ import BackHeader from '@/components/Header/BackHeader';
 import styled from 'styled-components';
 import {View, FlatList} from 'react-native';
 import React from 'react';
-import SearchContent from './content/SearchContent';
+import SearchContent4 from './content/SearchContent4';
 
 // 10개 더미 데이터
 const DATA = Array(10).fill(0);
 
-export default function BookSearchPage() {
+export default function BookSearchPage4() {
   return (
     <Container>
       <BackHeader
@@ -20,7 +20,7 @@ export default function BookSearchPage() {
         keyExtractor={(item, index) => index.toString()}
         renderItem={() => (
           <BooklistWrapper>
-            <SearchContent />
+            <SearchContent4 />
           </BooklistWrapper>
         )}
       />
