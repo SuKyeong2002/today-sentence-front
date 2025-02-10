@@ -1,11 +1,26 @@
-import React from 'react';
-import { Image ,View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import { Image ,View, Text, TextInput, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
 
 export default function LoginPage({ navigation }: { navigation: NavigationProp<any> }) {
 
-  const login = useAuth();
+  const { handleLogin, setUsername, setPassword, message } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPasswordState] = useState('');
+
+  const onLoginPress = async () => {
+    setUsername(email);
+    setPassword(password);
+
+    await handleLogin();
+
+    if (message === '로그인 성공!') {
+      navigation.navigate('Home');
+    } else {
+      Alert.alert('로그인 실패', message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -19,6 +34,8 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
         placeholderTextColor="#BDBDBD"
         keyboardType="email-address"
         autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
@@ -26,6 +43,8 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
         placeholderTextColor="#BDBDBD"
         secureTextEntry
         autoCapitalize="none"
+        value={password}
+        onChangeText={setPasswordState}
       />
       <View style={styles.footerLinks}>
         <TouchableOpacity onPress={() => navigation.navigate("EmailFind")}>
@@ -41,7 +60,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate("Home")}>
+      <TouchableOpacity style={styles.loginButton} onPress={onLoginPress}>
         <Text style={styles.loginButtonText}>로그인</Text>
       </TouchableOpacity>
     </View>
