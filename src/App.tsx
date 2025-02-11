@@ -5,7 +5,7 @@ import {ThemeProvider} from 'styled-components';
 import LandingScreen from './screens/LandingPage';
 import LoginScreen from './screens/auth/LoginPage';
 import SignUpScreen from './screens/auth/SignUpPage';
-import RecordScreen from './screens/main/RecordPage';
+import RecordScreen from './screens/record/Record';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
 import BookSearchScreen2 from './screens/bookSearch2/BookSearchPage2';
 import BookSearchScreen3 from './screens/bookSearch3/BookSearchPage3';
@@ -14,8 +14,9 @@ import EmailFindPage from './screens/auth/EmailFind';
 import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
-import SearchPage from './screens/search/SearchPage';
+import SearchPage from './screens/categorySearch/CategrySearchPage';
 import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const theme = {
   fonts: {
@@ -51,6 +52,7 @@ const theme = {
 };
 
 const Stack = createStackNavigator();
+const queryClient : any = new QueryClient();
 
 const MyNavigationTheme = {
   ...DefaultTheme,
@@ -62,6 +64,7 @@ const MyNavigationTheme = {
 
 export default function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={theme}>
       <NavigationContainer theme={MyNavigationTheme}>
           <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -71,11 +74,13 @@ export default function App() {
             <Stack.Screen name="Home" component={Footer} />
             <Stack.Screen name="Record" component={Footer} />
             <Stack.Screen name="Search" component={Footer} />
+            <Stack.Screen name="Record" component={RecordScreen}/>
             <Stack.Screen name="BookSearch" component={BookSearchScreen} />
             <Stack.Screen name="BookSearch2" component={BookSearchScreen2} />
             <Stack.Screen name="BookSearch3" component={BookSearchScreen3} />
             <Stack.Screen name="BookSearch4" component={BookSearchScreen4} />
             <Stack.Screen name="Category" component={Footer} />
+            <Stack.Screen name="Search" component={SearchPage}/>
             <Stack.Screen name="CategorySearch" component={CategorySearchScreen} />
             <Stack.Screen name="My" component={Footer} />
             <Stack.Screen name="EmailFind" component={EmailFindPage} />
@@ -84,5 +89,6 @@ export default function App() {
           </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
+    </QueryClientProvider>
   );
 }
