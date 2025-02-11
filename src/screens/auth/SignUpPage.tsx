@@ -61,6 +61,7 @@ export default function SignUpSteps() {
       const verifyEmail = async () => {
         try {
           await handleVerifiedEmail(email);
+          setIsEmailSent(false);
         } catch (error) {
           console.error("이메일 인증 확인 중 오류 발생:", error);
         }
@@ -78,7 +79,8 @@ export default function SignUpSteps() {
 
     try {
       const isCodeValid = await handleVerifyAuthCode(enteredCode);
-      if (isCodeValid) {
+      console.log("인증 코드 검증 결과:", isCodeValid); 
+      if (isCodeValid === true) {
         setEmailValidationResult(true);
         Alert.alert("성공", "이메일 인증이 완료되었습니다.");
       } else {
