@@ -108,7 +108,6 @@ export default function App() {
     fontFamily: font,
   };
 
-
   return (
     <QueryClientProvider client={queryClient}>
 
