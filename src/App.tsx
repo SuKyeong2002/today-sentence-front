@@ -16,16 +16,38 @@ import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
 import SearchPage from './screens/categorySearch/CategrySearchPage';
 import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
+
+import SettingScreen from './screens/setting/SettingPage';
+import NewsScreen from './screens/news/NewsPage';
+import AlertScreen from './screens/alert/AlertPage';
+import ScreenScreen from './screens/screen/ScreenPage';
+import FontScreen from './screens/font/FontPage';
+import ProfileScreen from './screens/profile/ProfilePage';
+import NicknameScreen from './screens/nickname/NicknamePage';
+import IntroductionScreen from './screens/introduction/IntroductionPage';
+import AccountScreen from './screens/account/AccountPage';
+import EmailScreen from './screens/email/EmailPage';
+import PasswordScreen from './screens/password/PasswordPage';
+import AuthenticationScreen from './screens/authentication/AuthenticationPage';
+import i18n from './i18n';
+import {I18nextProvider} from 'react-i18next';
+import {useState, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ThemeProviderWrapper} from '@/context/ThemeContext';
+import {FontProvider} from './context/FontContext';
+import {lightTheme} from '@/styles/theme';
+
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const theme = {
   fonts: {
-    light: 'Pretendard-Light',
-    medium: 'Pretendard-Medium',
-    regular: 'Pretendard-Regular',
-    semiBold: 'Pretendard-SemiBold',
-    bold: 'Pretendard-Bold',
-    extraBold: 'Pretendard-ExtraBold',
+    light: 'PretendardLight',
+    medium: 'PretendardMedium',
+    regular: 'PretendardRegular',
+    semiBold: 'PretendardSemiBold',
+    bold: 'PretendardBold',
+    extraBold: 'PretendardExtraBold',
+    default: 'PretendardRegular',
   },
   fontSizes: {
     small: 12,
@@ -39,56 +61,119 @@ const theme = {
     white: '#FFF',
     text: '#262627',
     darkGray: '#828183',
-    gray: '#505050',
+    gray: '#50505055',
     lightGray: '#A9A9A9',
     red: '#F33F31',
     green: '#5BAF63',
+    blue: '#0E77EA',
     primary: '#8A715D',
     secondary: '#B9AA9E',
     secondary2: '#ECD6C4',
     secondary3: '#F8F1E9',
     background: '#F5F4F5',
   },
+  fontFamily: 'PretendardRegular',
 };
 
 const Stack = createStackNavigator();
-const queryClient : any = new QueryClient();
+
+
+const queryClient = new QueryClient();
+
 
 const MyNavigationTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: theme.colors.background,  
+    background: theme.colors.background,
   },
 };
 
 export default function App() {
+  const [language, setLanguage] = useState(i18n.language);
+  const [font, setFont] = useState(lightTheme.fontFamily);
+
+  useEffect(() => {
+    const loadLanguage = async () => {
+      const storedLang = await AsyncStorage.getItem('appLanguage');
+      if (storedLang) {
+        await i18n.changeLanguage(storedLang);
+        setLanguage(storedLang);
+      }
+    };
+    loadLanguage();
+  }, []);
+
+  const appTheme = {
+    ...lightTheme,
+    fontFamily: font,
+  };
+
+ 
+
+
+
+
+¿
   return (
     <QueryClientProvider client={queryClient}>
-    <ThemeProvider theme={theme}>
-      <NavigationContainer theme={MyNavigationTheme}>
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Landing" component={LandingScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-            <Stack.Screen name="Home" component={Footer} />
-            <Stack.Screen name="RecordFooter" component={Footer} />
-            <Stack.Screen name="SearchFooter" component={Footer} />
-            <Stack.Screen name="RecordScreen" component={RecordScreen}/>
-            <Stack.Screen name="BookSearch" component={BookSearchScreen} />
-            <Stack.Screen name="BookSearch2" component={BookSearchScreen2} />
-            <Stack.Screen name="BookSearch3" component={BookSearchScreen3} />
-            <Stack.Screen name="BookSearch4" component={BookSearchScreen4} />
-            <Stack.Screen name="Category" component={Footer} />
-            <Stack.Screen name="SearchScreen" component={SearchPage}/>
-            <Stack.Screen name="CategorySearch" component={CategorySearchScreen} />
-            <Stack.Screen name="My" component={Footer} />
-            <Stack.Screen name="EmailFind" component={EmailFindPage} />
-            <Stack.Screen name="PasswordFind" component={PasswordFindPage} />
-            <Stack.Screen name="NotFound" component={NotFoundPage} />
-          </Stack.Navigator>
-      </NavigationContainer>
-    </ThemeProvider>
+
+    <I18nextProvider i18n={i18n}>
+      <ThemeProviderWrapper>
+        <ThemeProvider theme={appTheme}>
+          <FontProvider>
+            <NavigationContainer theme={MyNavigationTheme}>
+              <Stack.Navigator screenOptions={{headerShown: false}}>
+                <Stack.Screen name="Landing" component={LandingScreen} />
+                <Stack.Screen name="EmailFind" component={EmailFindPage} />
+                <Stack.Screen
+                  name="PasswordFind"
+                  component={PasswordFindPage}
+                />
+                <Stack.Screen name="NotFound" component={NotFoundPage} />
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="SignUp" component={SignUpScreen} />
+                <Stack.Screen name="Home" component={Footer} />
+                <Stack.Screen name="Record" component={Footer} />
+                <Stack.Screen name="Search" component={Footer} />
+                <Stack.Screen name="BookSearch" component={BookSearchScreen} />
+                <Stack.Screen
+                  name="BookSearch2"
+                  component={BookSearchScreen2}
+                />
+                <Stack.Screen
+                  name="BookSearch3"
+                  component={BookSearchScreen3}
+                />
+                <Stack.Screen
+                  name="BookSearch4"
+                  component={BookSearchScreen4}
+                />
+                <Stack.Screen name="Category" component={Footer} />
+                <Stack.Screen
+                  name="CategorySearch"
+                  component={CategorySearchScreen}
+                />
+                <Stack.Screen name="My" component={Footer} />
+                <Stack.Screen name="Setting" component={SettingScreen} />
+                <Stack.Screen name="News" component={NewsScreen} />
+                <Stack.Screen name="Alert" component={AlertScreen} />
+                <Stack.Screen name="Screen" component={ScreenScreen} />
+                <Stack.Screen name="Font" component={FontScreen} />
+                <Stack.Screen name="Profile" component={ProfileScreen} />
+                <Stack.Screen name="Nickname" component={NicknameScreen} />
+                <Stack.Screen name="Introduction" component={IntroductionScreen} />
+                <Stack.Screen name="Account" component={AccountScreen} />
+                <Stack.Screen name="Email" component={EmailScreen} />
+                <Stack.Screen name="Password" component={PasswordScreen} />
+                <Stack.Screen name="Authentication" component={AuthenticationScreen} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </FontProvider>
+        </ThemeProvider>
+      </ThemeProviderWrapper>
+    </I18nextProvider>
+
     </QueryClientProvider>
   );
 }

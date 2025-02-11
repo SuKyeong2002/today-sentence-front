@@ -9,6 +9,7 @@ declare module 'styled-components' {
       semiBold: string;
       bold: string;
       extraBold: string;
+      primary?: string;
     };
     fontSizes: {
       small: number;
@@ -26,6 +27,7 @@ declare module 'styled-components' {
       lightGray: string;
       red: string;
       green: string;
+      blue: string;
       primary: string;
       secondary: string;
       secondary2: string;
