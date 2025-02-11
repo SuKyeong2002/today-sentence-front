@@ -76,9 +76,10 @@ export default function SignUpSteps() {
       Alert.alert("오류", "유효한 코드를 입력하세요.");
       return;
     }
+    
 
     try {
-      const isCodeValid = await handleVerifyAuthCode(enteredCode);
+      const isCodeValid = await handleVerifyAuthCode(email,enteredCode);
       console.log("인증 코드 검증 결과:", isCodeValid); 
       if (isCodeValid === true) {
         setEmailValidationResult(true);
@@ -91,7 +92,6 @@ export default function SignUpSteps() {
       Alert.alert("오류", "인증 코드 확인 중 문제가 발생했습니다.");
     }
   };
-
   useEffect(() => {
     if (nickname.trim() !== "") {
       const verifyNickname = async () => {

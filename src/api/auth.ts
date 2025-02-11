@@ -70,8 +70,9 @@ export const findUsername = async (email: string): Promise<string> => {
   return response.data.username;
 };
 
-export const verifyAuthCode = async (code: string): Promise<boolean> => {
-  const response = await axios.post<{ verified: boolean }>(`${API_URL}/api/member/check-code`, { code });
+export const verifyAuthCode = async (email:string, code: string): Promise<boolean> => {
+  const response = await axios.post<{ verified: boolean }>(`${API_URL}/api/member/check-code`, { email,code });
+  console.log(response.data.verified)
   return response.data.verified;
 };
 

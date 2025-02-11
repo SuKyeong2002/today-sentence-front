@@ -35,7 +35,7 @@ interface UseAuthReturn {
   handleSendAuthCode: (email: string) => Promise<{ data : boolean }>;
   handleFindPassword: (email: string) => Promise<void>;
   handleFindUsername: (email: string) => Promise<string>;
-  handleVerifyAuthCode: (code: string) => Promise<boolean>;
+  handleVerifyAuthCode: (email:string, code: string) => Promise<boolean>;
   handleDeleteUserAccount: (email: string, password: string) => Promise<void>;
   handleVerifiedEmail: (email: string) => Promise<void>;
   handleVerifiedPassword: (password: string) => Promise<void>;
@@ -194,8 +194,9 @@ const useAuth = (): UseAuthReturn => {
     return username;
   };
 
-  const handleVerifyAuthCode = async (code: string) => {
-    const verified = await verifyAuthCode(code);
+  const handleVerifyAuthCode = async (email:string, code: string) => {
+    const verified = await verifyAuthCode(email,code);
+    console.log(verified)
     setMessage(verified ? '코드 인증 성공!' : '코드 인증 실패.');
     return verified;
   };
