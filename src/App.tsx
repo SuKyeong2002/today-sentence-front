@@ -5,7 +5,7 @@ import {ThemeProvider} from 'styled-components';
 import LandingScreen from './screens/LandingPage';
 import LoginScreen from './screens/auth/LoginPage';
 import SignUpScreen from './screens/auth/SignUpPage';
-import RecordScreen from './screens/main/RecordPage';
+import RecordScreen from './screens/record/Record';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
 import BookSearchScreen2 from './screens/bookSearch2/BookSearchPage2';
 import BookSearchScreen3 from './screens/bookSearch3/BookSearchPage3';
@@ -14,8 +14,9 @@ import EmailFindPage from './screens/auth/EmailFind';
 import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
-import SearchPage from './screens/search/SearchPage';
+import SearchPage from './screens/categorySearch/CategrySearchPage';
 import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
+
 import SettingScreen from './screens/setting/SettingPage';
 import NewsScreen from './screens/news/NewsPage';
 import AlertScreen from './screens/alert/AlertPage';
@@ -35,6 +36,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ThemeProviderWrapper} from '@/context/ThemeContext';
 import {FontProvider} from './context/FontContext';
 import {lightTheme} from '@/styles/theme';
+
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const theme = {
@@ -74,7 +76,10 @@ const theme = {
 };
 
 const Stack = createStackNavigator();
+
+
 const queryClient = new QueryClient();
+
 
 const MyNavigationTheme = {
   ...DefaultTheme,
@@ -104,8 +109,15 @@ export default function App() {
     fontFamily: font,
   };
 
+ 
+
+
+
+
+¿
   return (
     <QueryClientProvider client={queryClient}>
+
     <I18nextProvider i18n={i18n}>
       <ThemeProviderWrapper>
         <ThemeProvider theme={appTheme}>
@@ -161,6 +173,7 @@ export default function App() {
         </ThemeProvider>
       </ThemeProviderWrapper>
     </I18nextProvider>
+
     </QueryClientProvider>
   );
 }

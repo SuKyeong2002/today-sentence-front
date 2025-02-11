@@ -32,10 +32,10 @@ interface UseAuthReturn {
   handleChangeNickname: (nickname: string) => Promise<void>;
   handleChangeStatusMessage: (statusMessage: string) => Promise<void>;
   handleCheckPasswordMatch: (password: string) => Promise<boolean>;
-  handleSendAuthCode: (email: string) => Promise<void>;
+  handleSendAuthCode: (email: string) => Promise<{ data : boolean }>;
   handleFindPassword: (email: string) => Promise<void>;
   handleFindUsername: (email: string) => Promise<string>;
-  handleVerifyAuthCode: (code: string) => Promise<boolean>;
+  handleVerifyAuthCode: (email:string, code: string) => Promise<boolean>;
   handleDeleteUserAccount: (email: string, password: string) => Promise<void>;
   handleVerifiedEmail: (email: string) => Promise<void>;
   handleVerifiedPassword: (password: string) => Promise<void>;
@@ -177,10 +177,11 @@ const useAuth = (): UseAuthReturn => {
     return match;
   };
 
-  const handleSendAuthCode = async (email: string) => {
-    await sendAuthCode(email);
-    setMessage('인증 코드 전송 성공!');
+
+  const handleSendAuthCode = async (email: string): Promise<{ data : boolean }> => {
+    return await sendAuthCode(email);
   };
+  
 
   const handleFindPassword = async (email: string) => {
     await findPassword(email);
@@ -193,8 +194,9 @@ const useAuth = (): UseAuthReturn => {
     return username;
   };
 
-  const handleVerifyAuthCode = async (code: string) => {
-    const verified = await verifyAuthCode(code);
+  const handleVerifyAuthCode = async (email: string, code: string) => {
+    const verified = await verifyAuthCode(email, code);
+    console.log(verified)
     setMessage(verified ? '코드 인증 성공!' : '코드 인증 실패.');
     return verified;
   };
