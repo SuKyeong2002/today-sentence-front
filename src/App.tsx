@@ -73,14 +73,14 @@ export default function App() {
             <Stack.Screen name="SignUp" component={SignUpScreen} />
             <Stack.Screen name="Home" component={Footer} />
             <Stack.Screen name="RecordFooter" component={Footer} />
-            <Stack.Screen name="Search" component={Footer} />
+            <Stack.Screen name="SearchFooter" component={Footer} />
             <Stack.Screen name="RecordScreen" component={RecordScreen}/>
             <Stack.Screen name="BookSearch" component={BookSearchScreen} />
             <Stack.Screen name="BookSearch2" component={BookSearchScreen2} />
             <Stack.Screen name="BookSearch3" component={BookSearchScreen3} />
             <Stack.Screen name="BookSearch4" component={BookSearchScreen4} />
             <Stack.Screen name="Category" component={Footer} />
-            <Stack.Screen name="Search" component={SearchPage}/>
+            <Stack.Screen name="SearchScreen" component={SearchPage}/>
             <Stack.Screen name="CategorySearch" component={CategorySearchScreen} />
             <Stack.Screen name="My" component={Footer} />
             <Stack.Screen name="EmailFind" component={EmailFindPage} />
