@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://43.201.20.84';
+const API_URL = 'http://43.201.20.84';
 
 export interface AuthResponse {
   token: string;
@@ -56,8 +56,9 @@ export const deleteUserAccount = async (password: string, email: string): Promis
   await axios.post(`${API_URL}/api/member/withdraw`, { password, email });
 };
 
-export const sendAuthCode = async (email: string): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/verify-code`, { email });
+export const sendAuthCode = async (email: string): Promise<{  data : boolean }> => {
+  const response = await axios.post(`${API_URL}/api/member/verify-code`, { email });
+  return response.data;
 };
 
 export const findPassword = async (password: string): Promise<void> => {

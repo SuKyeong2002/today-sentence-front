@@ -42,8 +42,8 @@ export default function SignUpSteps() {
   
       console.log("이메일 전송 응답:", response);
   
-      if (response?.data) {
-        Alert.alert("성공", response.data); // 성공 메시지 응답에서 가져오기
+      if (response?.data === true) {
+        Alert.alert("성공", "이메일 전송에 성공했습니다."); // 성공 메시지 응답에서 가져오기
         setIsEmailSent(true);
       } else {
         throw new Error("이메일 전송 실패");
@@ -179,7 +179,8 @@ export default function SignUpSteps() {
               onChangeText={setEnteredCode}
             />
             <TouchableOpacity
-              style={styles.checkButton}
+              style={[styles.checkButton, enteredCode.length === 6 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
+              disabled={enteredCode.length !== 6}
               onPress={handleEmailVerification}
             >
               <Text style={styles.checkButtonText}>확인</Text>
