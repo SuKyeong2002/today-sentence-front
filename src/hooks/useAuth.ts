@@ -32,7 +32,7 @@ interface UseAuthReturn {
   handleChangeNickname: (nickname: string) => Promise<void>;
   handleChangeStatusMessage: (statusMessage: string) => Promise<void>;
   handleCheckPasswordMatch: (password: string) => Promise<boolean>;
-  handleSendAuthCode: (email: string) => Promise<void>;
+  handleSendAuthCode: (email: string) => Promise<{ success: boolean }>;
   handleFindPassword: (email: string) => Promise<void>;
   handleFindUsername: (email: string) => Promise<string>;
   handleVerifyAuthCode: (code: string) => Promise<boolean>;
@@ -177,10 +177,16 @@ const useAuth = (): UseAuthReturn => {
     return match;
   };
 
-  const handleSendAuthCode = async (email: string): Promise<void> => {
+  const handleSendAuthCode = async (email: string): Promise<{ success: boolean }> => {
+    try {
       await sendAuthCode(email);
       setMessage('인증 코드 전송 성공!');
-    };
+      return { success: true };
+    } catch (error) {
+      setMessage('인증 코드 전송 실패.');
+      return { success: false };
+    }
+  };
 
   const handleFindPassword = async (email: string) => {
     await findPassword(email);
