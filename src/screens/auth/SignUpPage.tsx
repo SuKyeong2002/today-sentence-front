@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,81 +10,111 @@ import {
 import useAuth from '../../hooks/useAuth';
 
 export default function SignUpSteps() {
-  const { handleVerifiedEmail, handleVerifiedNickName, handleVerifiedPassword, handleSignUp, handleCheckPasswordMatch, handleSendAuthCode, handleVerifyAuthCode } = useAuth();
+  const {
+    handleVerifiedEmail,
+    handleVerifiedNickName,
+    handleVerifiedPassword,
+    handleSignUp,
+    handleSendAuthCode,
+    handleVerifyAuthCode,
+  } = useAuth();
+
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isEmailSent, setIsEmailSent] = useState(false);
   const [enteredCode, setEnteredCode] = useState('');
   const [emailValidationResult, setEmailValidationResult] = useState(false);
   const [nicknameValidationResult, setNicknameValidationResult] = useState(false);
   const [passwordValidationResult, setPasswordValidationResult] = useState(false);
 
-  // ✅ 이메일 검증
   const handleEmailCheck = async () => {
-    if (!email.includes('@')) {
-      Alert.alert('오류', '유효한 이메일을 입력하세요.');
-      console.log("duplicate buttonOnClickEvent");
+    if (!email.includes("@")) {
+      Alert.alert("오류", "유효한 이메일을 입력하세요.");
       return;
     }
     try {
       await handleSendAuthCode(email);
-      Alert.alert('성공', '인증번호가 이메일로 전송되었습니다.');
+      Alert.alert("성공", "인증번호가 이메일로 전송되었습니다.");
+      setIsEmailSent(true);
     } catch (error) {
-      Alert.alert('오류', '인증번호 전송에 실패했습니다.');
-  };
-    await handleVerifiedEmail(email); //
+      Alert.alert("오류", "인증번호 전송에 실패했습니다.");
+      setIsEmailSent(false);
+    }
   };
 
-//이메일 코드 검증
-const handleEmailVerification = async () => {
-  if(!enteredCode.includes('')) {
-    Alert.alert('오류', '유효한 코드를 입력하세요');
-    return;
-  }
-  const isCodeValid = await handleVerifyAuthCode(enteredCode);
-  if (isCodeValid) {
-    setEmailValidationResult(true);
-  } else {
-    Alert.alert('오류', '인증번호가 유효하지 않습니다.');
-  }
-  await handleVerifyAuthCode(enteredCode);
-};
+  useEffect(() => {
+    if (isEmailSent) {
+      const verifyEmail = async () => {
+        try {
+          await handleVerifiedEmail(email);
+        } catch (error) {
+          console.error("이메일 인증 확인 중 오류 발생:", error);
+        }
+      };
+      verifyEmail();
+    }
+  }, [isEmailSent, email, handleVerifiedEmail]);
 
-  // ✅ 닉네임 검증
-  const handleNicknameCheck = async () => {
-    if (!nickname.includes('')) {
-      Alert.alert('오류', '유효한 닉네임을 입력하세요.');
-      console.log('duplicate buttonOnClickEvent');
+  const handleEmailVerification = async () => {
+    if (enteredCode.trim() === "") {
+      Alert.alert("오류", "유효한 코드를 입력하세요.");
       return;
     }
-    await handleVerifiedNickName(nickname);
-    setNicknameValidationResult(true)
-  };
-
-
-  // ✅ 비밀번호 검증
-  const handlePasswordCheck = async () => {
-    if (!password.includes('')) {
-      Alert.alert('오류', '유효한 비밀번호를 입력하세요.');
-      console.log('duplicate buttonOnClickEvent');
-      return;
+    try {
+      const isCodeValid = await handleVerifyAuthCode(enteredCode);
+      if (isCodeValid) {
+        setEmailValidationResult(true);
+        Alert.alert("성공", "이메일 인증이 완료되었습니다.");
+      } else {
+        Alert.alert("오류", "인증번호가 유효하지 않습니다.");
+      }
+    } catch (error) {
+      console.error("인증 코드 검증 중 오류 발생:", error);
+      Alert.alert("오류", "인증 코드 확인 중 문제가 발생했습니다.");
     }
-    await handleVerifiedPassword(password);
-    setPasswordValidationResult(true);
   };
 
-
-  // 비밀번호 재검증 로직
-  const handlePasswordRecheck = async () => {
-    if (!password) {
-      Alert.alert('오류', '유효한 비밀번호를 입력하세요.');
-      return;
+  useEffect(() => {
+    if (nickname.trim() !== "") {
+      const verifyNickname = async () => {
+        try {
+          await handleVerifiedNickName(nickname);
+          setNicknameValidationResult(true);
+        } catch (error) {
+          console.error("닉네임 검증 실패:", error);
+          setNicknameValidationResult(false);
+        }
+      };
+      verifyNickname();
     }
-    await handleCheckPasswordMatch(password);
-  };
+  }, [nickname, handleVerifiedNickName]);
 
-  // ✅ 회원가입 단계 진행
+  useEffect(() => {
+    if (password.trim() !== "") {
+      const verifyPassword = async () => {
+        try {
+          await handleVerifiedPassword(password);
+          setPasswordValidationResult(true);
+        } catch (error) {
+          console.error("비밀번호 검증 실패:", error);
+          setPasswordValidationResult(false);
+        }
+      };
+      verifyPassword();
+    }
+  }, [password, handleVerifiedPassword]);
+
+  useEffect(() => {
+    if (password.trim() !== "" && confirmPassword.trim() !== "") {
+      if (password !== confirmPassword) {
+        Alert.alert("오류", "비밀번호가 일치하지 않습니다.");
+      }
+    }
+  }, [password, confirmPassword]);
+
   const handleNextStep = async () => {
     if (step === 1) setStep(2);
     else if (step === 2) setStep(3);
@@ -126,18 +156,22 @@ const handleEmailVerification = async () => {
               <Text style={styles.checkButtonText}>인증번호 보내기</Text>
             </TouchableOpacity>
           </View>
-          <TextInput 
-            style={styles.input}
-            placeholder='인증번호 입력'
-            placeholderTextColor="#aaa"
-            keyboardType='numeric'
-            value={enteredCode}
-            onChangeText={setEnteredCode}/>
-          <TouchableOpacity
-            style={styles.checkButton}
-            onPress={handleEmailVerification}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder='인증번호 입력'
+              placeholderTextColor="#aaa"
+              keyboardType='numeric'
+              value={enteredCode}
+              onChangeText={setEnteredCode}
+            />
+            <TouchableOpacity
+              style={styles.checkButton}
+              onPress={handleEmailVerification}
+            >
               <Text style={styles.checkButtonText}>인증번호 확인</Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 
@@ -156,7 +190,7 @@ const handleEmailVerification = async () => {
             />
             <TouchableOpacity
               style={[styles.checkButton, nickname.length > 2 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
-              onPress={handleNicknameCheck}
+              onPress={() => {}}
               disabled={nickname.length <= 2}
             >
               <Text style={styles.checkButtonText}>중복확인</Text>
@@ -180,7 +214,7 @@ const handleEmailVerification = async () => {
             />
             <TouchableOpacity
               style={[styles.checkButton, password.length >= 8 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
-              onPress={handlePasswordCheck}
+              onPress={() => {}}
               disabled={password.length < 8}
             >
               <Text style={styles.checkButtonText}>확인</Text>
@@ -199,7 +233,8 @@ const handleEmailVerification = async () => {
               placeholder="비밀번호"
               placeholderTextColor="#aaa"
               secureTextEntry
-              onChangeText={handlePasswordRecheck}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
             />
           </View>
         </View>
@@ -239,11 +274,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#',
     marginBottom: 10,
   },
   inputContainer: {
