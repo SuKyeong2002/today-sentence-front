@@ -35,16 +35,27 @@ export default function SignUpSteps() {
       Alert.alert("오류", "유효한 이메일을 입력하세요.");
       return;
     }
+
     try {
-      await handleSendAuthCode(email);
-      Alert.alert("성공", "인증번호가 이메일로 전송되었습니다.");
-      setIsEmailSent(true);
+      console.log("이메일 전송 시도:", email);
+      const response: { success: boolean } = await handleSendAuthCode(email);
+
+      console.log("이메일 전송 응답:");
+
+      if (response?.success) {
+        Alert.alert("성공", "인증번호가 이메일로 전송되었습니다.");
+        setIsEmailSent(true);
+      } else {
+        throw new Error("이메일 전송 실패");
+      }
     } catch (error) {
+      console.error("이메일 전송 중 오류 발생:", error);
       Alert.alert("오류", "인증번호 전송에 실패했습니다.");
       setIsEmailSent(false);
     }
   };
 
+  // 이메일 인증 확인
   useEffect(() => {
     if (isEmailSent) {
       const verifyEmail = async () => {
@@ -58,11 +69,13 @@ export default function SignUpSteps() {
     }
   }, [isEmailSent, email, handleVerifiedEmail]);
 
+  // 인증 코드 검증 함수
   const handleEmailVerification = async () => {
     if (enteredCode.trim() === "") {
       Alert.alert("오류", "유효한 코드를 입력하세요.");
       return;
     }
+
     try {
       const isCodeValid = await handleVerifyAuthCode(enteredCode);
       if (isCodeValid) {
@@ -153,10 +166,10 @@ export default function SignUpSteps() {
               onPress={handleEmailCheck}
               disabled={!email.includes('@')}
             >
-              <Text style={styles.checkButtonText}>인증번호 보내기</Text>
+              <Text style={styles.checkButtonText}>전송</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.inputContainer}>
+          <View style={styles.inputContainer1}>
             <TextInput
               style={styles.input}
               placeholder='인증번호 입력'
@@ -169,7 +182,7 @@ export default function SignUpSteps() {
               style={styles.checkButton}
               onPress={handleEmailVerification}
             >
-              <Text style={styles.checkButtonText}>인증번호 확인</Text>
+              <Text style={styles.checkButtonText}>확인</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -277,6 +290,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  inputContainer1: {
+    marginTop: 30,
     flexDirection: 'row',
     alignItems: 'center',
   },

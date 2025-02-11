@@ -177,10 +177,10 @@ const useAuth = (): UseAuthReturn => {
     return match;
   };
 
-  const handleSendAuthCode = async (email: string) => {
-    await sendAuthCode(email);
-    setMessage('인증 코드 전송 성공!');
-  };
+  const handleSendAuthCode = async (email: string): Promise<void> => {
+      await sendAuthCode(email);
+      setMessage('인증 코드 전송 성공!');
+    };
 
   const handleFindPassword = async (email: string) => {
     await findPassword(email);
