@@ -3,9 +3,8 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-// ✅ 네비게이션 타입 설정
 type RootStackParamList = {
-  Search: undefined; // 🔹 Search가 존재하는지 확인
+  Search: undefined; 
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Search'>;

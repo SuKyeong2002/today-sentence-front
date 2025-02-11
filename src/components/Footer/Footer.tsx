@@ -7,10 +7,13 @@ import RecordScreen from '../../screens/main/RecordPage';
 import SearchScreen from '../../screens/search/SearchPage';
 import CategoryScreen from '../../screens/category/CategoryPage';
 import MyScreen from '../../screens/mypage/MyPage';
+import {useTranslation} from 'react-i18next';
 
 const Tab = createBottomTabNavigator();
 
 export default function Footer() {
+  const {t} = useTranslation();
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -55,19 +58,19 @@ export default function Footer() {
 
           switch (route.name) {
             case 'Home':
-              label = 'Home';
+              label = t('홈');
               break;
             case 'Record':
-              label = 'Record';
+              label = t('기록');
               break;
             case 'Search':
-              label = 'Search';
+              label = t('검색');
               break;
             case 'Category':
-              label = 'Category';
+              label = t('카테고리');
               break;
             case 'My':
-              label = 'My';
+              label = t('내정보');
               break;
           }
 

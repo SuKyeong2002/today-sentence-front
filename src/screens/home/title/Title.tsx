@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import {View, Text } from 'react-native';
+import {useTranslation} from 'react-i18next';
 
 export default function Title() {
+  const {t} = useTranslation();
 
   return (
     <TitleWrapper>
-      <TodayDate>12월 10일 화요일</TodayDate>
-      <TodayAlert>오늘의 명언이 도착했어요!</TodayAlert>
+      <TodayDate>{t('12월 10일 화요일')}</TodayDate>
+      <TodayAlert>{t('오늘의 명언이 도착했어요!')}</TodayAlert>
     </TitleWrapper>
   );
 }

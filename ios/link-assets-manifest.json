@@ -1,0 +1,49 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/BookendBataanRegular.ttf",
+      "sha1": "fef49d30f58ea063bdf1fca5b00a3c37a0c4d6de"
+    },
+    {
+      "path": "src/assets/fonts/HakgyoansimGeurimilgiTTFR.ttf",
+      "sha1": "dd2e6509ac7a41757ba38680c181f4b50fce4e41"
+    },
+    {
+      "path": "src/assets/fonts/KyoboHandwriting2020pdy.ttf",
+      "sha1": "6bfcace37bcdd467a9dd2f2d0fb8c2daed818099"
+    },
+    {
+      "path": "src/assets/fonts/OnggeulipKimkonghae.ttf",
+      "sha1": "5f0cfffe3e41b20d31f026ff60190d9365775b73"
+    },
+    {
+      "path": "src/assets/fonts/OnggeulipWicelist.ttf",
+      "sha1": "29a72cb2657afe513c30d289b27696b1f4ddec99"
+    },
+    {
+      "path": "src/assets/fonts/PretendardBold.ttf",
+      "sha1": "5014ee949529efb25dc8d2555fb8d4586f43e058"
+    },
+    {
+      "path": "src/assets/fonts/PretendardExtraBold.otf",
+      "sha1": "ea07e7375c62c8386f77431f0f62a2cbdea34618"
+    },
+    {
+      "path": "src/assets/fonts/PretendardLight.ttf",
+      "sha1": "1714361a51ce1fd7f0700b16a735022946f5cd27"
+    },
+    {
+      "path": "src/assets/fonts/PretendardMedium.ttf",
+      "sha1": "68efbed10e1229e9c9ed49d8c620a8fef87cda07"
+    },
+    {
+      "path": "src/assets/fonts/PretendardRegular.ttf",
+      "sha1": "f5e25d12ff08ff058acd8a64d5f9b5f9c92b9d17"
+    },
+    {
+      "path": "src/assets/fonts/PretendardSemiBold.ttf",
+      "sha1": "e247ab351a1797b1a81f7a5e945c416de9f7fd91"
+    }
+  ]
+}
