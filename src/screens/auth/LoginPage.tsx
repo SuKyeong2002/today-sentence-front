@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect } from 'react';
 import { Image ,View, Text, TextInput, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';

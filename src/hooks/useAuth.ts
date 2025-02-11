@@ -177,12 +177,10 @@ const useAuth = (): UseAuthReturn => {
     return match;
   };
 
-
   const handleSendAuthCode = async (email: string): Promise<{ data : boolean }> => {
     return await sendAuthCode(email);
   };
   
-
   const handleFindPassword = async (email: string) => {
     await findPassword(email);
     setMessage('비밀번호 찾기 성공!');
