@@ -194,8 +194,8 @@ const useAuth = (): UseAuthReturn => {
     return username;
   };
 
-  const handleVerifyAuthCode = async (email:string, code: string) => {
-    const verified = await verifyAuthCode(email,code);
+  const handleVerifyAuthCode = async (email: string, code: string) => {
+    const verified = await verifyAuthCode(email, code);
     console.log(verified)
     setMessage(verified ? '코드 인증 성공!' : '코드 인증 실패.');
     return verified;
