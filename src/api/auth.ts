@@ -44,7 +44,7 @@ export const changeNickname = async (nickname: string): Promise<void> => {
 };
 
 export const changeStatusMessage = async (statusMessage: string): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/change-status-message`, { statusMessage });
+  await axios.post(`${API_URL}/api/member/change-message`, { statusMessage });
 };
 
 export const checkPasswordMatch = async (password: string): Promise<boolean> => {
@@ -57,7 +57,7 @@ export const deleteUserAccount = async (password: string, email: string): Promis
 };
 
 export const sendAuthCode = async (email: string): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/send-auth-code`, { email });
+  await axios.post(`${API_URL}/api/member/verify-code`, { email });
 };
 
 export const findPassword = async (password: string): Promise<void> => {
@@ -70,7 +70,7 @@ export const findUsername = async (email: string): Promise<string> => {
 };
 
 export const verifyAuthCode = async (code: string): Promise<boolean> => {
-  const response = await axios.post<{ verified: boolean }>(`${API_URL}/api/member/verify-auth-code`, { code });
+  const response = await axios.post<{ verified: boolean }>(`${API_URL}/api/member/check-code`, { code });
   return response.data.verified;
 };
 
