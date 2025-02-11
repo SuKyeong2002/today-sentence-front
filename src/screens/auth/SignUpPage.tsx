@@ -35,15 +35,15 @@ export default function SignUpSteps() {
       Alert.alert("오류", "유효한 이메일을 입력하세요.");
       return;
     }
-
+  
     try {
       console.log("이메일 전송 시도:", email);
-      const response: { success: boolean } = await handleSendAuthCode(email);
-
-      console.log("이메일 전송 응답:");
-
-      if (response?.success) {
-        Alert.alert("성공", "인증번호가 이메일로 전송되었습니다.");
+      const response = await handleSendAuthCode(email); // 응답 객체 받기
+  
+      console.log("이메일 전송 응답:", response);
+  
+      if (response?.data) {
+        Alert.alert("성공", response.data); // 성공 메시지 응답에서 가져오기
         setIsEmailSent(true);
       } else {
         throw new Error("이메일 전송 실패");

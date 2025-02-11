@@ -32,7 +32,7 @@ interface UseAuthReturn {
   handleChangeNickname: (nickname: string) => Promise<void>;
   handleChangeStatusMessage: (statusMessage: string) => Promise<void>;
   handleCheckPasswordMatch: (password: string) => Promise<boolean>;
-  handleSendAuthCode: (email: string) => Promise<{ success: boolean }>;
+  handleSendAuthCode: (email: string) => Promise<{ data : string }>;
   handleFindPassword: (email: string) => Promise<void>;
   handleFindUsername: (email: string) => Promise<string>;
   handleVerifyAuthCode: (code: string) => Promise<boolean>;
@@ -177,16 +177,27 @@ const useAuth = (): UseAuthReturn => {
     return match;
   };
 
-  const handleSendAuthCode = async (email: string): Promise<{ success: boolean }> => {
+  const handleSendAuthCode = async (email: string): Promise<{data: string}> => {
     try {
-      await sendAuthCode(email);
+      console.log('인증 코드 전송 시작:', email);
+      await sendAuthCode(email); // 인증 코드 전송 함수 호출
+      console.log('인증 코드 전송 성공');
+      
       setMessage('인증 코드 전송 성공!');
-      return { success: true };
+      return {data: '입력하신 메일로 인증번호 전송 완료' }; // 성공 시 data에 메시지 담기
     } catch (error) {
+      // 에러 상세 정보 출력
+      console.error('인증 코드 전송 실패 상세:', {
+        name: error instanceof Error ? error.name : 'Unknown',
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
+      
       setMessage('인증 코드 전송 실패.');
-      return { success: false };
+      return {data: ''}; // 실패 시 빈 문자열 반환
     }
   };
+  
 
   const handleFindPassword = async (email: string) => {
     await findPassword(email);
