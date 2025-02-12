@@ -19,7 +19,6 @@ import {
   resetPassword,
 } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AxiosError} from 'axios';
 
 interface UseAuthReturn {
   username: string;
@@ -88,15 +87,15 @@ const useAuth = (): UseAuthReturn => {
     ({ email, password }: { email: string; password: string }) => signInUser(email, password),
     {
       onSuccess: async (data) => {
-        console.log('로그인 성공, 받은 데이터:', data);
+        console.log('받은 데이터:', data);
 
         if (data?.accessToken && data?.refreshToken) {
           await AsyncStorage.setItem('accessToken', data.accessToken);
           await AsyncStorage.setItem('refreshToken', data.refreshToken);
           setUniqueMessage('로그인 성공!');
         } else {
-          console.warn('토큰이 없거나 필요하지 않습니다. 서버 응답:', data);
-          setUniqueMessage('로그인 성공 (토큰 없음)');
+          console.warn('토큰이 없습니다:', data);
+          setUniqueMessage('로그인 실패 (토큰 없음)');
         }
       }
     }
