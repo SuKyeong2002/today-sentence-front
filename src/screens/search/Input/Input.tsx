@@ -14,7 +14,7 @@ import {useSearch} from '@/hooks/useSearch';
 
 export default function Input() {
   const [selectedOption, setSelectedOption] = useState<string>('');
-  const [searchText, setSearchText] = useState<string>(''); 
+  const [searchText, setSearchText] = useState<string>('');
   const {t} = useTranslation();
   const {data, refetch, error} = useSearch(selectedOption, searchText);
 
@@ -35,6 +35,21 @@ export default function Input() {
     } catch (err) {
       console.error('검색 API 호출 실패:', err);
     }
+  };
+
+  const highlightMatchedText = (text: string) => {
+    if (!searchText) return text;
+
+    const regex = new RegExp(`(${searchText})`, 'gi');
+    const parts = text.split(regex);
+
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchText.toLowerCase() ? (
+        <HighlightedText key={index}>{part}</HighlightedText>
+      ) : (
+        <NormalText key={index}>{part}</NormalText>
+      ),
+    );
   };
 
   return (
@@ -70,32 +85,36 @@ export default function Input() {
       {error && (
         <ErrorText>{t('검색에 실패했습니다. 다시 시도해주세요.')}</ErrorText>
       )}
+
       {data && (
         <ResultContainer>
-          {data && data.content ? (
-            data.content.length > 0 ? (
-              data.content.map((book: { bookCover: any; bookTitle: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; bookAuthor: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, index: React.Key | null | undefined) => (
+          {data?.content?.length > 0 ? (
+            data.content.map(
+              (
+                book: {
+                  bookCover: string;
+                  bookTitle: string;
+                  bookAuthor: string;
+                },
+                index: number,
+              ) => (
                 <BookItem key={index}>
                   <BookImage source={{uri: book.bookCover}} />
                   <BookInfo>
-                    <BookTitle>{book.bookTitle}</BookTitle>
-                    <BookAuthor>{book.bookAuthor}</BookAuthor>
+                    <BookTitle>{highlightMatchedText(book.bookTitle)}</BookTitle>
+                    <BookAuthor>{highlightMatchedText(book.bookAuthor)}</BookAuthor>
                   </BookInfo>
                 </BookItem>
-              ))
-            ) : (
-              <NoResultText>{t('검색 결과가 없습니다.')}</NoResultText>
+              ),
             )
           ) : (
-            <NoResultText>{t('검색중...')}</NoResultText>
+            <NoResultText>{t('검색 결과가 없습니다.')}</NoResultText>
           )}
         </ResultContainer>
       )}
     </>
   );
 }
-
-// ✅ 스타일 코드
 
 const ContentWrapper = styled(View)`
   display: flex;
@@ -152,7 +171,6 @@ const SearchImage = styled(Image)`
 `;
 
 const ResultContainer = styled(View)`
-  margin-top: 20px;
   padding: 10px;
 `;
 
@@ -193,4 +211,13 @@ const ErrorText = styled(Text)`
   color: red;
   text-align: center;
   margin-top: 10px;
+`;
+
+const HighlightedText = styled(Text)`
+  color: ${({theme}) => theme.colors.green};
+  font-weight: bold;
+`;
+
+const NormalText = styled(Text)`
+  color: black;
 `;
