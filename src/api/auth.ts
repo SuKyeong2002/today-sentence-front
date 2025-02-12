@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import DeviceInfo from 'react-native-device-info';
 
 const API_URL = 'http://43.201.20.84';
 
@@ -23,9 +25,12 @@ export const signInUser = async (
   email: string,
   password: string,
 ): Promise<AuthResponse> => {
+  const deviceId = await DeviceInfo.getUniqueId();
+  console.log("디바이스 아이디:", deviceId);
+
   const response = await axios.post(
     `${API_URL}/api/member/sign-in`,
-    {email, password},
+    {email, password, deviceId},
     {
       headers: {
         'Content-Type': 'application/json',
@@ -37,6 +42,10 @@ export const signInUser = async (
   console.log('로그인 응답 데이터:', response.data);
   console.log('ACCESS-TOKEN:', response.headers['access-token']);
   console.log('REFRESH-TOKEN:', response.headers['refresh-token']);
+
+  await AsyncStorage.setItem('accessToken', response.headers['access-token']);
+  await AsyncStorage.setItem('refreshToken', response.headers['refresh-token']);
+  await AsyncStorage.setItem('deviceId', deviceId); 
 
   return {
     accessToken: response.headers['access-token'],
