@@ -57,8 +57,8 @@ export const signInUser = async (
       return null;
     }
 
-    console.log('📌 로그인 성공! 5분 후 액세스 토큰 자동 검증 시작...');
-    startTokenRefreshTimer(); // ✅ 로그인 성공 시 5분 후 토큰 자동 검증 시작
+    // console.log('📌 로그인 성공! 5분 후 액세스 토큰 자동 검증 시작...');
+    // startTokenRefreshTimer(); // ✅ 로그인 성공 시 5분 후 토큰 자동 검증 시작
 
     console.log('📌 ACCESS-TOKEN:', response.headers['access-token']);
     console.log('📌 REFRESH-TOKEN:', response.headers['refresh-token']);
