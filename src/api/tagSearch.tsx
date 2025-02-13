@@ -9,7 +9,7 @@ export const fetchSearchResults = async (type: string, search: string, page = 1,
         params: { type, search, page: page - 1, size },
       });
   
-      console.log("검색 결과:", response.data);
+      console.log("검색 결과!!:", response.data);
       return response.data; 
     } catch (error) {
       console.error("검색 API 에러:", error);

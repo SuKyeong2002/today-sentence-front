@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {useSearch} from '@/hooks/useSearch';
 import {useTagSearch} from '@/hooks/useTagSearch';
+import {ActivityIndicator} from 'react-native-paper';
 
 export default function Input() {
   const [selectedOption, setSelectedOption] = useState<string>('');
@@ -22,7 +23,10 @@ export default function Input() {
     selectedOption === 'tag'
       ? useTagSearch(selectedOption, searchText)
       : useSearch(selectedOption, searchText);
-  const {data, refetch, error} = searchHook;
+
+  const {data, refetch, error, isLoading} = searchHook;
+
+  const searchResults = Array.isArray(data) ? data : data?.content || [];
 
   const onSearchPress = async () => {
     if (!selectedOption) {
@@ -43,7 +47,7 @@ export default function Input() {
     }
   };
 
-  const highlightMatchedText = (text: string) => {
+  const highlightMatchedText = (text: string, searchText: string) => {
     if (!searchText) return text;
 
     const regex = new RegExp(`(${searchText})`, 'gi');
@@ -93,67 +97,54 @@ export default function Input() {
         <ErrorText>{t('검색에 실패했습니다. 다시 시도해주세요.')}</ErrorText>
       )}
 
-      {data && (
+      {isLoading && <ActivityIndicator size="large" color="gray" />}
+
+      {!isLoading && searchResults.length > 0 ? (
         <ResultContainer>
-          {selectedOption === 'tag'
-            ? // 태그 검색 결과
-              data.map(
-                (
-                  post: {
-                    bookTitle: string;
-                    author: string;
-                    coverUrl: string;
-                    publisher: string;
-                    publishingYear: number;
-                    postContent: string;
-                    hashtags: string;
-                  },
-                  index: number,
-                ) => (
-                  <BookItem key={index}>
-                    <BookImage source={{uri: post.coverUrl}} />
-                    <BookInfo>
-                      <BookTitle>
-                        {highlightMatchedText(post.bookTitle)}
-                      </BookTitle>
-                      <BookAuthor>
-                        {highlightMatchedText(post.author)}
-                      </BookAuthor>
-                      <BookDescription>{post.postContent}</BookDescription>
-                      <BookHashtags>{post.hashtags}</BookHashtags>
-                    </BookInfo>
-                  </BookItem>
-                ),
-              )
-            : // 제목 / 저자 검색 결과
-              data?.content?.map(
-                (
-                  book: {
-                    bookTitle: string;
-                    bookAuthor: string;
-                    bookCover: string;
-                    bookPublisher: string;
-                    bookPublishingYear: number;
-                  },
-                  index: number,
-                ) => (
-                  <BookItem key={index}>
-                    <BookImage source={{uri: book.bookCover}} />
-                    <BookInfo>
-                      <BookTitle>
-                        {highlightMatchedText(book.bookTitle)}
-                      </BookTitle>
-                      <BookAuthor>
-                        {highlightMatchedText(book.bookAuthor)}
-                      </BookAuthor>
-                      <BookPublisher>
-                        {book.bookPublisher} ({book.bookPublishingYear})
-                      </BookPublisher>
-                    </BookInfo>
-                  </BookItem>
-                ),
-              )}
+          {searchResults.map(
+            (
+              item: {
+                bookTitle: string;
+                bookAuthor?: string;
+                bookCover?: string;
+                bookPublisher?: string;
+                bookPublishingYear?: number;
+                hashtags?: string;
+              },
+              index: number,
+            ) => (
+              <BookItem key={index}>
+                <BookImage source={{uri: item.bookCover}} />
+                <BookInfo>
+                  <BookTitle>
+                    {highlightMatchedText(item.bookTitle, searchText)}
+                  </BookTitle>
+                  <BookAuthor>
+                    {highlightMatchedText(item.bookAuthor || '', searchText)}
+                  </BookAuthor>
+                  <BookPublisherContainer>
+                    <BookPublisher>
+                      {highlightMatchedText(
+                        item.bookPublisher || '',
+                        searchText,
+                      )}
+                      /{' '}
+                      {highlightMatchedText(
+                        String(item.bookPublishingYear || ''),
+                        searchText,
+                      )}
+                    </BookPublisher>
+                  </BookPublisherContainer>
+                  <BookTags>
+                    {highlightMatchedText(item.hashtags || '', searchText)}
+                  </BookTags>
+                </BookInfo>
+              </BookItem>
+            ),
+          )}
         </ResultContainer>
+      ) : (
+        !isLoading && <NoResultText>{t('검색 결과가 없습니다.')}</NoResultText>
       )}
     </>
   );
@@ -234,35 +225,36 @@ const BookInfo = styled(View)`
   flex-direction: column;
 `;
 
+const BookTags = styled(Text)`
+  font-size: 12px;
+`;
+
 const BookTitle = styled(Text)`
-  font-size: 16px;
-  font-weight: bold;
+  font-size: ${({theme}) => theme.fontSizes.medium}px;
+  font-weight: 600;
 `;
 
 const BookAuthor = styled(Text)`
-  font-size: 14px;
-  color: gray;
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
+  color: ${({theme}) => theme.colors.text};
+  font-weight: 400;
+`;
+
+const BookPublisherContainer = styled(View)`
+  display: flex;
+  flex-direction: row;
 `;
 
 const BookPublisher = styled(Text)`
-  font-size: 14px;
-  color: gray;
-`;
-
-const BookDescription = styled(Text)`
-  font-size: 12px;
-  color: black;
-`;
-
-const BookHashtags = styled(Text)`
-  font-size: 12px;
-  color: blue;
+  font-size: ${({theme}) => theme.fontSizes.small}px;
+  color: ${({theme}) => theme.colors.darkGray};
+  font-weight: 400;
 `;
 
 const NoResultText = styled(Text)`
-  font-size: 14px;
-  color: gray;
+  font-size: ${({theme}) => theme.fontSizes.small}px;
   text-align: center;
+  gap: 10px;
 `;
 
 const ErrorText = styled(Text)`
@@ -277,7 +269,4 @@ const HighlightedText = styled(Text)`
   font-weight: bold;
 `;
 
-const NormalText = styled(Text)`
-  color: black;
-`;
-
+const NormalText = styled(Text)``;
