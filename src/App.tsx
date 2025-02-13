@@ -16,7 +16,6 @@ import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
 import SearchPage from './screens/categorySearch/CategrySearchPage';
 import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
-
 import SettingScreen from './screens/setting/SettingPage';
 import NewsScreen from './screens/news/NewsPage';
 import AlertScreen from './screens/alert/AlertPage';
