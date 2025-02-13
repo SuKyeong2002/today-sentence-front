@@ -108,27 +108,79 @@ const startTokenRefreshTimer = () => {
 };
 
 // ✅ 모든 API 요청에 자동으로 `Device-Id` 및 `Access-Token` 포함
+//엑시오스 인터셉터 생성
 export const apiClient = axios.create({
   baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
 });
-
+//요청 인터셉터
 apiClient.interceptors.request.use(async (config) => {
-  const accessToken = await AsyncStorage.getItem('accessToken');
-  const deviceId = await AsyncStorage.getItem('deviceId') || await DeviceInfo.getUniqueId();
+const accessToken = await AsyncStorage.getItem('accessToken');
+const deviceId = await AsyncStorage.getItem('deviceId') || await DeviceInfo.getUniqueId();
 
-  if (!await AsyncStorage.getItem('deviceId')) {
-    await AsyncStorage.setItem('deviceId', deviceId);
-  }
+if (!await AsyncStorage.getItem('deviceId')) {
+ await AsyncStorage.setItem('deviceId', deviceId);
+}
 
-  config.headers['Device-Id'] = deviceId;
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
+config.headers['Device-Id'] = deviceId;
+if (accessToken) {
+ config.headers['ACCESS-TOKEN'] = accessToken;
+}
 
-  return config;
+console.log('Request Config:', config);
+
+return config;
 }, (error) => Promise.reject(error));
 
-//
+//응답 인터셉터
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      const refreshToken = await AsyncStorage.getItem('refreshToken');
+      const deviceId = await AsyncStorage.getItem('deviceId');
+
+      if (!refreshToken ) {
+        console.warn('🚨 리프레시토큰이 없습니다. 로그인 필요.');
+        return Promise.reject(error);
+      }
+      if (!deviceId) {
+        console.warn('🚨 디바이스 아이디가 없습니다. 로그인 필요.');
+        return Promise.reject(error);
+      }
+
+      try {
+        originalRequest.headers['Refresh-Token'] = refreshToken;
+        originalRequest.headers['Device-Id'] = deviceId;
+
+        const refreshResponse = await apiClient(originalRequest);
+
+        const newAccessToken = refreshResponse.headers['access-token'];
+        const newRefreshToken = refreshResponse.headers['refresh-token'];
+
+        if (newAccessToken && newRefreshToken) {
+          await AsyncStorage.setItem('accessToken', newAccessToken);
+          await AsyncStorage.setItem('refreshToken', newRefreshToken);
+
+
+          return refreshResponse;
+        }
+      } catch error) {
+        console.error(error);
+        return Promise.reject(error);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 export const VerifiedEmail = async (email: string): Promise<AuthResponse> => {
   const response = await axios.post<AuthResponse>(
     `${API_URL}/api/member/check-email`,
