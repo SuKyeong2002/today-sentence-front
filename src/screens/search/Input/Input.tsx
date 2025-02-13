@@ -74,6 +74,7 @@ export default function Input() {
               <Picker.Item label={t('제목')} value="title" />
               <Picker.Item label={t('저자')} value="author" />
               <Picker.Item label={t('태그')} value="tag" />
+              <Picker.Item label={t('카테고리')} value="category" />
             </Picker>
           </SelectContainer>
 
