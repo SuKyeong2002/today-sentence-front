@@ -148,7 +148,7 @@ apiClient.interceptors.response.use(
       const deviceId = await AsyncStorage.getItem('deviceId');
 
       if (!refreshToken ) {
-        console.warn('🚨 리프레시이  없습니다. 로그인 필요.');
+        console.warn('🚨 리프레시토큰이 없습니다. 로그인 필요.');
         return Promise.reject(error);
       }
       if (!deviceId) {
