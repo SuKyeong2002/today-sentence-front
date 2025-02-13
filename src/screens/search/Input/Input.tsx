@@ -11,12 +11,18 @@ import {
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {useSearch} from '@/hooks/useSearch';
+import {useTagSearch} from '@/hooks/useTagSearch';
 
 export default function Input() {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
   const {t} = useTranslation();
-  const {data, refetch, error} = useSearch(selectedOption, searchText);
+
+  const searchHook =
+    selectedOption === 'tag'
+      ? useTagSearch(selectedOption, searchText)
+      : useSearch(selectedOption, searchText);
+  const {data, refetch, error} = searchHook;
 
   const onSearchPress = async () => {
     if (!selectedOption) {
@@ -63,6 +69,7 @@ export default function Input() {
               <Picker.Item label={t('선택')} value="" />
               <Picker.Item label={t('제목')} value="title" />
               <Picker.Item label={t('저자')} value="author" />
+              <Picker.Item label={t('태그')} value="tag" />
             </Picker>
           </SelectContainer>
 
@@ -88,28 +95,64 @@ export default function Input() {
 
       {data && (
         <ResultContainer>
-          {data?.content?.length > 0 ? (
-            data.content.map(
-              (
-                book: {
-                  bookCover: string;
-                  bookTitle: string;
-                  bookAuthor: string;
-                },
-                index: number,
-              ) => (
-                <BookItem key={index}>
-                  <BookImage source={{uri: book.bookCover}} />
-                  <BookInfo>
-                    <BookTitle>{highlightMatchedText(book.bookTitle)}</BookTitle>
-                    <BookAuthor>{highlightMatchedText(book.bookAuthor)}</BookAuthor>
-                  </BookInfo>
-                </BookItem>
-              ),
-            )
-          ) : (
-            <NoResultText>{t('검색 결과가 없습니다.')}</NoResultText>
-          )}
+          {selectedOption === 'tag'
+            ? // 태그 검색 결과
+              data.map(
+                (
+                  post: {
+                    bookTitle: string;
+                    author: string;
+                    coverUrl: string;
+                    publisher: string;
+                    publishingYear: number;
+                    postContent: string;
+                    hashtags: string;
+                  },
+                  index: number,
+                ) => (
+                  <BookItem key={index}>
+                    <BookImage source={{uri: post.coverUrl}} />
+                    <BookInfo>
+                      <BookTitle>
+                        {highlightMatchedText(post.bookTitle)}
+                      </BookTitle>
+                      <BookAuthor>
+                        {highlightMatchedText(post.author)}
+                      </BookAuthor>
+                      <BookDescription>{post.postContent}</BookDescription>
+                      <BookHashtags>{post.hashtags}</BookHashtags>
+                    </BookInfo>
+                  </BookItem>
+                ),
+              )
+            : // 제목 / 저자 검색 결과
+              data?.content?.map(
+                (
+                  book: {
+                    bookTitle: string;
+                    bookAuthor: string;
+                    bookCover: string;
+                    bookPublisher: string;
+                    bookPublishingYear: number;
+                  },
+                  index: number,
+                ) => (
+                  <BookItem key={index}>
+                    <BookImage source={{uri: book.bookCover}} />
+                    <BookInfo>
+                      <BookTitle>
+                        {highlightMatchedText(book.bookTitle)}
+                      </BookTitle>
+                      <BookAuthor>
+                        {highlightMatchedText(book.bookAuthor)}
+                      </BookAuthor>
+                      <BookPublisher>
+                        {book.bookPublisher} ({book.bookPublishingYear})
+                      </BookPublisher>
+                    </BookInfo>
+                  </BookItem>
+                ),
+              )}
         </ResultContainer>
       )}
     </>
@@ -174,6 +217,7 @@ const ResultContainer = styled(View)`
   padding: 10px;
 `;
 
+// 책 관련련
 const BookItem = styled(View)`
   flex-direction: row;
   align-items: center;
@@ -200,6 +244,21 @@ const BookAuthor = styled(Text)`
   color: gray;
 `;
 
+const BookPublisher = styled(Text)`
+  font-size: 14px;
+  color: gray;
+`;
+
+const BookDescription = styled(Text)`
+  font-size: 12px;
+  color: black;
+`;
+
+const BookHashtags = styled(Text)`
+  font-size: 12px;
+  color: blue;
+`;
+
 const NoResultText = styled(Text)`
   font-size: 14px;
   color: gray;
@@ -221,3 +280,4 @@ const HighlightedText = styled(Text)`
 const NormalText = styled(Text)`
   color: black;
 `;
+
