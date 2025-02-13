@@ -1,11 +1,11 @@
 import React from 'react';
-import {View, Image, Text} from 'react-native';
+import {View, Image, Text, ScrollView} from 'react-native';
 import styled from 'styled-components';
 import Interaction from '../Interaction/Interaction';
 
 export default function Content() {
   return (
-    <>
+    <ScrollContainer>
       <ContentWrapper>
         <BookContainer>
           <ResponsiveImage
@@ -36,9 +36,14 @@ export default function Content() {
         </BookRecord>
         <Interaction />
       </ContentWrapper>
-    </>
+    </ScrollContainer>
   );
 }
+
+const ScrollContainer = styled(ScrollView)`
+  flex: 1;
+  background-color: ${({theme}) => theme.colors.white};
+`;
 
 const ContentWrapper = styled(View)`
   padding: 20px;
