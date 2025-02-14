@@ -7,6 +7,7 @@ import {
   Alert,
   TouchableOpacity,
   Text,
+  ScrollView,
 } from 'react-native';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
@@ -35,7 +36,10 @@ export default function Input() {
   const [searchText, setSearchText] = useState<string>('');
   const {t} = useTranslation();
 
-  const mappedSearchText = selectedOption === 'category' ? reverseCategoryMap[searchText] || searchText : searchText;
+  const mappedSearchText =
+    selectedOption === 'category'
+      ? reverseCategoryMap[searchText] || searchText
+      : searchText;
 
   const searchHook =
     selectedOption === 'tag' || selectedOption === 'category'
@@ -119,74 +123,85 @@ export default function Input() {
       {isLoading && <ActivityIndicator size="large" color="gray" />}
 
       {!isLoading && searchResults.length > 0 ? (
-        <ResultContainer>
-          {searchResults.map(
-            (
-              item: {
-                bookTitle: string;
-                bookAuthor?: string;
-                bookCover?: string;
-                bookPublisher?: string;
-                bookPublishingYear?: number;
-                hashtags?: string;
-                category?: string;
-              },
-              index: number,
-            ) => (
-              <BookItem key={index}>
-                <BookImage source={{uri: item.bookCover}} />
-                <BookInfo>
-                  <BookTitle>
-                    {highlightMatchedText(item.bookTitle, searchText)}
-                  </BookTitle>
-                  <BookAuthor>
-                    {highlightMatchedText(item.bookAuthor || '', searchText)}
-                  </BookAuthor>
-                  <BookPublisherContainer>
-                    <BookPublisher>
-                      {highlightMatchedText(
-                        item.bookPublisher || '',
-                        searchText,
-                      )}
-                      /{' '}
-                      {highlightMatchedText(
-                        String(item.bookPublishingYear || ''),
-                        searchText,
-                      )}
-                    </BookPublisher>
-                  </BookPublisherContainer>
-                  {selectedOption === 'tag' && (
-                    <BookTags>
-                      {highlightMatchedText(item.hashtags || '', searchText)}
-                    </BookTags>
-                  )}
-                  {selectedOption === 'category' && item.category && (
-                    <BookTags>
-                      {highlightMatchedText(
-                        categoryMap[item.category] || item.category,
-                        searchText,
-                      )}
-                    </BookTags>
-                  )}
-                </BookInfo>
-              </BookItem>
-            ),
-          )}
-        </ResultContainer>
+        <ScrollContainer>
+          <ResultContainer>
+            {searchResults.map(
+              (
+                item: {
+                  bookTitle: string;
+                  bookAuthor?: string;
+                  bookCover?: string;
+                  bookPublisher?: string;
+                  bookPublishingYear?: number;
+                  hashtags?: string;
+                  category?: string;
+                },
+                index: number,
+              ) => (
+                <BookItem key={index}>
+                  <BookImage source={{uri: item.bookCover}} />
+                  <BookInfo>
+                    <BookTitle>
+                      {highlightMatchedText(item.bookTitle, searchText)}
+                    </BookTitle>
+                    <BookAuthor>
+                      {highlightMatchedText(item.bookAuthor || '', searchText)}
+                    </BookAuthor>
+                    <BookPublisherContainer>
+                      <BookPublisher>
+                        {highlightMatchedText(
+                          item.bookPublisher || '',
+                          searchText,
+                        )}
+                        /{' '}
+                        {highlightMatchedText(
+                          String(item.bookPublishingYear || ''),
+                          searchText,
+                        )}
+                      </BookPublisher>
+                    </BookPublisherContainer>
+                    {selectedOption === 'tag' && (
+                      <BookTags>
+                        {highlightMatchedText(item.hashtags || '', searchText)}
+                      </BookTags>
+                    )}
+                    {selectedOption === 'category' && item.category && (
+                      <BookTags>
+                        {highlightMatchedText(
+                          categoryMap[item.category] || item.category,
+                          searchText,
+                        )}
+                      </BookTags>
+                    )}
+                  </BookInfo>
+                </BookItem>
+              ),
+            )}
+          </ResultContainer>
+        </ScrollContainer>
       ) : (
-        !isLoading && <NoResultText>{t('검색 결과가 없습니다.')}</NoResultText>
+        !isLoading 
       )}
     </>
   );
 }
 
+const ScrollContainer = styled(ScrollView)`
+  flex: 1;
+  margin: 0 20px 10px 20px;
+  width: 90%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: ${({theme}) => theme.colors.white};
+`;
+
 const ContentWrapper = styled(View)`
   display: flex;
-  width: 350px;
+  width: 90%;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
-  margin: 0 14px;
+  margin: 0 16px;
 `;
 
 const SelectWrapper = styled(View)`
@@ -195,12 +210,11 @@ const SelectWrapper = styled(View)`
   align-self: stretch;
   flex-direction: row;
   gap: 6px;
-  width: 100%;
 `;
 
 const SelectContainer = styled(View)`
   display: flex;
-  width: 30%;
+  width: 35%;
   height: 45px;
   justify-content: center;
   border-radius: 8px;
@@ -213,7 +227,7 @@ const SearchContainer = styled(View)`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 70%;
+  width: 65%;
   height: 45px;
   padding: 0 10px;
   border-radius: 8px;
@@ -238,7 +252,7 @@ const ResultContainer = styled(View)`
   padding: 10px;
 `;
 
-// 책 관련련
+// 책 관련
 const BookItem = styled(View)`
   flex-direction: row;
   align-items: center;
@@ -246,8 +260,8 @@ const BookItem = styled(View)`
 `;
 
 const BookImage = styled(Image)`
-  width: 50px;
-  height: 70px;
+  width: 70px;
+  height: 90px;
   margin-right: 10px;
 `;
 
@@ -281,10 +295,11 @@ const BookPublisher = styled(Text)`
   font-weight: 400;
 `;
 
+// 검색 결과 관련
 const NoResultText = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   text-align: center;
-  gap: 10px;
+  margin: 10px;
 `;
 
 const ErrorText = styled(Text)`
