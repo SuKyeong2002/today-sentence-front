@@ -124,13 +124,13 @@ export default function SignUpSteps() {
     }
   }, [password, handleVerifiedPassword]);
 
-  useEffect(() => {
+  const handleBlur = () => {
     if (password.trim() !== "" && confirmPassword.trim() !== "") {
       if (password !== confirmPassword) {
         Alert.alert("오류", "비밀번호가 일치하지 않습니다.");
       }
     }
-  }, [password, confirmPassword]);
+  };
 
   const handleNextStep = async () => {
     if (step === 1) setStep(2);
@@ -227,6 +227,7 @@ export default function SignUpSteps() {
               placeholder="비밀번호"
               placeholderTextColor="#aaa"
               secureTextEntry
+              autoCapitalize="none"
               value={password}
               onChangeText={setPassword}
             />
@@ -251,8 +252,10 @@ export default function SignUpSteps() {
               placeholder="비밀번호"
               placeholderTextColor="#aaa"
               secureTextEntry
+              autoCapitalize="none"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
+              onBlur={handleBlur}
             />
           </View>
         </View>
