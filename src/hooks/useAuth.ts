@@ -19,7 +19,6 @@ import {
   resetPassword,
 } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AxiosError} from 'axios';
 
 interface UseAuthReturn {
   username: string;

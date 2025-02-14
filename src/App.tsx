@@ -17,7 +17,7 @@ import Footer from './components/Footer/Footer';
 import SearchPage from './screens/categorySearch/CategrySearchPage';
 import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
 import SettingScreen from './screens/setting/SettingPage';
-import NewsScreen from './screens/news/NewsPage';
+//import NewsScreen from './screens/news/NewsPage';
 import AlertScreen from './screens/alert/AlertPage';
 import ScreenScreen from './screens/screen/ScreenPage';
 import FontScreen from './screens/font/FontPage';
@@ -116,18 +116,19 @@ export default function App() {
         <ThemeProvider theme={appTheme}>
           <FontProvider>
             <NavigationContainer theme={MyNavigationTheme}>
-              <Stack.Navigator screenOptions={{headerShown: false}}>
+              <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Landing'>
                 <Stack.Screen name="Landing" component={LandingScreen} />
                 <Stack.Screen name="EmailFind" component={EmailFindPage} />
                 <Stack.Screen
                   name="PasswordFind"
                   component={PasswordFindPage}
                 />
+                <Stack.Screen name="Record" component={RecordScreen}/>
                 <Stack.Screen name="NotFound" component={NotFoundPage} />
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen name="SignUp" component={SignUpScreen} />
                 <Stack.Screen name="Home" component={Footer} />
-                <Stack.Screen name="Record" component={Footer} />
+                <Stack.Screen name="RecordScreen" component={Footer} />
                 <Stack.Screen name="Search" component={Footer} />
                 <Stack.Screen name="BookSearch" component={BookSearchScreen} />
                 <Stack.Screen
@@ -149,7 +150,6 @@ export default function App() {
                 />
                 <Stack.Screen name="My" component={Footer} />
                 <Stack.Screen name="Setting" component={SettingScreen} />
-                <Stack.Screen name="News" component={NewsScreen} />
                 <Stack.Screen name="Alert" component={AlertScreen} />
                 <Stack.Screen name="Screen" component={ScreenScreen} />
                 <Stack.Screen name="Font" component={FontScreen} />

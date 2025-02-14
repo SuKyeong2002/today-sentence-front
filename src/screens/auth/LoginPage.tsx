@@ -22,7 +22,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
     } else {
       Alert.alert('로그인 실패', message);
     }
-  }, [message]);
+  }, [message, navigation]);
 
   return (
     <View style={styles.container}>
