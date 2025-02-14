@@ -15,6 +15,7 @@ import {useSearch} from '@/hooks/useSearch';
 import {useTagSearch} from '@/hooks/useTagSearch';
 import {ActivityIndicator} from 'react-native-paper';
 import axios from 'axios';
+import {KAKAO_API_KEY} from "@env";
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -51,7 +52,6 @@ export default function Input() {
   const {data, refetch, error, isLoading} = searchHook;
 
   const searchResults = Array.isArray(data) ? data : data?.content || [];
-  const KAKAO_API_KEY = "f70f38c7b940b127cc6ae676308d53ef";
 
   useEffect(() => {
     const fetchThumbnails = async () => {
