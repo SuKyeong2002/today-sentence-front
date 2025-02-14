@@ -1,5 +1,5 @@
 import {Picker} from '@react-native-picker/picker';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TextInput,
@@ -14,6 +14,7 @@ import {useTranslation} from 'react-i18next';
 import {useSearch} from '@/hooks/useSearch';
 import {useTagSearch} from '@/hooks/useTagSearch';
 import {ActivityIndicator} from 'react-native-paper';
+import axios from 'axios';
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -34,6 +35,7 @@ const reverseCategoryMap = Object.fromEntries(
 export default function Input() {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
+  const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const {t} = useTranslation();
 
   const mappedSearchText =
@@ -49,6 +51,30 @@ export default function Input() {
   const {data, refetch, error, isLoading} = searchHook;
 
   const searchResults = Array.isArray(data) ? data : data?.content || [];
+  const KAKAO_API_KEY = "f70f38c7b940b127cc6ae676308d53ef";
+
+  useEffect(() => {
+    const fetchThumbnails = async () => {
+      const newThumbnails: Record<string, string> = {};
+      for (const item of searchResults) {
+        try {
+          const response = await axios.get(`https://dapi.kakao.com/v3/search/book?query=${item.bookTitle}`, {
+            headers: { Authorization: `KakaoAK ${KAKAO_API_KEY}` },
+          });
+          const thumbnailUrl = response.data.documents?.[0]?.thumbnail || '';
+          newThumbnails[item.bookTitle] = thumbnailUrl;
+        } catch (error) {
+          console.error('Failed to fetch thumbnail:', error);
+        }
+      }
+      setThumbnails(newThumbnails);
+    };
+
+    if (searchResults.length > 0) {
+      fetchThumbnails();
+    }
+  }, [searchResults]);
+
 
   const onSearchPress = async () => {
     if (!selectedOption) {
@@ -139,7 +165,7 @@ export default function Input() {
                 index: number,
               ) => (
                 <BookItem key={index}>
-                  <BookImage source={{uri: item.bookCover}} />
+                  <BookImage source={{ uri: thumbnails[item.bookTitle] || 'https://via.placeholder.com/150' }} />
                   <BookInfo>
                     <BookTitle>
                       {highlightMatchedText(item.bookTitle, searchText)}
