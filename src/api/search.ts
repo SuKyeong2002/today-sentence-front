@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiClient } from './auth';
 
-export const fetchSearchResults = async (type: string, search: string, page = 1, size = 10) => {
+export const fetchSearchResults = async (type: string, search: string, page: number, size: number) => {
     console.log("검색 요청:", { type, search, page, size });
   
     try {
