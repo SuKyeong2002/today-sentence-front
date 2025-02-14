@@ -44,6 +44,246 @@
     {
       "path": "src/assets/fonts/PretendardSemiBold.ttf",
       "sha1": "e247ab351a1797b1a81f7a5e945c416de9f7fd91"
+    },
+    {
+      "path": "src/assets/image/accountUser.png",
+      "sha1": "560f2a63212f0bceb7a91b562b44d0c70c4c06bf"
+    },
+    {
+      "path": "src/assets/image/app-icon.png",
+      "sha1": "7c31de9ee24c1c271029e18a8d62241c50683eab"
+    },
+    {
+      "path": "src/assets/image/back.png",
+      "sha1": "e31aaf15492c14274fdbbcab307af918f11fe162"
+    },
+    {
+      "path": "src/assets/image/back2.png",
+      "sha1": "08f967862cd35f083eee86bcd8de6560919de1d4"
+    },
+    {
+      "path": "src/assets/image/bookCover.png",
+      "sha1": "e0fb1de40acf5d132bdc07f6f33bdea78feded7b"
+    },
+    {
+      "path": "src/assets/image/bookCover2.png",
+      "sha1": "e4e5d7681b296a94b214093c3d6d3b25726d71b7"
+    },
+    {
+      "path": "src/assets/image/bookCover3.png",
+      "sha1": "c789f83a80eba8e8501d09c95c445c784120ac01"
+    },
+    {
+      "path": "src/assets/image/bookCover4.png",
+      "sha1": "c0c8f2909015928156a17602818696d79eb0e29d"
+    },
+    {
+      "path": "src/assets/image/bookCover5.png",
+      "sha1": "43b7547b8dfd61747cb0b33faa6578fc4098ae00"
+    },
+    {
+      "path": "src/assets/image/bookCover6.png",
+      "sha1": "c674d69e1da0f3b5eaf9f3e7fe816915ae5dedb7"
+    },
+    {
+      "path": "src/assets/image/bookCover7.png",
+      "sha1": "c5b3922c553fb096d5d4801b070519bfa7c51381"
+    },
+    {
+      "path": "src/assets/image/bookCover8.png",
+      "sha1": "90d5342f1a78e077e997eebc47689b48523be6e0"
+    },
+    {
+      "path": "src/assets/image/bookMark.png",
+      "sha1": "ef30b682786b9ff9b6ed7d0f0e1cc46667a80e77"
+    },
+    {
+      "path": "src/assets/image/category.png",
+      "sha1": "e6a5c9e270a38a3b4601e71ad3c1125070dd6a48"
+    },
+    {
+      "path": "src/assets/image/categoryList.png",
+      "sha1": "7f21697a05a458a1bcc6d231f7bf878d70011301"
+    },
+    {
+      "path": "src/assets/image/categoryUser.png",
+      "sha1": "3faf9d74764282a14394c21b83c541d38d2aea0c"
+    },
+    {
+      "path": "src/assets/image/change.png",
+      "sha1": "34aed0955d3054aacdba0f4ee65b3957b0fb30d9"
+    },
+    {
+      "path": "src/assets/image/chat.png",
+      "sha1": "25c12de361d97dcadb6bfa9cf6b4c3fed8ced03c"
+    },
+    {
+      "path": "src/assets/image/clickBookmark.png",
+      "sha1": "be3a1115d3a5c32ca0150ed7433d6450858926e9"
+    },
+    {
+      "path": "src/assets/image/clickCategory.png",
+      "sha1": "739125dc60ab2885cf64cdb96a3f222fdd0ebaae"
+    },
+    {
+      "path": "src/assets/image/clickHeart.png",
+      "sha1": "f03a9deba3e96440a34ef99e97ad7fec27022f4f"
+    },
+    {
+      "path": "src/assets/image/clickHome.png",
+      "sha1": "355e6688f46e65fc9d5fefe66dd80d599ee7da16"
+    },
+    {
+      "path": "src/assets/image/clickNotification.png",
+      "sha1": "937d954c01e67bba9c642f997f095c89f09d96e6"
+    },
+    {
+      "path": "src/assets/image/clickRecord.png",
+      "sha1": "a4352dd5d4e7b8d8e596fdb2583aac07e7841d88"
+    },
+    {
+      "path": "src/assets/image/clickSearch.png",
+      "sha1": "010de3e3efc8ca118648303034acc15a3cbbec3a"
+    },
+    {
+      "path": "src/assets/image/clickUser.png",
+      "sha1": "849b012d3b5b9541d19701866f1558dd36587561"
+    },
+    {
+      "path": "src/assets/image/coin.png",
+      "sha1": "ee6e85e79e483ff3ef82152e7551893abdc96099"
+    },
+    {
+      "path": "src/assets/image/creat.png",
+      "sha1": "740768e0f3924f0f0e1a6fe1b6e73dea8cac4f7b"
+    },
+    {
+      "path": "src/assets/image/feedback.png",
+      "sha1": "23a9179022a483f65d943c5a642df4759d82c0fa"
+    },
+    {
+      "path": "src/assets/image/good.png",
+      "sha1": "f4f3636437814a991416f028fb8e1852f0219b84"
+    },
+    {
+      "path": "src/assets/image/heart.png",
+      "sha1": "21975c3a1e13533bc9c3866e89124b32a5fc7186"
+    },
+    {
+      "path": "src/assets/image/home.png",
+      "sha1": "b4d980d94a2bd4e9a0a4350a422674f3f423b575"
+    },
+    {
+      "path": "src/assets/image/Info.png",
+      "sha1": "972bab1b8b8dd6b8509ccaae876d3edc8b10a753"
+    },
+    {
+      "path": "src/assets/image/InputSearch.png",
+      "sha1": "2af2b612fe477ec6b52d79d1efb9abe5832e6d20"
+    },
+    {
+      "path": "src/assets/image/Landing1.png",
+      "sha1": "9665db246cef56deee3c612ec09a5d74b0f9f679"
+    },
+    {
+      "path": "src/assets/image/Landing2.png",
+      "sha1": "4e1fdfd49794c83fa3e97a9708820b744fc2a72f"
+    },
+    {
+      "path": "src/assets/image/Landing3.png",
+      "sha1": "97004656e0093a69ef1289233897c0a2fc560f59"
+    },
+    {
+      "path": "src/assets/image/Landing4.png",
+      "sha1": "f686933763486fd7d6f8dd515763c4dcab889c56"
+    },
+    {
+      "path": "src/assets/image/Landing5.png",
+      "sha1": "7c7ee7d52376062b7e92155c5fc83eb2a1d80860"
+    },
+    {
+      "path": "src/assets/image/LOGO.png",
+      "sha1": "f38eababb3a93433b226d6ef2eeafc218a775cee"
+    },
+    {
+      "path": "src/assets/image/LOGO2.png",
+      "sha1": "33b2373dd7b8c61723f276e9957421222d2ed92f"
+    },
+    {
+      "path": "src/assets/image/logout.png",
+      "sha1": "6c8a5a7075e3b70fde6bbe5aa0c08750b05a0b57"
+    },
+    {
+      "path": "src/assets/image/membershipWithdrawal.png",
+      "sha1": "0d2deeb6025c29b5b9dc48673bbf27868d1fb917"
+    },
+    {
+      "path": "src/assets/image/modalCancel.png",
+      "sha1": "ecb3314ef272497956e24dcce193ec7fe827bb31"
+    },
+    {
+      "path": "src/assets/image/mypageProfile.png",
+      "sha1": "7ac6385ad17fbfa2dbda7ec912abf9b1cf9ddbdf"
+    },
+    {
+      "path": "src/assets/image/NewLogo.png",
+      "sha1": "a7c7af0d123c96d5a0a927b24a590cb36f1febfd"
+    },
+    {
+      "path": "src/assets/image/NewLogoFrame.png",
+      "sha1": "f38eababb3a93433b226d6ef2eeafc218a775cee"
+    },
+    {
+      "path": "src/assets/image/news.png",
+      "sha1": "f0c1a1fcbacce7eff840511e63c5d8927028e880"
+    },
+    {
+      "path": "src/assets/image/notification.png",
+      "sha1": "ec847c8c85157e6c0036da6b4e736280cbeb72b4"
+    },
+    {
+      "path": "src/assets/image/profileUser.png",
+      "sha1": "2a06badf0eaa89c47d4ae51595059cea97de9085"
+    },
+    {
+      "path": "src/assets/image/qa.png",
+      "sha1": "52bc8e9a5845ee7525fbe3d6541b054d2e08e655"
+    },
+    {
+      "path": "src/assets/image/record.png",
+      "sha1": "e5dd3c8a9be5a827f454e34a95ebbec74af4930c"
+    },
+    {
+      "path": "src/assets/image/rightArrow.png",
+      "sha1": "a682a4d293eb0f2a1ef6fa401b0eec39ad9c74f4"
+    },
+    {
+      "path": "src/assets/image/screen.png",
+      "sha1": "00052b26ba1d8926770592d9d85522ad9a5821f1"
+    },
+    {
+      "path": "src/assets/image/search.png",
+      "sha1": "5d0293f349703fe8923b503fd7b32d1b9169d3f1"
+    },
+    {
+      "path": "src/assets/image/searchProfile.png",
+      "sha1": "56ca8b898604ae8b7a785827cefd9b6e1be5fb49"
+    },
+    {
+      "path": "src/assets/image/setting.png",
+      "sha1": "95acd6a9602b40bad05527dce592637bc5ee4aae"
+    },
+    {
+      "path": "src/assets/image/settingProfileUser.png",
+      "sha1": "76cca9c2b95e55b2c7da4d7e9b99f4f0215da31f"
+    },
+    {
+      "path": "src/assets/image/share.png",
+      "sha1": "872105df18770f7892e89b41752ec9b963bb657c"
+    },
+    {
+      "path": "src/assets/image/user.png",
+      "sha1": "ce3ea001c4d7b8df2bfd456ad93d29e475a705f1"
     }
   ]
 }
