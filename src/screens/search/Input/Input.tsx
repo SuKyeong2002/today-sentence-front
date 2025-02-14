@@ -14,14 +14,32 @@ import {useSearch} from '@/hooks/useSearch';
 import {useTagSearch} from '@/hooks/useTagSearch';
 import {ActivityIndicator} from 'react-native-paper';
 
+const categoryMap: Record<string, string> = {
+  POEM_NOVEL_ESSAY: '시/소설/에세이',
+  ECONOMY_MANAGEMENT: '경제/경영',
+  HISTORY_SOCIETY: '역사/사회',
+  PHILOSOPHY_PSYCHOLOGY: '철학/심리학',
+  SELF_DEVELOPMENT: '자기계발',
+  ARTS_PHYSICAL: '예체능',
+  KID_YOUTH: '아동/청소년',
+  TRAVEL_CULTURE: '여행/문화',
+  ETC: '기타',
+};
+
+const reverseCategoryMap = Object.fromEntries(
+  Object.entries(categoryMap).map(([key, value]) => [value, key]),
+);
+
 export default function Input() {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
   const {t} = useTranslation();
 
+  const mappedSearchText = selectedOption === 'category' ? reverseCategoryMap[searchText] || searchText : searchText;
+
   const searchHook =
-    selectedOption === 'tag'
-      ? useTagSearch(selectedOption, searchText)
+    selectedOption === 'tag' || selectedOption === 'category'
+      ? useTagSearch(selectedOption, mappedSearchText)
       : useSearch(selectedOption, searchText);
 
   const {data, refetch, error, isLoading} = searchHook;
@@ -38,7 +56,7 @@ export default function Input() {
       return;
     }
 
-    console.log('검색 실행:', {type: selectedOption, search: searchText});
+    console.log('검색 실행:', {type: selectedOption, search: mappedSearchText});
 
     try {
       await refetch();
@@ -111,6 +129,7 @@ export default function Input() {
                 bookPublisher?: string;
                 bookPublishingYear?: number;
                 hashtags?: string;
+                category?: string;
               },
               index: number,
             ) => (
@@ -136,9 +155,19 @@ export default function Input() {
                       )}
                     </BookPublisher>
                   </BookPublisherContainer>
-                  <BookTags>
-                    {highlightMatchedText(item.hashtags || '', searchText)}
-                  </BookTags>
+                  {selectedOption === 'tag' && (
+                    <BookTags>
+                      {highlightMatchedText(item.hashtags || '', searchText)}
+                    </BookTags>
+                  )}
+                  {selectedOption === 'category' && item.category && (
+                    <BookTags>
+                      {highlightMatchedText(
+                        categoryMap[item.category] || item.category,
+                        searchText,
+                      )}
+                    </BookTags>
+                  )}
                 </BookInfo>
               </BookItem>
             ),
