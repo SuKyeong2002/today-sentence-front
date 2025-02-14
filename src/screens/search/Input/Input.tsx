@@ -1,5 +1,5 @@
 import {Picker} from '@react-native-picker/picker';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TextInput,
@@ -7,26 +7,85 @@ import {
   Alert,
   TouchableOpacity,
   Text,
+  ScrollView,
 } from 'react-native';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {useSearch} from '@/hooks/useSearch';
 import {useTagSearch} from '@/hooks/useTagSearch';
 import {ActivityIndicator} from 'react-native-paper';
+import axios from 'axios';
+import {KAKAO_API_KEY} from '@env';
 
-export default function Input() {
+const categoryMap: Record<string, string> = {
+  POEM_NOVEL_ESSAY: '시/소설/에세이',
+  ECONOMY_MANAGEMENT: '경제/경영',
+  HISTORY_SOCIETY: '역사/사회',
+  PHILOSOPHY_PSYCHOLOGY: '철학/심리학',
+  SELF_DEVELOPMENT: '자기계발',
+  ARTS_PHYSICAL: '예체능',
+  KID_YOUTH: '아동/청소년',
+  TRAVEL_CULTURE: '여행/문화',
+  ETC: '기타',
+};
+
+const reverseCategoryMap = Object.fromEntries(
+  Object.entries(categoryMap).map(([key, value]) => [value, key]),
+);
+
+interface InputProps {
+  onSearchResultChange?: (hasResults: boolean) => void;
+}
+
+export default function Input({onSearchResultChange}:InputProps) {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
+  const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const {t} = useTranslation();
 
+  const mappedSearchText =
+    selectedOption === 'category'
+      ? reverseCategoryMap[searchText] || searchText
+      : searchText;
+
   const searchHook =
-    selectedOption === 'tag'
-      ? useTagSearch(selectedOption, searchText)
+    selectedOption === 'tag' || selectedOption === 'category'
+      ? useTagSearch(selectedOption, mappedSearchText)
       : useSearch(selectedOption, searchText);
 
   const {data, refetch, error, isLoading} = searchHook;
-
   const searchResults = Array.isArray(data) ? data : data?.content || [];
+
+  useEffect(() => {
+    if (onSearchResultChange) {
+      onSearchResultChange(searchResults.length > 0);
+    }
+  }, [searchResults, onSearchResultChange]);
+
+  useEffect(() => {
+    const fetchThumbnails = async () => {
+      const newThumbnails: Record<string, string> = {};
+      for (const item of searchResults) {
+        try {
+          const response = await axios.get(
+            `https://dapi.kakao.com/v3/search/book?query=${item.bookTitle}`,
+            {
+              headers: {Authorization: `KakaoAK ${KAKAO_API_KEY}`},
+            },
+          );
+          const thumbnailUrl = response.data.documents?.[0]?.thumbnail || '';
+          newThumbnails[item.bookTitle] = thumbnailUrl;
+        } catch (error) {
+          console.error('Failed to fetch thumbnail:', error);
+        }
+      }
+      setThumbnails(newThumbnails);
+    };
+
+    if (searchResults.length > 0) {
+      fetchThumbnails();
+    }
+  }, [searchResults]);
 
   const onSearchPress = async () => {
     if (!selectedOption) {
@@ -38,7 +97,7 @@ export default function Input() {
       return;
     }
 
-    console.log('검색 실행:', {type: selectedOption, search: searchText});
+    console.log('검색 실행:', {type: selectedOption, search: mappedSearchText});
 
     try {
       await refetch();
@@ -101,63 +160,95 @@ export default function Input() {
       {isLoading && <ActivityIndicator size="large" color="gray" />}
 
       {!isLoading && searchResults.length > 0 ? (
-        <ResultContainer>
-          {searchResults.map(
-            (
-              item: {
-                bookTitle: string;
-                bookAuthor?: string;
-                bookCover?: string;
-                bookPublisher?: string;
-                bookPublishingYear?: number;
-                hashtags?: string;
-              },
-              index: number,
-            ) => (
-              <BookItem key={index}>
-                <BookImage source={{uri: item.bookCover}} />
-                <BookInfo>
-                  <BookTitle>
-                    {highlightMatchedText(item.bookTitle, searchText)}
-                  </BookTitle>
-                  <BookAuthor>
-                    {highlightMatchedText(item.bookAuthor || '', searchText)}
-                  </BookAuthor>
-                  <BookPublisherContainer>
-                    <BookPublisher>
-                      {highlightMatchedText(
-                        item.bookPublisher || '',
-                        searchText,
+        <ScrollContainer>
+          <ResultContainer>
+            {searchResults.map(
+              (
+                item: {
+                  bookTitle: string;
+                  bookAuthor?: string;
+                  bookCover?: string;
+                  bookPublisher?: string;
+                  bookPublishingYear?: number;
+                  hashtags?: string;
+                  category?: string;
+                },
+                index: number,
+              ) => (
+                <BookItem key={index}>
+                  <BookWrapper>
+                    <BookImage
+                      source={{
+                        uri:
+                          thumbnails[item.bookTitle] ||
+                          'https://via.placeholder.com/150',
+                      }}
+                    />
+                    <BookInfo>
+                      <BookTitle>
+                        {highlightMatchedText(item.bookTitle, searchText)}
+                      </BookTitle>
+                      <BookAuthor>
+                        {highlightMatchedText(
+                          item.bookAuthor || '',
+                          searchText,
+                        )}
+                      </BookAuthor>
+                      <BookPublisherContainer>
+                        <BookPublisher>
+                          {highlightMatchedText(
+                            item.bookPublisher || '',
+                            searchText,
+                          )}
+                          /{' '}
+                          {highlightMatchedText(
+                            String(item.bookPublishingYear || ''),
+                            searchText,
+                          )}
+                        </BookPublisher>
+                      </BookPublisherContainer>
+                      {selectedOption === 'tag' && (
+                        <BookTags>
+                          {highlightMatchedText(
+                            item.hashtags || '',
+                            searchText,
+                          )}
+                        </BookTags>
                       )}
-                      /{' '}
-                      {highlightMatchedText(
-                        String(item.bookPublishingYear || ''),
-                        searchText,
+                      {selectedOption === 'category' && item.category && (
+                        <BookTags>
+                          {highlightMatchedText(
+                            categoryMap[item.category] || item.category,
+                            searchText,
+                          )}
+                        </BookTags>
                       )}
-                    </BookPublisher>
-                  </BookPublisherContainer>
-                  <BookTags>
-                    {highlightMatchedText(item.hashtags || '', searchText)}
-                  </BookTags>
-                </BookInfo>
-              </BookItem>
-            ),
-          )}
-        </ResultContainer>
+                    </BookInfo>
+                  </BookWrapper>
+                </BookItem>
+              ),
+            )}
+          </ResultContainer>
+        </ScrollContainer>
       ) : (
-        !isLoading && <NoResultText>{t('검색 결과가 없습니다.')}</NoResultText>
+        !isLoading
       )}
     </>
   );
 }
 
+const ScrollContainer = styled(ScrollView)`
+  margin: 0 20px 10px 20px;
+  width: 90%;
+`;
+
 const ContentWrapper = styled(View)`
   display: flex;
-  width: 350px;
+  width: 90%;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
-  margin: 0 14px;
+  margin: 0 16px;
 `;
 
 const SelectWrapper = styled(View)`
@@ -166,12 +257,11 @@ const SelectWrapper = styled(View)`
   align-self: stretch;
   flex-direction: row;
   gap: 6px;
-  width: 100%;
 `;
 
 const SelectContainer = styled(View)`
   display: flex;
-  width: 30%;
+  width: 35%;
   height: 45px;
   justify-content: center;
   border-radius: 8px;
@@ -184,12 +274,12 @@ const SearchContainer = styled(View)`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 70%;
+  width: 65%;
   height: 45px;
   padding: 0 10px;
   border-radius: 8px;
   border: 1px solid #ededed;
-  background: #fff;
+  background: ${({theme}) => theme.colors.white};
 `;
 
 const StyledTextInput = styled(TextInput)`
@@ -206,24 +296,31 @@ const SearchImage = styled(Image)`
 `;
 
 const ResultContainer = styled(View)`
-  padding: 10px;
+  background: ${({theme}) => theme.colors.background};
 `;
 
-// 책 관련련
-const BookItem = styled(View)`
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
-`;
+// 책 관련
+const BookItem = styled(View)``;
 
 const BookImage = styled(Image)`
-  width: 50px;
-  height: 70px;
-  margin-right: 10px;
+  width: 90px;
+  height: 130px;
+  margin-right: 32px;
+  border-radius: 10px;
 `;
 
 const BookInfo = styled(View)`
   flex-direction: column;
+  gap: 5px;
+`;
+
+const BookWrapper = styled(View)`
+  margin-top: 10px;
+  border-radius: 10px;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  background: ${({theme}) => theme.colors.white};
 `;
 
 const BookTags = styled(Text)`
@@ -252,10 +349,11 @@ const BookPublisher = styled(Text)`
   font-weight: 400;
 `;
 
+// 검색 결과 관련
 const NoResultText = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   text-align: center;
-  gap: 10px;
+  margin: 10px;
 `;
 
 const ErrorText = styled(Text)`
