@@ -15,7 +15,7 @@ import {useSearch} from '@/hooks/useSearch';
 import {useTagSearch} from '@/hooks/useTagSearch';
 import {ActivityIndicator} from 'react-native-paper';
 import axios from 'axios';
-import {KAKAO_API_KEY} from "@env";
+import {KAKAO_API_KEY} from '@env';
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -33,7 +33,11 @@ const reverseCategoryMap = Object.fromEntries(
   Object.entries(categoryMap).map(([key, value]) => [value, key]),
 );
 
-export default function Input() {
+interface InputProps {
+  onSearchResultChange?: (hasResults: boolean) => void;
+}
+
+export default function Input({onSearchResultChange}:InputProps) {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
   const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
@@ -50,17 +54,25 @@ export default function Input() {
       : useSearch(selectedOption, searchText);
 
   const {data, refetch, error, isLoading} = searchHook;
-
   const searchResults = Array.isArray(data) ? data : data?.content || [];
+
+  useEffect(() => {
+    if (onSearchResultChange) {
+      onSearchResultChange(searchResults.length > 0);
+    }
+  }, [searchResults, onSearchResultChange]);
 
   useEffect(() => {
     const fetchThumbnails = async () => {
       const newThumbnails: Record<string, string> = {};
       for (const item of searchResults) {
         try {
-          const response = await axios.get(`https://dapi.kakao.com/v3/search/book?query=${item.bookTitle}`, {
-            headers: { Authorization: `KakaoAK ${KAKAO_API_KEY}` },
-          });
+          const response = await axios.get(
+            `https://dapi.kakao.com/v3/search/book?query=${item.bookTitle}`,
+            {
+              headers: {Authorization: `KakaoAK ${KAKAO_API_KEY}`},
+            },
+          );
           const thumbnailUrl = response.data.documents?.[0]?.thumbnail || '';
           newThumbnails[item.bookTitle] = thumbnailUrl;
         } catch (error) {
@@ -74,7 +86,6 @@ export default function Input() {
       fetchThumbnails();
     }
   }, [searchResults]);
-
 
   const onSearchPress = async () => {
     if (!selectedOption) {
@@ -165,60 +176,70 @@ export default function Input() {
                 index: number,
               ) => (
                 <BookItem key={index}>
-                  <BookImage source={{ uri: thumbnails[item.bookTitle] || 'https://via.placeholder.com/150' }} />
-                  <BookInfo>
-                    <BookTitle>
-                      {highlightMatchedText(item.bookTitle, searchText)}
-                    </BookTitle>
-                    <BookAuthor>
-                      {highlightMatchedText(item.bookAuthor || '', searchText)}
-                    </BookAuthor>
-                    <BookPublisherContainer>
-                      <BookPublisher>
+                  <BookWrapper>
+                    <BookImage
+                      source={{
+                        uri:
+                          thumbnails[item.bookTitle] ||
+                          'https://via.placeholder.com/150',
+                      }}
+                    />
+                    <BookInfo>
+                      <BookTitle>
+                        {highlightMatchedText(item.bookTitle, searchText)}
+                      </BookTitle>
+                      <BookAuthor>
                         {highlightMatchedText(
-                          item.bookPublisher || '',
+                          item.bookAuthor || '',
                           searchText,
                         )}
-                        /{' '}
-                        {highlightMatchedText(
-                          String(item.bookPublishingYear || ''),
-                          searchText,
-                        )}
-                      </BookPublisher>
-                    </BookPublisherContainer>
-                    {selectedOption === 'tag' && (
-                      <BookTags>
-                        {highlightMatchedText(item.hashtags || '', searchText)}
-                      </BookTags>
-                    )}
-                    {selectedOption === 'category' && item.category && (
-                      <BookTags>
-                        {highlightMatchedText(
-                          categoryMap[item.category] || item.category,
-                          searchText,
-                        )}
-                      </BookTags>
-                    )}
-                  </BookInfo>
+                      </BookAuthor>
+                      <BookPublisherContainer>
+                        <BookPublisher>
+                          {highlightMatchedText(
+                            item.bookPublisher || '',
+                            searchText,
+                          )}
+                          /{' '}
+                          {highlightMatchedText(
+                            String(item.bookPublishingYear || ''),
+                            searchText,
+                          )}
+                        </BookPublisher>
+                      </BookPublisherContainer>
+                      {selectedOption === 'tag' && (
+                        <BookTags>
+                          {highlightMatchedText(
+                            item.hashtags || '',
+                            searchText,
+                          )}
+                        </BookTags>
+                      )}
+                      {selectedOption === 'category' && item.category && (
+                        <BookTags>
+                          {highlightMatchedText(
+                            categoryMap[item.category] || item.category,
+                            searchText,
+                          )}
+                        </BookTags>
+                      )}
+                    </BookInfo>
+                  </BookWrapper>
                 </BookItem>
               ),
             )}
           </ResultContainer>
         </ScrollContainer>
       ) : (
-        !isLoading 
+        !isLoading
       )}
     </>
   );
 }
 
 const ScrollContainer = styled(ScrollView)`
-  flex: 1;
   margin: 0 20px 10px 20px;
   width: 90%;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background-color: ${({theme}) => theme.colors.white};
 `;
 
 const ContentWrapper = styled(View)`
@@ -258,7 +279,7 @@ const SearchContainer = styled(View)`
   padding: 0 10px;
   border-radius: 8px;
   border: 1px solid #ededed;
-  background: #fff;
+  background: ${({theme}) => theme.colors.white};
 `;
 
 const StyledTextInput = styled(TextInput)`
@@ -275,24 +296,31 @@ const SearchImage = styled(Image)`
 `;
 
 const ResultContainer = styled(View)`
-  padding: 10px;
+  background: ${({theme}) => theme.colors.background};
 `;
 
 // 책 관련
-const BookItem = styled(View)`
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
-`;
+const BookItem = styled(View)``;
 
 const BookImage = styled(Image)`
-  width: 70px;
-  height: 90px;
-  margin-right: 10px;
+  width: 90px;
+  height: 130px;
+  margin-right: 32px;
+  border-radius: 10px;
 `;
 
 const BookInfo = styled(View)`
   flex-direction: column;
+  gap: 5px;
+`;
+
+const BookWrapper = styled(View)`
+  margin-top: 10px;
+  border-radius: 10px;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  background: ${({theme}) => theme.colors.white};
 `;
 
 const BookTags = styled(Text)`
