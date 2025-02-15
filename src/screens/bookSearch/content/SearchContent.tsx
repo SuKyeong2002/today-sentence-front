@@ -1,54 +1,113 @@
-import React from 'react';
-import {View, Image, Text} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Image, Text, ScrollView} from 'react-native';
 import styled from 'styled-components';
 import Interaction from '../../home/Interaction/Interaction';
+import {useRoute} from '@react-navigation/native';
+import {KAKAO_API_KEY} from '@env';
+import axios from 'axios';
+
+const categoryMap: Record<string, string> = {
+  POEM_NOVEL_ESSAY: '시/소설/에세이',
+  ECONOMY_MANAGEMENT: '경제/경영',
+  HISTORY_SOCIETY: '역사/사회',
+  PHILOSOPHY_PSYCHOLOGY: '철학/심리학',
+  SELF_DEVELOPMENT: '자기계발',
+  ARTS_PHYSICAL: '예체능',
+  KID_YOUTH: '아동/청소년',
+  TRAVEL_CULTURE: '여행/문화',
+  ETC: '기타',
+};
+
+interface QuoteData {
+  category: string;
+  bookTitle: string;
+  bookAuthor: string;
+  postContent: string;
+  hashtags: string;
+  likesCount: number;
+  postId: number;
+}
 
 export default function SearchContent() {
+  const route = useRoute();
+  const {quotes = []} = route.params as {quotes?: QuoteData[]};
+  const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const fetchThumbnails = async () => {
+      const newThumbnails: Record<string, string> = {};
+      for (const quote of quotes) {
+        try {
+          const response = await axios.get(
+            `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(quote.bookTitle)}`,
+            {
+              headers: {Authorization: `KakaoAK ${KAKAO_API_KEY}`},
+            },
+          );
+          if (response.data.documents.length > 0) {
+            newThumbnails[quote.bookTitle] =
+              response.data.documents[0].thumbnail;
+          } else {
+            newThumbnails[quote.bookTitle] = 'https://via.placeholder.com/150';
+          }
+        } catch (error) {
+          console.error('Failed to fetch thumbnail:', error);
+        }
+      }
+      setThumbnails(newThumbnails);
+    };
+
+    fetchThumbnails();
+  }, [quotes]);
+
   return (
-    <>
-      <ContentWrapper>
-        <BookContainer>
-          <ResponsiveImage
-            source={require('@/assets/image/bookCover5.png')}
-            resizeMode="contain"
-          />
-          <BookWrapper>
-            <BookCategory>시/소설/에세이</BookCategory>
-            <BookTitle>살아갈 날들을 위한 괴테의 시</BookTitle>
-            <BookWriter>김종원</BookWriter>
-          </BookWrapper>
-        </BookContainer>
-        <BookRecord>
-          <BookSentence>
-            자신을 아는 것은 모든 삶의 출발점입니다. 우리는 수없이 많은 외부의
-            기대 속에서 흔들리고 길을 잃곤 하지만, 진정한 나를 발견하는 순간
-            삶은 비로소 그 의미를 드러냅니다. 스스로의 가치를 믿고 세상에
-            맞추기보다 나다운 삶을 선택하는 용기를 가지세요. 괴테는 말합니다.
-            '스스로에 대한 신뢰가 없다면, 큰일을 할 수 없으며, 작은 일에서도
-            기쁨을 찾을 수 없다.' 삶은 단순히 살아내는 것이 아니라 스스로 의미를
-            만들어가는 과정입니다. 오늘을 사랑하며 내일을 기대하세요. 그것이
-            당신의 인생을 빛나게 할 것입니다.
-          </BookSentence>
-          <BookTag>#오늘의책</BookTag>
-        </BookRecord>
-        <Interaction />
-      </ContentWrapper>
-    </>
+    <ScrollContainer>
+      {quotes.map((quote, index) => (
+        <ContentWrapper key={index}>
+          <BookContainer>
+            <ResponsiveImage
+              source={{
+                uri:
+                  thumbnails[quote.bookTitle] ||
+                  'https://via.placeholder.com/150',
+              }}
+              resizeMode="contain"
+            />
+            <BookWrapper>
+              <BookCategory>
+                {quote.category
+                  ? categoryMap[quote.category] || quote.category
+                  : '카테고리 없음'}
+              </BookCategory>
+              <BookTitle>{quote.bookTitle}</BookTitle>
+              <BookWriter>{quote.bookAuthor}</BookWriter>
+            </BookWrapper>
+          </BookContainer>
+          <BookRecord>
+            <BookSentence>{quote.postContent}</BookSentence>
+            <BookTag>{quote.hashtags}</BookTag>
+          </BookRecord>
+          <Interaction likesCount={quote.likesCount} />
+        </ContentWrapper>
+      ))}
+    </ScrollContainer>
   );
 }
 
+// 스타일 정의
+const ScrollContainer = styled(ScrollView)`
+`;
+
 const ContentWrapper = styled(View)`
   padding: 20px;
-  align-items: flex-start;
   gap: 20px;
-  margin: 0 20px;
+  margin: 10px 20px 10px 20px;
   elevation: 10;
   border-radius: 15px;
   shadow-color: #000;
   background: ${({theme}) => theme.colors.white};
 `;
 
-// 책
 const BookContainer = styled(View)`
   display: flex;
   flex-direction: row;
@@ -106,5 +165,8 @@ const BookTag = styled(Text)`
   color: ${({theme}) => theme.colors.lightGray};
 `;
 
-// 이미지
-const ResponsiveImage = styled(Image)``;
+const ResponsiveImage = styled(Image)`
+  width: 100px;
+  height: 150px;
+  border-radius: 10px;
+`;

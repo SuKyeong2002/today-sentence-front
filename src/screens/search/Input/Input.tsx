@@ -16,6 +16,8 @@ import {useTagSearch} from '@/hooks/useTagSearch';
 import {ActivityIndicator} from 'react-native-paper';
 import axios from 'axios';
 import {KAKAO_API_KEY} from '@env';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -37,11 +39,26 @@ interface InputProps {
   onSearchResultChange?: (hasResults: boolean) => void;
 }
 
-export default function Input({onSearchResultChange}:InputProps) {
+type RootStackParamList = {
+  BookSearch: {
+    category?: string;
+    thumbnail?: string;
+    bookTitle: string;
+    bookAuthor?: string;
+    hashtags?: string;
+    postContent?: string;
+    quotes?: string;
+  };
+};
+
+type NavigationProps = StackNavigationProp<RootStackParamList, 'BookSearch'>;
+
+export default function Input({onSearchResultChange}: InputProps) {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
   const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const {t} = useTranslation();
+  const navigation = useNavigation<NavigationProps>();
 
   const mappedSearchText =
     selectedOption === 'category'
@@ -172,60 +189,76 @@ export default function Input({onSearchResultChange}:InputProps) {
                   bookPublishingYear?: number;
                   hashtags?: string;
                   category?: string;
+                  postContent?: string;
+                  quotes?: string;
                 },
                 index: number,
               ) => (
-                <BookItem key={index}>
-                  <BookWrapper>
-                    <BookImage
-                      source={{
-                        uri:
-                          thumbnails[item.bookTitle] ||
-                          'https://via.placeholder.com/150',
-                      }}
-                    />
-                    <BookInfo>
-                      <BookTitle>
-                        {highlightMatchedText(item.bookTitle, searchText)}
-                      </BookTitle>
-                      <BookAuthor>
-                        {highlightMatchedText(
-                          item.bookAuthor || '',
-                          searchText,
+                <TouchableOpacity
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('BookSearch', {
+                      category: item.category,
+                      thumbnail: thumbnails[item.bookTitle],
+                      bookTitle: item.bookTitle,
+                      bookAuthor: item.bookAuthor,
+                      hashtags: item.hashtags,
+                      postContent: item.postContent,
+                      quotes: searchResults, 
+                    })
+                  }>
+                  <BookItem key={index}>
+                    <BookWrapper>
+                      <BookImage
+                        source={{
+                          uri:
+                            thumbnails[item.bookTitle] ||
+                            'https://via.placeholder.com/150',
+                        }}
+                      />
+                      <BookInfo>
+                        <BookTitle>
+                          {highlightMatchedText(item.bookTitle, searchText)}
+                        </BookTitle>
+                        <BookAuthor>
+                          {highlightMatchedText(
+                            item.bookAuthor || '',
+                            searchText,
+                          )}
+                        </BookAuthor>
+                        <BookPublisherContainer>
+                          <BookPublisher>
+                            {highlightMatchedText(
+                              item.bookPublisher || '',
+                              searchText,
+                            )}
+                            /{' '}
+                            {highlightMatchedText(
+                              String(item.bookPublishingYear || ''),
+                              searchText,
+                            )}
+                          </BookPublisher>
+                        </BookPublisherContainer>
+                        {selectedOption === 'tag' && (
+                          <BookTags>
+                            {highlightMatchedText(
+                              item.hashtags || '',
+                              searchText,
+                            )}
+                          </BookTags>
                         )}
-                      </BookAuthor>
-                      <BookPublisherContainer>
-                        <BookPublisher>
-                          {highlightMatchedText(
-                            item.bookPublisher || '',
-                            searchText,
-                          )}
-                          /{' '}
-                          {highlightMatchedText(
-                            String(item.bookPublishingYear || ''),
-                            searchText,
-                          )}
-                        </BookPublisher>
-                      </BookPublisherContainer>
-                      {selectedOption === 'tag' && (
-                        <BookTags>
-                          {highlightMatchedText(
-                            item.hashtags || '',
-                            searchText,
-                          )}
-                        </BookTags>
-                      )}
-                      {selectedOption === 'category' && item.category && (
-                        <BookTags>
-                          {highlightMatchedText(
-                            categoryMap[item.category] || item.category,
-                            searchText,
-                          )}
-                        </BookTags>
-                      )}
-                    </BookInfo>
-                  </BookWrapper>
-                </BookItem>
+                        {selectedOption === 'category' && item.category && (
+                          <BookTags>
+                            {highlightMatchedText(
+                              categoryMap[item.category] || item.category,
+                              searchText,
+                            )}
+                          </BookTags>
+                        )}
+                      </BookInfo>
+                    </BookWrapper>
+                  </BookItem>
+                </TouchableOpacity>
               ),
             )}
           </ResultContainer>

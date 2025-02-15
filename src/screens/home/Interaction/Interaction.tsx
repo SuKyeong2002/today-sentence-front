@@ -1,9 +1,15 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {View, Image, Text, Alert, TouchableOpacity} from 'react-native';
+import {useRoute} from '@react-navigation/native';
 
-export default function Interaction() {
+interface InteractionProps {
+  likesCount: number; 
+}
+
+export default function Interaction({ likesCount }: InteractionProps) {
   const [isHeartClicked, setIsHeartClicked] = useState(false);
+  const [currentLikes, setCurrentLikes] = useState(likesCount);
   const [isBookmarkClicked, setIsBookmarkClicked] = useState(false);
 
   const handleHeartClick = () => {
@@ -29,7 +35,7 @@ export default function Interaction() {
                 resizeMode="contain"
               />
             </HeartWrapper>
-            <HeartNumber>0</HeartNumber>
+            <HeartNumber>{currentLikes}</HeartNumber>
           </HeartContainer>
         </TouchableOpacity>
 

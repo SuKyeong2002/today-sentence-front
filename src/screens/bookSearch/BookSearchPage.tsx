@@ -4,9 +4,6 @@ import {View, FlatList} from 'react-native';
 import React from 'react';
 import SearchContent from './content/SearchContent';
 
-// 10개 더미 데이터
-const DATA = Array(10).fill(0);
-
 export default function BookSearchPage() {
   return (
     <Container>
@@ -15,15 +12,7 @@ export default function BookSearchPage() {
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
-      <FlatList
-        data={DATA}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={() => (
-          <BooklistWrapper>
-            <SearchContent />
-          </BooklistWrapper>
-        )}
-      />
+      <SearchContent />
     </Container>
   );
 }
