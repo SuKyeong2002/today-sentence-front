@@ -9,7 +9,7 @@ export const useTagSearch = (type: string, query: string, page = 1, size = 10) =
   
         const response = await apiClient.get("/api/search/hashtags", {
           // params: { type, search, page: page - 1, size },
-          params: {query}
+          params: {type, query, page: page - 1, size}
         });
   
         console.log("검색 결과:", response.data);

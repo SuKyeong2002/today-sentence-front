@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, Image, Text, ScrollView } from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {View, Image, Text, ScrollView} from 'react-native';
 import styled from 'styled-components';
 import Interaction from '../../home/Interaction/Interaction';
-import { useRoute } from '@react-navigation/native';
-import { KAKAO_API_KEY } from '@env';
+import {useRoute} from '@react-navigation/native';
+import {KAKAO_API_KEY} from '@env';
 import axios from 'axios';
-import { useBookSearch } from '@/hooks/useBookSearch';
-import { useTagSearch } from '@/hooks/useTagSearch';
+import {useBookSearch} from '@/hooks/useBookSearch';
+import {useTagSearch} from '@/hooks/useTagSearch';
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -32,17 +32,20 @@ interface QuoteData {
 
 export default function SearchContent() {
   const route = useRoute();
-  const { bookTitle, tag } = route.params as { bookTitle?: string; tag?: string };
+  const {bookTitle} = route.params as {bookTitle?: string;};
+  const {tag} = route.params as {tag?: string};
 
-  const { data: bookData = [] } = useBookSearch(bookTitle || "");
-  const { data: tagData = [] } = useTagSearch("tag", tag || "");
+  const {data: bookData = []} = useBookSearch(bookTitle || '');
+  const {data: tagData = []} = useTagSearch('tag', tag || '');
 
   let quotes: QuoteData[] = [];
 
   if (bookTitle) {
     quotes = bookData as QuoteData[];
   } else if (tag) {
-    quotes = (tagData as QuoteData[]).filter((quote) => quote.hashtags.includes(tag));
+    quotes = (tagData as QuoteData[]).filter(quote =>
+      (quote.hashtags || "").includes(tag) 
+    );    
   }
 
   const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
@@ -54,23 +57,26 @@ export default function SearchContent() {
 
       const newThumbnails: Record<string, string> = {};
       for (const quote of quotes) {
-        if (!quote.bookTitle || fetchedTitles.current.has(quote.bookTitle)) continue;
+        if (!quote.bookTitle || fetchedTitles.current.has(quote.bookTitle))
+          continue;
         fetchedTitles.current.add(quote.bookTitle);
 
         try {
           const response = await axios.get(
             `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(quote.bookTitle)}`,
             {
-              headers: { Authorization: `KakaoAK ${KAKAO_API_KEY}` },
+              headers: {Authorization: `KakaoAK ${KAKAO_API_KEY}`},
             },
           );
-          newThumbnails[quote.bookTitle] = response.data.documents?.[0]?.thumbnail || 'https://via.placeholder.com/150';
+          newThumbnails[quote.bookTitle] =
+            response.data.documents?.[0]?.thumbnail ||
+            'https://via.placeholder.com/150';
         } catch (error) {
           console.error('Failed to fetch thumbnail:', error);
         }
       }
 
-      setThumbnails((prev) => ({ ...prev, ...newThumbnails }));
+      setThumbnails(prev => ({...prev, ...newThumbnails}));
     };
 
     fetchThumbnails();
@@ -78,19 +84,24 @@ export default function SearchContent() {
 
   return (
     <ScrollContainer>
+      {tag ? <TitleText>'{tag}' 태그 명언</TitleText> : null}
       {quotes.length > 0 ? (
         quotes.map((quote: QuoteData, index: number) => (
           <ContentWrapper key={index}>
             <BookContainer>
               <ResponsiveImage
                 source={{
-                  uri: thumbnails[quote.bookTitle] || 'https://via.placeholder.com/150',
+                  uri:
+                    thumbnails[quote.bookTitle] ||
+                    'https://via.placeholder.com/150',
                 }}
                 resizeMode="contain"
               />
               <BookWrapper>
                 <BookCategory>
-                  {categoryMap[quote.category] || quote.category || '카테고리 없음'}
+                  {categoryMap[quote.category] ||
+                    quote.category ||
+                    '카테고리 없음'}
                 </BookCategory>
                 <BookTitle>{quote.bookTitle}</BookTitle>
                 <BookWriter>{quote.bookAuthor}</BookWriter>
@@ -111,6 +122,14 @@ export default function SearchContent() {
 }
 
 // 스타일 정의
+
+const TitleText = styled(Text)`
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
 const ScrollContainer = styled(ScrollView)``;
 
 const ContentWrapper = styled(View)`
@@ -118,7 +137,7 @@ const ContentWrapper = styled(View)`
   gap: 20px;
   margin: 10px 20px;
   border-radius: 15px;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({theme}) => theme.colors.white};
 `;
 
 const BookContainer = styled(View)`
@@ -138,7 +157,7 @@ const BookWrapper = styled(View)`
 `;
 
 const BookCategory = styled(Text)`
-  font-size: ${({ theme }) => theme.fontSizes.small}px;
+  font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: var(--Gray, rgba(80, 80, 80, 0.33));
   border-radius: 8px;
@@ -147,12 +166,12 @@ const BookCategory = styled(Text)`
 `;
 
 const BookTitle = styled(Text)`
-  font-size: ${({ theme }) => theme.fontSizes.title}px;
+  font-size: ${({theme}) => theme.fontSizes.title}px;
   font-weight: 600;
 `;
 
 const BookWriter = styled(Text)`
-  font-size: ${({ theme }) => theme.fontSizes.regular}px;
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 500;
 `;
 
@@ -165,12 +184,12 @@ const BookRecord = styled(View)`
 `;
 
 const BookSentence = styled(Text)`
-  font-size: ${({ theme }) => theme.fontSizes.regular}px;
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
 `;
 
 const BookTag = styled(Text)`
-  font-size: ${({ theme }) => theme.fontSizes.small}px;
+  font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
 `;
 

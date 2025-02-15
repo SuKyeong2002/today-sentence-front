@@ -48,6 +48,7 @@ type RootStackParamList = {
     hashtags?: string;
     postContent?: string;
     quotes?: string;
+    tags?: string;
   };
 };
 
@@ -60,14 +61,9 @@ export default function Input({onSearchResultChange}: InputProps) {
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProps>();
 
-  const mappedSearchText =
-    selectedOption === 'category'
-      ? reverseCategoryMap[searchText] || searchText
-      : searchText;
-
   const searchHook =
-    selectedOption === 'tag' || selectedOption === 'category'
-      ? useTagSearch(selectedOption, mappedSearchText)
+    selectedOption === 'tag'
+      ? useTagSearch(selectedOption, searchText)
       : useSearch(selectedOption, searchText);
 
   const {data, refetch, error, isLoading} = searchHook;
@@ -123,7 +119,7 @@ export default function Input({onSearchResultChange}: InputProps) {
       return;
     }
 
-    console.log('검색 실행:', {type: selectedOption, search: mappedSearchText});
+    console.log('검색 실행:', {type: selectedOption, search: searchText});
 
     try {
       await refetch();
@@ -189,9 +185,12 @@ export default function Input({onSearchResultChange}: InputProps) {
               key={index}
               isTitleOrAuthor={false}
               isTagSearch={true}>
-              <BookWrapper>
-                <BookTag>#{tag}</BookTag>
-              </BookWrapper>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('BookSearch', {tag})}>
+                <BookWrapper>
+                  <BookTag>#{tag}</BookTag>
+                </BookWrapper>
+              </TouchableOpacity>
             </ScrollContainer>
           ))}
         </TagListContainer>
@@ -217,6 +216,7 @@ export default function Input({onSearchResultChange}: InputProps) {
                   category?: string;
                   postContent?: string;
                   quotes?: string;
+                  tag?: string;
                 },
                 index: number,
               ) => (
