@@ -73,6 +73,9 @@ export default function Input({onSearchResultChange}: InputProps) {
   const {data, refetch, error, isLoading} = searchHook;
   const searchResults = Array.isArray(data) ? data : data?.content || [];
 
+  const [tags, setTags] = useState<string[]>([]);
+  console.log(data);
+
   useEffect(() => {
     if (onSearchResultChange) {
       onSearchResultChange(searchResults.length > 0);
@@ -177,7 +180,10 @@ export default function Input({onSearchResultChange}: InputProps) {
       {isLoading && <ActivityIndicator size="large" color="gray" />}
 
       {!isLoading && searchResults.length > 0 ? (
-        <ScrollContainer isTitleOrAuthor={selectedOption === "title" || selectedOption === "author"}>
+        <ScrollContainer
+          isTitleOrAuthor={
+            selectedOption === 'title' || selectedOption === 'author'
+          }>
           <ResultContainer>
             {searchResults.map(
               (
@@ -251,12 +257,13 @@ export default function Input({onSearchResultChange}: InputProps) {
                             </BookPublisher>
                           </BookPublisherContainer>
                         )}
-                        {selectedOption === 'tag' && (
+                        {selectedOption === 'tag' && tags?.length > 0 && (
                           <BookTags>
-                            {highlightMatchedText(
-                              item.hashtags || '',
-                              searchText,
-                            )}
+                            {tags.map((tag, index) => (
+                              <Text key={index}>
+                                {highlightMatchedText(tag, searchText)}
+                              </Text>
+                            ))}
                           </BookTags>
                         )}
                         {selectedOption === 'category' && item.category && (
@@ -282,10 +289,11 @@ export default function Input({onSearchResultChange}: InputProps) {
   );
 }
 
-const ScrollContainer = styled(ScrollView)<{ isTitleOrAuthor: boolean }>`
+const ScrollContainer = styled(ScrollView)<{isTitleOrAuthor: boolean}>`
   margin: 0 20px 10px 20px;
-  align-self: ${({ isTitleOrAuthor }) => (isTitleOrAuthor ? "center" : "flex-end")};
-  width: ${({ isTitleOrAuthor }) => (isTitleOrAuthor ? "90%" : "57%")};
+  align-self: ${({isTitleOrAuthor}) =>
+    isTitleOrAuthor ? 'center' : 'flex-end'};
+  width: ${({isTitleOrAuthor}) => (isTitleOrAuthor ? '90%' : '57%')};
 `;
 
 const ContentWrapper = styled(View)`

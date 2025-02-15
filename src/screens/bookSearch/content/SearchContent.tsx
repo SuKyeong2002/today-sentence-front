@@ -34,20 +34,14 @@ export default function SearchContent() {
   const route = useRoute();
   const { bookTitle, tag } = route.params as { bookTitle?: string; tag?: string };
 
-  // 📌 책 제목으로 검색한 경우
   const { data: bookData = [] } = useBookSearch(bookTitle || "");
-
-  // 📌 태그로 검색한 경우
   const { data: tagData = [] } = useTagSearch("tag", tag || "");
 
-  // 📌 최종적으로 보여줄 데이터 (조건 분기)
   let quotes: QuoteData[] = [];
 
   if (bookTitle) {
-    // ✅ 책 제목으로 검색한 경우, 전체 데이터 사용
     quotes = bookData as QuoteData[];
   } else if (tag) {
-    // ✅ 태그 검색 시, 해당 태그를 포함하는 명언만 필터링
     quotes = (tagData as QuoteData[]).filter((quote) => quote.hashtags.includes(tag));
   }
 
@@ -116,7 +110,7 @@ export default function SearchContent() {
   );
 }
 
-// 📌 스타일 정의
+// 스타일 정의
 const ScrollContainer = styled(ScrollView)``;
 
 const ContentWrapper = styled(View)`
