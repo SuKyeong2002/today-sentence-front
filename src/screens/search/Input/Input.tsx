@@ -77,6 +77,12 @@ export default function Input({onSearchResultChange}: InputProps) {
   console.log(data);
 
   useEffect(() => {
+    if (Array.isArray(data) && JSON.stringify(tags) !== JSON.stringify(data)) {
+      setTags(data);
+    }
+  }, [data]);
+
+  useEffect(() => {
     if (onSearchResultChange) {
       onSearchResultChange(searchResults.length > 0);
     }
@@ -153,7 +159,6 @@ export default function Input({onSearchResultChange}: InputProps) {
               <Picker.Item label={t('제목')} value="title" />
               <Picker.Item label={t('저자')} value="author" />
               <Picker.Item label={t('태그')} value="tag" />
-              <Picker.Item label={t('카테고리')} value="category" />
             </Picker>
           </SelectContainer>
 
@@ -177,13 +182,28 @@ export default function Input({onSearchResultChange}: InputProps) {
         <ErrorText>{t('검색에 실패했습니다. 다시 시도해주세요.')}</ErrorText>
       )}
 
-      {isLoading && <ActivityIndicator size="large" color="gray" />}
+      {selectedOption === 'tag' && tags?.length > 0 && (
+        <TagListContainer>
+          {tags.map((tag, index) => (
+            <ScrollContainer
+              key={index}
+              isTitleOrAuthor={false}
+              isTagSearch={true}>
+              <BookWrapper>
+                <BookTag>#{tag}</BookTag>
+              </BookWrapper>
+            </ScrollContainer>
+          ))}
+        </TagListContainer>
+      )}
 
-      {!isLoading && searchResults.length > 0 ? (
+      {isLoading && <ActivityIndicator size="large" color="gray" />}
+      {!isLoading && searchResults.length > 0 && selectedOption !== 'tag' ? (
         <ScrollContainer
           isTitleOrAuthor={
             selectedOption === 'title' || selectedOption === 'author'
-          }>
+          }
+          isTagSearch={false}>
           <ResultContainer>
             {searchResults.map(
               (
@@ -257,23 +277,15 @@ export default function Input({onSearchResultChange}: InputProps) {
                             </BookPublisher>
                           </BookPublisherContainer>
                         )}
+                        {/*
                         {selectedOption === 'tag' && tags?.length > 0 && (
-                          <BookTags>
+                          <>
                             {tags.map((tag, index) => (
-                              <Text key={index}>
-                                {highlightMatchedText(tag, searchText)}
-                              </Text>
+                              <BookTag key={index}>#{tag}</BookTag> 
                             ))}
-                          </BookTags>
+                          </>
                         )}
-                        {selectedOption === 'category' && item.category && (
-                          <BookTags>
-                            {highlightMatchedText(
-                              categoryMap[item.category] || item.category,
-                              searchText,
-                            )}
-                          </BookTags>
-                        )}
+                        */}
                       </BookInfo>
                     </BookWrapper>
                   </BookItem>
@@ -289,7 +301,16 @@ export default function Input({onSearchResultChange}: InputProps) {
   );
 }
 
-const ScrollContainer = styled(ScrollView)<{isTitleOrAuthor: boolean}>`
+const TagListContainer = styled(View)`
+  margin-top: 5px;
+  margin-bottom: 5px;
+  align-items: center;
+`;
+
+const ScrollContainer = styled(ScrollView)<{
+  isTitleOrAuthor: boolean;
+  isTagSearch: boolean;
+}>`
   margin: 0 20px 10px 20px;
   align-self: ${({isTitleOrAuthor}) =>
     isTitleOrAuthor ? 'center' : 'flex-end'};
@@ -377,8 +398,14 @@ const BookWrapper = styled(View)`
   background: ${({theme}) => theme.colors.white};
 `;
 
-const BookTags = styled(Text)`
-  font-size: 12px;
+const BookTagsContainer = styled(Text)`
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+
+const BookTag = styled(Text)`
+  font-size: 14px;
+  margin-bottom: 5px;
 `;
 
 const BookTitle = styled(Text)`
