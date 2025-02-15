@@ -16,6 +16,8 @@ import {useTagSearch} from '@/hooks/useTagSearch';
 import {ActivityIndicator} from 'react-native-paper';
 import axios from 'axios';
 import {KAKAO_API_KEY} from '@env';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -37,24 +39,44 @@ interface InputProps {
   onSearchResultChange?: (hasResults: boolean) => void;
 }
 
-export default function Input({onSearchResultChange}:InputProps) {
+type RootStackParamList = {
+  BookSearch: {
+    category?: string;
+    thumbnail?: string;
+    bookTitle: string;
+    bookAuthor?: string;
+    hashtags?: string;
+    postContent?: string;
+    quotes?: string;
+    tags?: string;
+  };
+};
+
+type NavigationProps = StackNavigationProp<RootStackParamList, 'BookSearch'>;
+
+export default function Input({onSearchResultChange}: InputProps) {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
   const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const {t} = useTranslation();
-
-  const mappedSearchText =
-    selectedOption === 'category'
-      ? reverseCategoryMap[searchText] || searchText
-      : searchText;
+  const navigation = useNavigation<NavigationProps>();
 
   const searchHook =
-    selectedOption === 'tag' || selectedOption === 'category'
-      ? useTagSearch(selectedOption, mappedSearchText)
+    selectedOption === 'tag'
+      ? useTagSearch(selectedOption, searchText)
       : useSearch(selectedOption, searchText);
 
   const {data, refetch, error, isLoading} = searchHook;
   const searchResults = Array.isArray(data) ? data : data?.content || [];
+
+  const [tags, setTags] = useState<string[]>([]);
+  console.log(data);
+
+  useEffect(() => {
+    if (Array.isArray(data) && JSON.stringify(tags) !== JSON.stringify(data)) {
+      setTags(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (onSearchResultChange) {
@@ -97,7 +119,7 @@ export default function Input({onSearchResultChange}:InputProps) {
       return;
     }
 
-    console.log('검색 실행:', {type: selectedOption, search: mappedSearchText});
+    console.log('검색 실행:', {type: selectedOption, search: searchText});
 
     try {
       await refetch();
@@ -133,7 +155,6 @@ export default function Input({onSearchResultChange}:InputProps) {
               <Picker.Item label={t('제목')} value="title" />
               <Picker.Item label={t('저자')} value="author" />
               <Picker.Item label={t('태그')} value="tag" />
-              <Picker.Item label={t('카테고리')} value="category" />
             </Picker>
           </SelectContainer>
 
@@ -157,10 +178,31 @@ export default function Input({onSearchResultChange}:InputProps) {
         <ErrorText>{t('검색에 실패했습니다. 다시 시도해주세요.')}</ErrorText>
       )}
 
-      {isLoading && <ActivityIndicator size="large" color="gray" />}
+      {selectedOption === 'tag' && tags?.length > 0 && (
+        <TagListContainer>
+          {tags.map((tag, index) => (
+            <ScrollContainer
+              key={index}
+              isTitleOrAuthor={false}
+              isTagSearch={true}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('BookSearch', {tag})}>
+                <BookWrapper>
+                  <BookTag>#{tag}</BookTag>
+                </BookWrapper>
+              </TouchableOpacity>
+            </ScrollContainer>
+          ))}
+        </TagListContainer>
+      )}
 
-      {!isLoading && searchResults.length > 0 ? (
-        <ScrollContainer>
+      {isLoading && <ActivityIndicator size="large" color="gray" />}
+      {!isLoading && searchResults.length > 0 && selectedOption !== 'tag' ? (
+        <ScrollContainer
+          isTitleOrAuthor={
+            selectedOption === 'title' || selectedOption === 'author'
+          }
+          isTagSearch={false}>
           <ResultContainer>
             {searchResults.map(
               (
@@ -172,60 +214,82 @@ export default function Input({onSearchResultChange}:InputProps) {
                   bookPublishingYear?: number;
                   hashtags?: string;
                   category?: string;
+                  postContent?: string;
+                  quotes?: string;
+                  tag?: string;
                 },
                 index: number,
               ) => (
-                <BookItem key={index}>
-                  <BookWrapper>
-                    <BookImage
-                      source={{
-                        uri:
-                          thumbnails[item.bookTitle] ||
-                          'https://via.placeholder.com/150',
-                      }}
-                    />
-                    <BookInfo>
-                      <BookTitle>
-                        {highlightMatchedText(item.bookTitle, searchText)}
-                      </BookTitle>
-                      <BookAuthor>
-                        {highlightMatchedText(
-                          item.bookAuthor || '',
-                          searchText,
+                <TouchableOpacity
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('BookSearch', {
+                      category: item.category,
+                      thumbnail: thumbnails[item.bookTitle],
+                      bookTitle: item.bookTitle,
+                      bookAuthor: item.bookAuthor,
+                      hashtags: item.hashtags,
+                      postContent: item.postContent,
+                      quotes: searchResults,
+                    })
+                  }>
+                  <BookItem key={index}>
+                    <BookWrapper>
+                      {(selectedOption === 'title' ||
+                        selectedOption === 'author') && (
+                        <BookImage
+                          source={{
+                            uri:
+                              thumbnails[item.bookTitle] ||
+                              'https://via.placeholder.com/150',
+                          }}
+                        />
+                      )}
+                      <BookInfo>
+                        {(selectedOption === 'title' ||
+                          selectedOption === 'author') && (
+                          <BookTitle>
+                            {highlightMatchedText(item.bookTitle, searchText)}
+                          </BookTitle>
                         )}
-                      </BookAuthor>
-                      <BookPublisherContainer>
-                        <BookPublisher>
-                          {highlightMatchedText(
-                            item.bookPublisher || '',
-                            searchText,
-                          )}
-                          /{' '}
-                          {highlightMatchedText(
-                            String(item.bookPublishingYear || ''),
-                            searchText,
-                          )}
-                        </BookPublisher>
-                      </BookPublisherContainer>
-                      {selectedOption === 'tag' && (
-                        <BookTags>
-                          {highlightMatchedText(
-                            item.hashtags || '',
-                            searchText,
-                          )}
-                        </BookTags>
-                      )}
-                      {selectedOption === 'category' && item.category && (
-                        <BookTags>
-                          {highlightMatchedText(
-                            categoryMap[item.category] || item.category,
-                            searchText,
-                          )}
-                        </BookTags>
-                      )}
-                    </BookInfo>
-                  </BookWrapper>
-                </BookItem>
+                        {(selectedOption === 'title' ||
+                          selectedOption === 'author') && (
+                          <BookAuthor>
+                            {highlightMatchedText(
+                              item.bookAuthor || '',
+                              searchText,
+                            )}
+                          </BookAuthor>
+                        )}
+                        {(selectedOption === 'title' ||
+                          selectedOption === 'author') && (
+                          <BookPublisherContainer>
+                            <BookPublisher>
+                              {highlightMatchedText(
+                                item.bookPublisher || '',
+                                searchText,
+                              )}
+                              /{' '}
+                              {highlightMatchedText(
+                                String(item.bookPublishingYear || ''),
+                                searchText,
+                              )}
+                            </BookPublisher>
+                          </BookPublisherContainer>
+                        )}
+                        {/*
+                        {selectedOption === 'tag' && tags?.length > 0 && (
+                          <>
+                            {tags.map((tag, index) => (
+                              <BookTag key={index}>#{tag}</BookTag> 
+                            ))}
+                          </>
+                        )}
+                        */}
+                      </BookInfo>
+                    </BookWrapper>
+                  </BookItem>
+                </TouchableOpacity>
               ),
             )}
           </ResultContainer>
@@ -237,9 +301,20 @@ export default function Input({onSearchResultChange}:InputProps) {
   );
 }
 
-const ScrollContainer = styled(ScrollView)`
+const TagListContainer = styled(View)`
+  margin-top: 5px;
+  margin-bottom: 5px;
+  align-items: center;
+`;
+
+const ScrollContainer = styled(ScrollView)<{
+  isTitleOrAuthor: boolean;
+  isTagSearch: boolean;
+}>`
   margin: 0 20px 10px 20px;
-  width: 90%;
+  align-self: ${({isTitleOrAuthor}) =>
+    isTitleOrAuthor ? 'center' : 'flex-end'};
+  width: ${({isTitleOrAuthor}) => (isTitleOrAuthor ? '90%' : '57%')};
 `;
 
 const ContentWrapper = styled(View)`
@@ -323,8 +398,14 @@ const BookWrapper = styled(View)`
   background: ${({theme}) => theme.colors.white};
 `;
 
-const BookTags = styled(Text)`
-  font-size: 12px;
+const BookTagsContainer = styled(Text)`
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+
+const BookTag = styled(Text)`
+  font-size: 14px;
+  margin-bottom: 5px;
 `;
 
 const BookTitle = styled(Text)`
