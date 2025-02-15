@@ -27,7 +27,7 @@ export default function SearchContent2() {
           </BookSentence>
           <BookTag>#오늘의책</BookTag>
         </BookRecord>
-        <Interaction />
+        {/* <Interaction /> */}
       </ContentWrapper>
     </>
   );
