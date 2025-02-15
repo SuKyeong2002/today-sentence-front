@@ -5,17 +5,17 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 type RootStackParamList = {
-  BookSearch: undefined;
+  SearchContent2: undefined;
 };
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'BookSearch'>;
+type NavigationProp = StackNavigationProp<RootStackParamList, 'SearchContent2'>;
 
 export default function CategorySearchContent() {
   const navigation = useNavigation<NavigationProp>();
 
   return (
     <>
-      <TouchableOpacity onPress={() => navigation.navigate('BookSearch')}>
+      <TouchableOpacity onPress={() => navigation.navigate('SearchContent2')}>
         <BooklistWrapper>
           <BookImage
             source={require('@/assets/image/bookCover5.png')}

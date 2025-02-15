@@ -65,7 +65,7 @@ export default function ProfilePage() {
             resizeMode="contain"
           />
         </ProfileImageContainer>
-        <ProfileImgText fontFamily={font}>프로필 이미지</ProfileImgText>
+        <ProfileImgText fontFamily={font}>{t('프로필 이미지')}</ProfileImgText>
       </ProfileWrapper>
 
       <ScreenContainer fontFamily={font}>
