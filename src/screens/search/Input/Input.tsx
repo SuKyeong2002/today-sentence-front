@@ -177,7 +177,7 @@ export default function Input({onSearchResultChange}: InputProps) {
       {isLoading && <ActivityIndicator size="large" color="gray" />}
 
       {!isLoading && searchResults.length > 0 ? (
-        <ScrollContainer>
+        <ScrollContainer isTitleOrAuthor={selectedOption === "title" || selectedOption === "author"}>
           <ResultContainer>
             {searchResults.map(
               (
@@ -204,41 +204,53 @@ export default function Input({onSearchResultChange}: InputProps) {
                       bookAuthor: item.bookAuthor,
                       hashtags: item.hashtags,
                       postContent: item.postContent,
-                      quotes: searchResults, 
+                      quotes: searchResults,
                     })
                   }>
                   <BookItem key={index}>
                     <BookWrapper>
-                      <BookImage
-                        source={{
-                          uri:
-                            thumbnails[item.bookTitle] ||
-                            'https://via.placeholder.com/150',
-                        }}
-                      />
+                      {(selectedOption === 'title' ||
+                        selectedOption === 'author') && (
+                        <BookImage
+                          source={{
+                            uri:
+                              thumbnails[item.bookTitle] ||
+                              'https://via.placeholder.com/150',
+                          }}
+                        />
+                      )}
                       <BookInfo>
-                        <BookTitle>
-                          {highlightMatchedText(item.bookTitle, searchText)}
-                        </BookTitle>
-                        <BookAuthor>
-                          {highlightMatchedText(
-                            item.bookAuthor || '',
-                            searchText,
-                          )}
-                        </BookAuthor>
-                        <BookPublisherContainer>
-                          <BookPublisher>
+                        {(selectedOption === 'title' ||
+                          selectedOption === 'author') && (
+                          <BookTitle>
+                            {highlightMatchedText(item.bookTitle, searchText)}
+                          </BookTitle>
+                        )}
+                        {(selectedOption === 'title' ||
+                          selectedOption === 'author') && (
+                          <BookAuthor>
                             {highlightMatchedText(
-                              item.bookPublisher || '',
+                              item.bookAuthor || '',
                               searchText,
                             )}
-                            /{' '}
-                            {highlightMatchedText(
-                              String(item.bookPublishingYear || ''),
-                              searchText,
-                            )}
-                          </BookPublisher>
-                        </BookPublisherContainer>
+                          </BookAuthor>
+                        )}
+                        {(selectedOption === 'title' ||
+                          selectedOption === 'author') && (
+                          <BookPublisherContainer>
+                            <BookPublisher>
+                              {highlightMatchedText(
+                                item.bookPublisher || '',
+                                searchText,
+                              )}
+                              /{' '}
+                              {highlightMatchedText(
+                                String(item.bookPublishingYear || ''),
+                                searchText,
+                              )}
+                            </BookPublisher>
+                          </BookPublisherContainer>
+                        )}
                         {selectedOption === 'tag' && (
                           <BookTags>
                             {highlightMatchedText(
@@ -270,9 +282,10 @@ export default function Input({onSearchResultChange}: InputProps) {
   );
 }
 
-const ScrollContainer = styled(ScrollView)`
+const ScrollContainer = styled(ScrollView)<{ isTitleOrAuthor: boolean }>`
   margin: 0 20px 10px 20px;
-  width: 90%;
+  align-self: ${({ isTitleOrAuthor }) => (isTitleOrAuthor ? "center" : "flex-end")};
+  width: ${({ isTitleOrAuthor }) => (isTitleOrAuthor ? "90%" : "57%")};
 `;
 
 const ContentWrapper = styled(View)`

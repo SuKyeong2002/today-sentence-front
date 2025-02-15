@@ -1,19 +1,19 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {View, Image, Text, Alert, TouchableOpacity} from 'react-native';
-import {useRoute} from '@react-navigation/native';
 
 interface InteractionProps {
-  likesCount: number; 
+  likesCount: number;
 }
 
-export default function Interaction({ likesCount }: InteractionProps) {
+export default function Interaction({likesCount}: InteractionProps) {
   const [isHeartClicked, setIsHeartClicked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likesCount);
   const [isBookmarkClicked, setIsBookmarkClicked] = useState(false);
 
   const handleHeartClick = () => {
     setIsHeartClicked(!isHeartClicked);
+    setCurrentLikes(prev => (isHeartClicked ? prev - 1 : prev + 1));
   };
 
   const handleBookmarkClick = () => {
