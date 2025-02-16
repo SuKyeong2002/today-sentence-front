@@ -64,7 +64,7 @@ export default function Sentence({
       <BookRecord>
         <BookSentence>{postContent}</BookSentence>
         <BookTag>#{hashtags.replace(/,/g, ' #')}</BookTag>
-        <BookTag>{formattedDate}</BookTag>
+        <BookDate>{formattedDate}</BookDate>
         <InteractionContainer>
           <Interaction
             postId={postId}
@@ -131,10 +131,19 @@ const BookSentence = styled(Text)`
 `;
 
 const BookTag = styled(Text)`
+ margin: 4px 0;
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
   color: ${({theme}) => theme.colors.darkGray};
 `;
+
+const BookDate = styled(Text)`
+  margin: 8px 0;
+  font-size: ${({theme}) => theme.fontSizes.small}px;
+  font-weight: 400;
+  color: ${({theme}) => theme.colors.darkGray};
+`;
+
 
 const BookImage = styled(Image)`
   width: 110px;
