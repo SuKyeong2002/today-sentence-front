@@ -84,7 +84,6 @@ export default function Input({onSearchResultChange}: InputProps) {
     }
   }, [searchResults, onSearchResultChange]);
 
-
   const onSearchPress = async () => {
     if (!selectedOption) {
       Alert.alert(t('검색 실패'), t('검색 기준을 선택해주세요!'));
@@ -164,7 +163,9 @@ export default function Input({onSearchResultChange}: InputProps) {
               <TouchableOpacity
                 onPress={() => navigation.navigate('BookSearch', {tag})}>
                 <BookWrapper>
-                  <BookTag>#{tag}</BookTag>
+                  <BookTag>
+                    #{tag}
+                  </BookTag>
                 </BookWrapper>
               </TouchableOpacity>
             </ScrollContainer>
@@ -216,7 +217,7 @@ export default function Input({onSearchResultChange}: InputProps) {
                         <BookImage
                           source={{
                             uri:
-                              item.bookCover||
+                              item.bookCover ||
                               'https://via.placeholder.com/150',
                           }}
                         />
@@ -374,7 +375,7 @@ const BookWrapper = styled(View)`
   background: ${({theme}) => theme.colors.white};
 `;
 
-const BookTagsContainer = styled(Text)`
+const BookTagsContainer = styled(View)`
   flex-direction: column;
   justify-content: flex-start;
 `;
