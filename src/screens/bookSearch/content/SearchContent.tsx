@@ -111,7 +111,7 @@ export default function SearchContent() {
               <BookSentence>{quote.postContent}</BookSentence>
               <BookTag>{quote.hashtags}</BookTag>
             </BookRecord>
-            <Interaction likesCount={quote.likesCount} />
+            <Interaction postId={quote.postId} likesCount={quote.likesCount} />
           </ContentWrapper>
         ))
       ) : (
