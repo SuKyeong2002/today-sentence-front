@@ -39,33 +39,12 @@ interface SearchContentProps {
 }
 
 export default function SearchContent2({ post, sortByLatest }: SearchContentProps) {
-  const [thumbnail, setThumbnail] = useState<string>(post.bookCover); // 기본 표지 설정
-
-  useEffect(() => {
-    const fetchThumbnail = async () => {
-      try {
-        const response = await axios.get(
-          `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(post.bookTitle)}`,
-          {
-            headers: { Authorization: `KakaoAK ${KAKAO_API_KEY}` },
-          }
-        );
-
-        const fetchedThumbnail = response.data.documents?.[0]?.thumbnail || post.bookCover;
-        setThumbnail(fetchedThumbnail); 
-      } catch (error) {
-        console.error('Failed to fetch thumbnail:', error);
-      }
-    };
-
-    fetchThumbnail();
-  }, [post.bookTitle, sortByLatest]); 
 
   return (
     <ScrollContainer>
       <ContentWrapper>
         <BookContainer>
-          <BookImage source={{ uri: thumbnail }} resizeMode="contain" />
+          <BookImage source={{ uri: post.bookCover }} resizeMode="contain" />
           <BookWrapper>
             <BookCategory>{categoryMap[post.category] || '기타'}</BookCategory>
             <BookTitle>{post.bookTitle}</BookTitle>

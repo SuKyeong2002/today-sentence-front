@@ -41,6 +41,7 @@ interface InputProps {
 
 type RootStackParamList = {
   BookSearch: {
+    bookCover?: string;
     category?: string;
     thumbnail?: string;
     bookTitle: string;
@@ -57,7 +58,6 @@ type NavigationProps = StackNavigationProp<RootStackParamList, 'BookSearch'>;
 export default function Input({onSearchResultChange}: InputProps) {
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [searchText, setSearchText] = useState<string>('');
-  const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProps>();
 
@@ -84,30 +84,6 @@ export default function Input({onSearchResultChange}: InputProps) {
     }
   }, [searchResults, onSearchResultChange]);
 
-  useEffect(() => {
-    const fetchThumbnails = async () => {
-      const newThumbnails: Record<string, string> = {};
-      for (const item of searchResults) {
-        try {
-          const response = await axios.get(
-            `https://dapi.kakao.com/v3/search/book?query=${item.bookTitle}`,
-            {
-              headers: {Authorization: `KakaoAK ${KAKAO_API_KEY}`},
-            },
-          );
-          const thumbnailUrl = response.data.documents?.[0]?.thumbnail || '';
-          newThumbnails[item.bookTitle] = thumbnailUrl;
-        } catch (error) {
-          console.error('Failed to fetch thumbnail:', error);
-        }
-      }
-      setThumbnails(newThumbnails);
-    };
-
-    if (searchResults.length > 0) {
-      fetchThumbnails();
-    }
-  }, [searchResults]);
 
   const onSearchPress = async () => {
     if (!selectedOption) {
@@ -225,7 +201,7 @@ export default function Input({onSearchResultChange}: InputProps) {
                   onPress={() =>
                     navigation.navigate('BookSearch', {
                       category: item.category,
-                      thumbnail: thumbnails[item.bookTitle],
+                      bookCover: item.bookCover,
                       bookTitle: item.bookTitle,
                       bookAuthor: item.bookAuthor,
                       hashtags: item.hashtags,
@@ -240,7 +216,7 @@ export default function Input({onSearchResultChange}: InputProps) {
                         <BookImage
                           source={{
                             uri:
-                              thumbnails[item.bookTitle] ||
+                              item.bookCover||
                               'https://via.placeholder.com/150',
                           }}
                         />

@@ -21,6 +21,7 @@ const categoryMap: Record<string, string> = {
 };
 
 interface QuoteData {
+  bookCover: string;
   category: string;
   bookTitle: string;
   bookAuthor: string;
@@ -49,39 +50,7 @@ export default function SearchContent() {
     );
   }
 
-  const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const fetchedTitles = useRef(new Set<string>()); // 중복 요청 방지
-
-  useEffect(() => {
-    const fetchThumbnails = async () => {
-      if (!quotes || quotes.length === 0) return;
-
-      const newThumbnails: Record<string, string> = {};
-      for (const quote of quotes) {
-        if (!quote.bookTitle || fetchedTitles.current.has(quote.bookTitle))
-          continue;
-        fetchedTitles.current.add(quote.bookTitle);
-
-        try {
-          const response = await axios.get(
-            `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(quote.bookTitle)}`,
-            {
-              headers: {Authorization: `KakaoAK ${KAKAO_API_KEY}`},
-            },
-          );
-          newThumbnails[quote.bookTitle] =
-            response.data.documents?.[0]?.thumbnail ||
-            'https://via.placeholder.com/150';
-        } catch (error) {
-          console.error('Failed to fetch thumbnail:', error);
-        }
-      }
-
-      setThumbnails(prev => ({...prev, ...newThumbnails}));
-    };
-
-    fetchThumbnails();
-  }, [quotes]);
 
   return (
     <ScrollContainer>
@@ -93,7 +62,7 @@ export default function SearchContent() {
               <ResponsiveImage
                 source={{
                   uri:
-                    thumbnails[quote.bookTitle] ||
+                    quote.bookCover ||
                     'https://via.placeholder.com/150',
                 }}
                 resizeMode="contain"
