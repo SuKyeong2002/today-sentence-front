@@ -4,6 +4,11 @@ import styled from 'styled-components';
 import Interaction from '../Interaction/Interaction';
 
 export default function Content() {
+  // api 연동 전 임의의 데이터 지정 (404 에러로 실제 유저 id 활용)
+  const likesCount = 42;
+  const bookmarkCount = 8
+  const postId = 29;
+
   return (
     <ScrollContainer>
       <ContentWrapper>
@@ -34,7 +39,7 @@ export default function Content() {
           </BookSentence>
           <BookTag>#영혜 #자아의해체 #노벨문학상작가</BookTag>
         </BookRecord>
-        <Interaction />
+        <Interaction postId={postId} likesCount={likesCount} bookmarkCount={bookmarkCount} />
       </ContentWrapper>
     </ScrollContainer>
   );
@@ -115,4 +120,7 @@ const BookTag = styled(Text)`
 `;
 
 // 이미지
-const ResponsiveImage = styled(Image)``;
+const ResponsiveImage = styled(Image)`
+  width: 110px;
+  height: 150px;
+`;

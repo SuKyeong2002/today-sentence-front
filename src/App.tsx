@@ -7,15 +7,11 @@ import LoginScreen from './screens/auth/LoginPage';
 import SignUpScreen from './screens/auth/SignUpPage';
 import RecordScreen from './screens/record/Record';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
-import BookSearchScreen2 from './screens/bookSearch2/BookSearchPage2';
-import BookSearchScreen3 from './screens/bookSearch3/BookSearchPage3';
-import BookSearchScreen4 from './screens/bookSearch4/BookSearchPage4';
+import categoryBookSearchScreen2 from './screens/bookSearch2/categoryBookSearch';
 import EmailFindPage from './screens/auth/EmailFind';
 import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
-import SearchPage from './screens/categorySearch/CategrySearchPage';
-import CategorySearchScreen from './screens/categorySearch/CategrySearchPage';
 import SettingScreen from './screens/setting/SettingPage';
 import NewsScreen from './screens/news/NewsPage';
 import AlertScreen from './screens/alert/AlertPage';
@@ -74,10 +70,6 @@ const theme = {
   fontFamily: 'PretendardRegular',
 };
 
-const Stack = createStackNavigator();
-
-const queryClient = new QueryClient();
-
 const MyNavigationTheme = {
   ...DefaultTheme,
   colors: {
@@ -85,6 +77,41 @@ const MyNavigationTheme = {
     background: theme.colors.background,
   },
 };
+
+const queryClient = new QueryClient();
+
+  type RootStackParamList = {
+    Landing: undefined;
+    EmailFind: undefined;
+    PasswordFind: undefined;
+    NotFound: undefined;
+    Login: undefined;
+    SignUp: undefined;
+    Home: undefined;
+    Record: undefined;
+    Search: undefined;
+    BookSearch: undefined;
+    categoryBookSearch: { category: string };
+    BookSearch3: undefined;
+    BookSearch4: undefined;
+    Category: undefined;
+    CategorySearch: undefined;
+    My: undefined;
+    Setting: undefined;
+    News: undefined;
+    Alert: undefined;
+    Screen: undefined;
+    Font: undefined;
+    Profile: undefined;
+    Nickname: undefined;
+    Introduction: undefined;
+    Account: undefined;
+    Email: undefined;
+    Password: undefined;
+    Authentication: undefined;
+  };
+  
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   const [language, setLanguage] = useState(i18n.language);
@@ -131,22 +158,10 @@ export default function App() {
                     component={BookSearchScreen}
                   />
                   <Stack.Screen
-                    name="BookSearch2"
-                    component={BookSearchScreen2}
-                  />
-                  <Stack.Screen
-                    name="BookSearch3"
-                    component={BookSearchScreen3}
-                  />
-                  <Stack.Screen
-                    name="BookSearch4"
-                    component={BookSearchScreen4}
+                    name="categoryBookSearch"
+                    component={categoryBookSearchScreen2}
                   />
                   <Stack.Screen name="Category" component={Footer} />
-                  <Stack.Screen
-                    name="CategorySearch"
-                    component={CategorySearchScreen}
-                  />
                   <Stack.Screen name="My" component={Footer} />
                   <Stack.Screen name="Setting" component={SettingScreen} />
                   <Stack.Screen name="News" component={NewsScreen} />

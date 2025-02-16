@@ -2,7 +2,7 @@ import { apiClient } from "@/api/auth";
 import { useQuery } from "react-query";
 
 // 책 제목/저자로 명언 조회
-export const useBookSearch = (search: string, page = 1, size = 10) => {
+export const useBookSearch = (search: string, page = 1, size = 100) => {
   return useQuery(
     ["searchResults", "title", search, page], 
     async () => {
