@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import Interaction from '../Interaction/Interaction';
 
 export default function Content() {
+  const likesCount = 42;
+
   return (
     <ScrollContainer>
       <ContentWrapper>
@@ -34,7 +36,7 @@ export default function Content() {
           </BookSentence>
           <BookTag>#영혜 #자아의해체 #노벨문학상작가</BookTag>
         </BookRecord>
-        <Interaction />
+        <Interaction likesCount={likesCount} />
       </ContentWrapper>
     </ScrollContainer>
   );
@@ -115,4 +117,7 @@ const BookTag = styled(Text)`
 `;
 
 // 이미지
-const ResponsiveImage = styled(Image)``;
+const ResponsiveImage = styled(Image)`
+  width: 110px;
+  height: 150px;
+`;

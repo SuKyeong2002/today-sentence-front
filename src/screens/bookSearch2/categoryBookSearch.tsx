@@ -62,7 +62,7 @@ const Container = styled(View)`
 `;
 
 const BooklistWrapper = styled(View)`
-  margin: 20px 0;
+  margin: 10px 0;
 `;
 
 const NoDataText = styled(Text)`
