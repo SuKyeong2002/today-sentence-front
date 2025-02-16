@@ -1,7 +1,7 @@
 import { apiClient } from "@/api/auth";
 import { useQuery } from "react-query";
 
-export const useTagQuoteSearch = (tag: string, page = 1, size = 10) => {
+export const useTagQuoteSearch = (tag: string, page = 1, size = 100) => {
   return useQuery(
     ["searchResults", "tag", tag, page],
     async () => {

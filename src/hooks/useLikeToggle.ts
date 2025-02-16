@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { apiClient } from "@/api/auth"; // API 클라이언트 통합
+import { apiClient } from "@/api/auth"; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface LikeResponse {
@@ -44,7 +44,7 @@ export const useLikeToggle = () => {
     {
       onSuccess: (_, postId) => {
         console.log(`좋아요 처리 완료 (postId: ${postId})`);
-        queryClient.invalidateQueries(['categoryBookSearch']); // ✅ 자동 UI 업데이트
+        queryClient.invalidateQueries(['categoryBookSearch']); 
       },
       onError: (error) => {
         console.error('좋아요 처리 실패:', error.message);
@@ -56,7 +56,7 @@ export const useLikeToggle = () => {
 // 인증 토큰 가져오는 함수 (401 Unauthorized 방지)
 const getAccessToken = async (): Promise<string | null> => {
   try {
-    const token = await AsyncStorage.getItem('accessToken'); // 🔥 로그인 후 저장된 토큰 가져오기
+    const token = await AsyncStorage.getItem('accessToken'); 
     if (!token) {
       console.warn("저장된 인증 토큰 없음");
       return null;
