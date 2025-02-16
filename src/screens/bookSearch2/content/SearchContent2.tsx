@@ -1,10 +1,10 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {View, Image, Text} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Image, Text } from 'react-native';
 import styled from 'styled-components';
 import axios from 'axios';
-import {KAKAO_API_KEY} from '@env';
+import { KAKAO_API_KEY } from '@env';
 import Interaction from '@/screens/home/Interaction/Interaction';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -30,47 +30,42 @@ interface Post {
   hashtags: string;
   likesCount: number;
   bookmarkCount: number;
+  createAt: string;
 }
 
 interface SearchContentProps {
   post: Post;
+  sortByLatest: boolean;
 }
 
-export default function SearchContent2({post}: SearchContentProps) {
-  const [thumbnail, setThumbnail] = useState<string | null>(null);
-  const fetchedTitles = useRef(new Set<string>()); // 중복 요청 방지
+export default function SearchContent2({ post, sortByLatest }: SearchContentProps) {
+  const [thumbnail, setThumbnail] = useState<string>(post.bookCover); // 기본 표지 설정
 
   useEffect(() => {
     const fetchThumbnail = async () => {
-      if (!post.bookTitle || fetchedTitles.current.has(post.bookTitle)) return;
-      fetchedTitles.current.add(post.bookTitle);
-
       try {
         const response = await axios.get(
           `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(post.bookTitle)}`,
           {
-            headers: {Authorization: `KakaoAK ${KAKAO_API_KEY}`},
-          },
+            headers: { Authorization: `KakaoAK ${KAKAO_API_KEY}` },
+          }
         );
 
-        const fetchedThumbnail = response.data.documents?.[0]?.thumbnail;
-        setThumbnail(fetchedThumbnail || 'https://via.placeholder.com/150');
+        const fetchedThumbnail = response.data.documents?.[0]?.thumbnail || post.bookCover;
+        setThumbnail(fetchedThumbnail); 
       } catch (error) {
         console.error('Failed to fetch thumbnail:', error);
       }
     };
 
     fetchThumbnail();
-  }, [post.bookTitle]);
+  }, [post.bookTitle, sortByLatest]); 
 
   return (
     <ScrollContainer>
       <ContentWrapper>
         <BookContainer>
-          <BookImage
-            source={{uri: thumbnail || post.bookCover}}
-            resizeMode="contain"
-          />
+          <BookImage source={{ uri: thumbnail }} resizeMode="contain" />
           <BookWrapper>
             <BookCategory>{categoryMap[post.category] || '기타'}</BookCategory>
             <BookTitle>{post.bookTitle}</BookTitle>
@@ -93,10 +88,10 @@ const ScrollContainer = styled(ScrollView)`
 `;
 
 const ContentWrapper = styled(View)`
-  padding: 20px 20px 20px 20px;
+  padding: 20px;
   gap: 20px;
   border-radius: 15px;
-  background: ${({theme}) => theme.colors.white};
+  background: ${({ theme }) => theme.colors.white};
 `;
 
 const BookContainer = styled(View)`
@@ -114,25 +109,21 @@ const BookWrapper = styled(View)`
 
 const BookCategory = styled(Text)`
   align-self: flex-start;
-  width: auto;
-  justify-content: center;
-  align-items: flex-start;
-
-  font-size: ${({theme}) => theme.fontSizes.small}px;
+  font-size: ${({ theme }) => theme.fontSizes.small}px;
   font-weight: 500;
-  color: var(--Gray, rgba(80, 80, 80, 0.33));
+  color: rgba(80, 80, 80, 0.33);
   border-radius: 8px;
   background: #f5f4f5;
   padding: 4px 10px;
 `;
 
 const BookTitle = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.title}px;
+  font-size: ${({ theme }) => theme.fontSizes.title}px;
   font-weight: 600;
 `;
 
 const BookWriter = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.regular}px;
+  font-size: ${({ theme }) => theme.fontSizes.regular}px;
   font-weight: 500;
 `;
 
@@ -145,14 +136,14 @@ const BookRecord = styled(View)`
 `;
 
 const BookSentence = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.regular}px;
+  font-size: ${({ theme }) => theme.fontSizes.regular}px;
   font-weight: 400;
 `;
 
 const BookTag = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.small}px;
+  font-size: ${({ theme }) => theme.fontSizes.small}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.gray};
+  color: ${({ theme }) => theme.colors.gray};
 `;
 
 const BookImage = styled(Image)`

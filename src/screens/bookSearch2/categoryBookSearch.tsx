@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, FlatList, ActivityIndicator, Text } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, FlatList, ActivityIndicator, Text, Switch } from 'react-native';
 import styled from 'styled-components';
 import BackHeader from '@/components/Header/BackHeader';
 import SearchContent2 from './content/SearchContent2';
@@ -7,6 +7,7 @@ import { RouteProp } from '@react-navigation/native';
 import { useCategorySearch } from '@/hooks/useCategorySearch';
 
 interface Post {
+  postId: number;
   category: string;
   bookTitle: string;
   bookAuthor: string;
@@ -16,6 +17,7 @@ interface Post {
   postContent: string;
   hashtags: string;
   likesCount: number;
+  createAt: string;
 }
 
 type RootStackParamList = {
@@ -28,7 +30,20 @@ interface Props {
 
 export default function categoryBookSearch({ route }: Props) {
   const { category } = route.params;
-  const {data: posts, isLoading} = useCategorySearch(category);
+  const { data: posts, isLoading } = useCategorySearch(category);
+  const [sortByLatest, setSortByLatest] = useState(false); 
+
+  const sortedPosts = useMemo(() => {
+    if (!posts) return [];
+
+    return [...posts].sort((a, b) => {
+      if (sortByLatest) {
+        return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
+      } else {
+        return b.likesCount - a.likesCount;
+      }
+    });
+  }, [posts, sortByLatest]);
 
   return (
     <Container>
@@ -37,16 +52,20 @@ export default function categoryBookSearch({ route }: Props) {
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
-      
+      <ToggleContainer>
+        <Switch value={sortByLatest} onValueChange={() => setSortByLatest((prev) => !prev)} />
+        <ToggleText>최신순</ToggleText>
+      </ToggleContainer>
+
       {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
-      ) : posts?.length > 0 ? (
+      ) : sortedPosts.length > 0 ? (
         <FlatList
-          data={posts}
+          data={sortedPosts}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <BooklistWrapper>
-              <SearchContent2 post={{...item, postId: item.postId, category}} />
+              <SearchContent2 post={item} sortByLatest={false} />
             </BooklistWrapper>
           )}
         />
@@ -57,8 +76,21 @@ export default function categoryBookSearch({ route }: Props) {
   );
 }
 
+// 스타일 정의
 const Container = styled(View)`
   flex: 1;
+`;
+
+const ToggleContainer = styled(View)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 10px 20px;
+`;
+
+const ToggleText = styled(Text)`
+  font-size: 16px;
+  margin-left: 10px;
 `;
 
 const BooklistWrapper = styled(View)`
