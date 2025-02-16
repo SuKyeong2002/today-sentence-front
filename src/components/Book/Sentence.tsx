@@ -63,7 +63,7 @@ export default function Sentence({
       </BookContainer>
       <BookRecord>
         <BookSentence>{postContent}</BookSentence>
-        <BookTag>#{hashtags.replace(/,/g, ' #')}</BookTag>
+        <BookTag>#{hashtags}</BookTag>
         <BookDate>{formattedDate}</BookDate>
         <InteractionContainer>
           <Interaction
