@@ -16,7 +16,7 @@ import {useTagSearch} from '@/hooks/useTagSearch';
 import {ActivityIndicator} from 'react-native-paper';
 import axios from 'axios';
 import {KAKAO_API_KEY} from '@env';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 const categoryMap: Record<string, string> = {

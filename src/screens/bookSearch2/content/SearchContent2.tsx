@@ -1,50 +1,83 @@
-import React from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {View, Image, Text} from 'react-native';
 import styled from 'styled-components';
-import Interaction from '../../home/Interaction/Interaction';
+import axios from 'axios';
+import {KAKAO_API_KEY} from '@env';
+import Interaction from '@/screens/home/Interaction/Interaction';
 
-export default function SearchContent2() {
+interface Post {
+  category: string;
+  bookTitle: string;
+  bookAuthor: string;
+  bookCover: string;
+  bookPublisher: string;
+  bookPublishingYear: number;
+  postContent: string;
+  hashtags: string;
+  likesCount: number;
+}
+
+interface SearchContentProps {
+  post: Post;
+}
+
+export default function SearchContent2({post}: SearchContentProps) {
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const fetchedTitles = useRef(new Set<string>()); // 중복 요청 방지
+
+  useEffect(() => {
+    const fetchThumbnail = async () => {
+      if (!post.bookTitle || fetchedTitles.current.has(post.bookTitle)) return;
+      fetchedTitles.current.add(post.bookTitle);
+
+      try {
+        const response = await axios.get(
+          `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(post.bookTitle)}`,
+          {
+            headers: {Authorization: `KakaoAK ${KAKAO_API_KEY}`},
+          },
+        );
+
+        const fetchedThumbnail = response.data.documents?.[0]?.thumbnail;
+        setThumbnail(fetchedThumbnail || 'https://via.placeholder.com/150');
+      } catch (error) {
+        console.error('Failed to fetch thumbnail:', error);
+      }
+    };
+
+    fetchThumbnail();
+  }, [post.bookTitle]);
+
   return (
-    <>
-      <ContentWrapper>
-        <BookContainer>
-          <ResponsiveImage
-            source={require('@/assets/image/bookCover6.png')}
-            resizeMode="contain"
-          />
-          <BookWrapper>
-            <BookCategory>시/소설/에세이</BookCategory>
-            <BookTitle>소설 보다 : 겨울 2024</BookTitle>
-            <BookWriter>성혜령, 이주혜, 이희주</BookWriter>
-          </BookWrapper>
-        </BookContainer>
-        <BookRecord>
-          <BookSentence>
-            "야, 너 지금 우리 오빠 버린 거야?" 아니, 내가 버린 게 아니라...
-            백주는 말하려다 말고 주저앉았다. 발밑의 땅이 조금씩 갈라졌다.
-            이제서야, 땅이 꺼지는구나, 백누는 설경이 있는 몇 발자국 앞까지 영영
-            갈 수 없었다.
-          </BookSentence>
-          <BookTag>#오늘의책</BookTag>
-        </BookRecord>
-        {/* <Interaction /> */}
-      </ContentWrapper>
-    </>
+    <ContentWrapper>
+      <BookContainer>
+        <BookImage
+          source={{uri: thumbnail || post.bookCover}}
+          resizeMode="contain"
+        />
+        <BookWrapper>
+          <BookCategory>{post.category}</BookCategory>
+          <BookTitle>{post.bookTitle}</BookTitle>
+          <BookWriter>{post.bookAuthor}</BookWriter>
+        </BookWrapper>
+      </BookContainer>
+      <BookRecord>
+        <BookSentence>"{post.postContent}"</BookSentence>
+        <BookTag>#{post.hashtags.replace(/,/g, ' #')}</BookTag>
+      </BookRecord>
+      <Interaction likesCount={post.likesCount} />
+    </ContentWrapper>
   );
 }
 
 const ContentWrapper = styled(View)`
-  padding: 20px;
-  align-items: flex-start;
+  padding: 20px 20px 20px 20px;
   gap: 20px;
-  margin: 0 20px;
-  elevation: 10;
+  margin: 20px 20px 0 20px;
   border-radius: 15px;
-  shadow-color: #000;
   background: ${({theme}) => theme.colors.white};
 `;
 
-// 책
 const BookContainer = styled(View)`
   display: flex;
   flex-direction: row;
@@ -53,33 +86,34 @@ const BookContainer = styled(View)`
 `;
 
 const BookWrapper = styled(View)`
-  display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  flex: 1 0 0;
-  align-self: stretch;
+  flex: 1;
+  gap: 5px;
 `;
 
 const BookCategory = styled(Text)`
+  align-self: flex-start;
+  width: auto;
+  justify-content: center;
+  align-items: flex-start;
+
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: var(--Gray, rgba(80, 80, 80, 0.33));
   border-radius: 8px;
   background: #f5f4f5;
-  padding: 4px 8px;
+  padding: 4px 10px;
+
 `;
 
 const BookTitle = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.title}px;
   font-weight: 600;
-  color: ${({theme}) => theme.colors.text};
 `;
 
 const BookWriter = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 500;
-  color: ${({theme}) => theme.colors.text};
 `;
 
 const BookRecord = styled(View)`
@@ -93,14 +127,16 @@ const BookRecord = styled(View)`
 const BookSentence = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.text};
 `;
 
 const BookTag = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.lightGray};
+  color: ${({theme}) => theme.colors.gray};
 `;
 
-// 이미지
-const ResponsiveImage = styled(Image)``;
+const BookImage = styled(Image)`
+  width: 100px;
+  height: 150px;
+  border-radius: 10px;
+`;

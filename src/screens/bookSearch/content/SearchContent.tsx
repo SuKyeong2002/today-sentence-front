@@ -32,7 +32,7 @@ interface QuoteData {
 
 export default function SearchContent() {
   const route = useRoute();
-  const {bookTitle} = route.params as {bookTitle?: string;};
+  const {bookTitle} = route.params as {bookTitle?: string};
   const {tag} = route.params as {tag?: string};
 
   const {data: bookData = []} = useBookSearch(bookTitle || '');
@@ -44,8 +44,8 @@ export default function SearchContent() {
     quotes = bookData as QuoteData[];
   } else if (tag) {
     quotes = (tagData as QuoteData[]).filter(quote =>
-      (quote.hashtags || "").includes(tag) 
-    );    
+      (quote.hashtags || '').includes(tag),
+    );
   }
 
   const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
@@ -191,6 +191,7 @@ const BookSentence = styled(Text)`
 const BookTag = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
+  color: ${({theme}) => theme.colors.gray};
 `;
 
 const NoResultText = styled(Text)`

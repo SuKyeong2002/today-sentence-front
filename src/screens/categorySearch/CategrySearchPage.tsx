@@ -4,9 +4,6 @@ import styled from 'styled-components';
 import {useRoute} from '@react-navigation/native';
 import BackHeader from '@/components/Header/BackHeader';
 import CategorySearchContent from './content/CategorySearchContent';
-import CategorySearchContent2 from './content/CategorySearchContent2';
-import CategorySearchContent3 from './content/CategorySearchContent3';
-import CategorySearchContent4 from './content/CategorySearchContent4';
 import {useTranslation} from 'react-i18next';
 
 // 10개의 더미 데이터
@@ -47,9 +44,6 @@ export default function CategorySearchPage() {
       <ScrollView contentContainerStyle={{paddingBottom: 20}}>
         <CategoryContainer>
           <CategorySearchContent />
-          <CategorySearchContent2 />
-          <CategorySearchContent3 />
-          <CategorySearchContent4 />
         </CategoryContainer>
       </ScrollView>
     </Container>

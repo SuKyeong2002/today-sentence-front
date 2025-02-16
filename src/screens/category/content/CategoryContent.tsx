@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type RootStackParamList = {
-  BookSearch2: { category: string, page: number };
+  categoryBookSearch: { category: string, page: number };
 };
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'BookSearch2'>;
+type NavigationProp = StackNavigationProp<RootStackParamList, 'categoryBookSearch'>;
 
 // 카테고리와 그에 해당하는 설명을 맵핑
 const categoryMap: { [key: string]: string } = {
@@ -82,7 +82,7 @@ export default function CategoryList() {
 
   const navigateToPage = (category: string) => {
     const pageNumber = 1;
-    navigation.navigate('BookSearch2', { category, page: pageNumber });
+    navigation.navigate('categoryBookSearch', { category, page: pageNumber });
   };
 
   return (
