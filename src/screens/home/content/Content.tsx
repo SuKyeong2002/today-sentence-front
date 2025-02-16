@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import Interaction from '../Interaction/Interaction';
 
 export default function Content() {
+  // api 연동 전 임의의 데이터 지정 (404 에러로 실제 유저 id 활용)
   const likesCount = 42;
+  const postId = 29;
 
   return (
     <ScrollContainer>
@@ -36,7 +38,7 @@ export default function Content() {
           </BookSentence>
           <BookTag>#영혜 #자아의해체 #노벨문학상작가</BookTag>
         </BookRecord>
-        <Interaction likesCount={likesCount} />
+        <Interaction postId={postId} likesCount={likesCount} />
       </ContentWrapper>
     </ScrollContainer>
   );
