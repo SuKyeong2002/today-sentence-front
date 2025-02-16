@@ -28,6 +28,7 @@ interface Post {
   postContent: string;
   hashtags: string;
   likesCount: number;
+  postId: number;
 }
 
 interface SearchContentProps {
@@ -79,7 +80,7 @@ export default function SearchContent2({post}: SearchContentProps) {
           <BookSentence>"{post.postContent}"</BookSentence>
           <BookTag>#{post.hashtags.replace(/,/g, ' #')}</BookTag>
         </BookRecord>
-        <Interaction likesCount={post.likesCount} />
+        <Interaction postId={post.postId} likesCount={post.likesCount} />
       </ContentWrapper>
     </ScrollContainer>
   );

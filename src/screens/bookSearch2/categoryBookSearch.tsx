@@ -46,7 +46,7 @@ export default function categoryBookSearch({ route }: Props) {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <BooklistWrapper>
-              <SearchContent2 post={{...item, category}} />
+              <SearchContent2 post={{...item, postId: item.postId, category}} />
             </BooklistWrapper>
           )}
         />

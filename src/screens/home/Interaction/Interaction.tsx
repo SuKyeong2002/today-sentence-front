@@ -1,19 +1,30 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {View, Image, Text, Alert, TouchableOpacity} from 'react-native';
+import { useLikeToggle } from '@/hooks/useLikeToggle';
 
 interface InteractionProps {
+  postId: number;
   likesCount: number;
 }
 
-export default function Interaction({likesCount}: InteractionProps) {
-  const [isHeartClicked, setIsHeartClicked] = useState(false);
+export default function Interaction({postId, likesCount}: InteractionProps) {
+  const likeMutation = useLikeToggle();
+  const [isLiked, setIsLiked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likesCount);
   const [isBookmarkClicked, setIsBookmarkClicked] = useState(false);
 
   const handleHeartClick = () => {
-    setIsHeartClicked(!isHeartClicked);
-    setCurrentLikes(prev => (isHeartClicked ? prev - 1 : prev + 1));
+    setIsLiked(!isLiked);
+    setCurrentLikes(prev => (isLiked ? prev - 1 : prev + 1));
+
+    likeMutation.mutate(postId, {
+      onError: () => {
+        // API 실패 시 다시 원래 상태로 복구
+        setIsLiked(!isLiked);
+        setCurrentLikes(prev => (isLiked ? prev + 1 : prev - 1));
+      },
+    });
   };
 
   const handleBookmarkClick = () => {
@@ -28,7 +39,7 @@ export default function Interaction({likesCount}: InteractionProps) {
             <HeartWrapper>
               <HeartImage
                 source={
-                  isHeartClicked
+                  isLiked
                     ? require('@/assets/image/clickHeart.png')
                     : require('@/assets/image/heart.png')
                 }
