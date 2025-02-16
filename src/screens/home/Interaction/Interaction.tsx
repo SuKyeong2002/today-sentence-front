@@ -2,33 +2,46 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import {View, Image, Text, Alert, TouchableOpacity} from 'react-native';
 import { useLikeToggle } from '@/hooks/useLikeToggle';
+import { useBookmarkToggle } from '@/hooks/useBookmarkToggle';
 
 interface InteractionProps {
   postId: number;
   likesCount: number;
+  bookmarkCount: number
 }
 
-export default function Interaction({postId, likesCount}: InteractionProps) {
+export default function Interaction({postId, likesCount, bookmarkCount}: InteractionProps) {
   const likeMutation = useLikeToggle();
+  const bookmarkMutation = useBookmarkToggle();
   const [isLiked, setIsLiked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likesCount);
-  const [isBookmarkClicked, setIsBookmarkClicked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [currentBookmarks, setCurrentBookmarks] = useState(bookmarkCount);
 
+  // 공감 toggle
   const handleHeartClick = () => {
     setIsLiked(!isLiked);
     setCurrentLikes(prev => (isLiked ? prev - 1 : prev + 1));
 
     likeMutation.mutate(postId, {
       onError: () => {
-        // API 실패 시 다시 원래 상태로 복구
         setIsLiked(!isLiked);
         setCurrentLikes(prev => (isLiked ? prev + 1 : prev - 1));
       },
     });
   };
 
+  // 저장 toggle
   const handleBookmarkClick = () => {
-    setIsBookmarkClicked(!isBookmarkClicked);
+    setIsBookmarked(!isBookmarked);
+    setCurrentBookmarks(prev2 => (isBookmarked ? prev2 - 1 : prev2 + 1));
+
+    bookmarkMutation.mutate(postId, {
+      onError: () => {
+        setIsBookmarked(!isBookmarked);
+        setCurrentBookmarks(prev2 => (isBookmarked ? prev2 + 1 : prev2 - 1));
+      },
+    });
   };
 
   return (
@@ -67,14 +80,14 @@ export default function Interaction({postId, likesCount}: InteractionProps) {
             <BookmarkWrapper>
               <BookmarkImage
                 source={
-                  isBookmarkClicked
+                  isBookmarked
                     ? require('@/assets/image/clickBookmark.png')
                     : require('@/assets/image/bookMark.png')
                 }
                 resizeMode="contain"
               />
             </BookmarkWrapper>
-            <BookmarkNumber>0</BookmarkNumber>
+            <BookmarkNumber>{currentBookmarks}</BookmarkNumber>
           </BookmarkContainer>
         </TouchableOpacity>
 

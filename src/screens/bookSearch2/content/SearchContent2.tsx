@@ -19,6 +19,7 @@ const categoryMap: Record<string, string> = {
 };
 
 interface Post {
+  postId: number;
   category: string;
   bookTitle: string;
   bookAuthor: string;
@@ -28,7 +29,7 @@ interface Post {
   postContent: string;
   hashtags: string;
   likesCount: number;
-  postId: number;
+  bookmarkCount: number;
 }
 
 interface SearchContentProps {
@@ -80,7 +81,7 @@ export default function SearchContent2({post}: SearchContentProps) {
           <BookSentence>"{post.postContent}"</BookSentence>
           <BookTag>#{post.hashtags.replace(/,/g, ' #')}</BookTag>
         </BookRecord>
-        <Interaction postId={post.postId} likesCount={post.likesCount} />
+        <Interaction postId={post.postId} likesCount={post.likesCount} bookmarkCount={post.bookmarkCount} />
       </ContentWrapper>
     </ScrollContainer>
   );
