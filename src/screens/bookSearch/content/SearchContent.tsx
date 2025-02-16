@@ -27,6 +27,7 @@ interface QuoteData {
   postContent: string;
   hashtags: string;
   likesCount: number;
+  bookmarkCount: number;
   postId: number;
 }
 
@@ -111,7 +112,7 @@ export default function SearchContent() {
               <BookSentence>{quote.postContent}</BookSentence>
               <BookTag>{quote.hashtags}</BookTag>
             </BookRecord>
-            <Interaction postId={quote.postId} likesCount={quote.likesCount} />
+            <Interaction postId={quote.postId} likesCount={quote.likesCount} bookmarkCount={quote.bookmarkCount} />
           </ContentWrapper>
         ))
       ) : (
