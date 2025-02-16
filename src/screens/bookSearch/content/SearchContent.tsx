@@ -1,22 +1,10 @@
-import React, {useRef} from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView } from 'react-native';
 import styled from 'styled-components';
-import {useRoute} from '@react-navigation/native';
-import {useBookSearch} from '@/hooks/useBookSearch';
-import {useTagSearch} from '@/hooks/useTagSearch';
+import { useRoute } from '@react-navigation/native';
+import { useBookSearch } from '@/hooks/useBookSearch';
+import { useTagQuoteSearch } from '@/hooks/useTagQuoteSearch';
 import Sentence from '@/components/Book/Sentence';
-
-const categoryMap: Record<string, string> = {
-  POEM_NOVEL_ESSAY: '시/소설/에세이',
-  ECONOMY_MANAGEMENT: '경제/경영',
-  HISTORY_SOCIETY: '역사/사회',
-  PHILOSOPHY_PSYCHOLOGY: '철학/심리학',
-  SELF_DEVELOPMENT: '자기계발',
-  ARTS_PHYSICAL: '예체능',
-  KID_YOUTH: '아동/청소년',
-  TRAVEL_CULTURE: '여행/문화',
-  ETC: '기타',
-};
 
 interface QuoteData {
   postId: number;
@@ -34,30 +22,22 @@ interface QuoteData {
 
 export default function SearchContent() {
   const route = useRoute();
-  const {bookTitle} = route.params as {bookTitle?: string};
-  const {tag} = route.params as {tag?: string};
-
-  const {data: bookData = []} = useBookSearch(bookTitle || '');
-  const {data: tagData = []} = useTagSearch('tag', tag || '');
-
-  let quotes: QuoteData[] = [];
-
-  if (bookTitle) {
-    quotes = bookData as QuoteData[];
-  } else if (tag) {
-    quotes = (tagData as QuoteData[]).filter(quote =>
-      (quote.hashtags || '').includes(tag),
-    );
-  }
-
-  const fetchedTitles = useRef(new Set<string>()); // 중복 요청 방지
+  const { bookTitle, tag } = route.params as { bookTitle?: string; tag?: string };
+  const { data: bookQuotes = [], isLoading: bookLoading, error: bookError } = useBookSearch(bookTitle || '');
+  const { data: tagQuotes = [], isLoading: tagLoading, error: tagError } = useTagQuoteSearch(tag || '');
+  const isLoading = bookLoading || tagLoading;
+  const isError = bookError || tagError;
+  const quotes: QuoteData[] = bookTitle ? bookQuotes : tag ? tagQuotes : [];
 
   return (
     <ScrollContainer>
-      {tag ? <TitleText>'{tag}' 태그 명언</TitleText> : null}
-      {quotes.length > 0 ? (
-        quotes.map((quote: QuoteData, index: number) => (
-          <SentenceContainer key={index}>
+      {isLoading ? (
+        <LoadingText>로딩 중...</LoadingText>
+      ) : isError ? (
+        <ErrorText>오류 발생</ErrorText>
+      ) : quotes.length > 0 ? (
+        quotes.map((quote: QuoteData) => (
+          <SentenceContainer key={quote.postId}>
             <Sentence
               postId={quote.postId}
               postWriter={quote.postWriter}
@@ -100,6 +80,19 @@ const NoResultText = styled(Text)`
   font-size: 16px;
   font-weight: 500;
   color: gray;
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const LoadingText = styled(Text)`
+  font-size: 16px;
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const ErrorText = styled(Text)`
+  font-size: 16px;
+  color: red;
   text-align: center;
   margin-top: 20px;
 `;
