@@ -9,9 +9,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
   const [password, setPasswordState] = useState('');
 
   const onLoginPress = async () => {
-    setUsername(email);
-    setPassword(password);
-    await handleLogin();
+    await handleLogin(email, password);
   };
 
   useEffect(() => {

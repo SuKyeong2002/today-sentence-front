@@ -6,7 +6,7 @@ import Interaction from '../Interaction/Interaction';
 export default function Content() {
   // api 연동 전 임의의 데이터 지정 (404 에러로 실제 유저 id 활용)
   const likesCount = 42;
-  const bookmarkCount = 83;
+  const bookmarkCount = 8
   const postId = 29;
 
   return (

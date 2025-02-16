@@ -1,22 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {View, Image, Text, Alert, TouchableOpacity} from 'react-native';
-import { useLikeToggle } from '@/hooks/useLikeToggle';
-import { useBookmarkToggle } from '@/hooks/useBookmarkToggle';
+import {useLikeToggle} from '@/hooks/useLikeToggle';
+import {useBookmarkToggle} from '@/hooks/useBookmarkToggle';
 
 interface InteractionProps {
   postId: number;
   likesCount: number;
-  bookmarkCount: number
+  bookmarkCount: number;
 }
 
-export default function Interaction({postId, likesCount, bookmarkCount}: InteractionProps) {
+export default function Interaction({
+  postId,
+  likesCount,
+  bookmarkCount,
+}: InteractionProps) {
   const likeMutation = useLikeToggle();
   const bookmarkMutation = useBookmarkToggle();
   const [isLiked, setIsLiked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likesCount);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [currentBookmarks, setCurrentBookmarks] = useState(bookmarkCount);
+
+  // postId 변경될 때 상태 업데이트
+  useEffect(() => {
+    setCurrentLikes(likesCount);
+    setCurrentBookmarks(bookmarkCount);
+  }, [likesCount, bookmarkCount, postId]);
 
   // 공감 toggle
   const handleHeartClick = () => {

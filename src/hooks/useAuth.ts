@@ -34,7 +34,7 @@ interface UseAuthReturn {
     password: string,
     nickname: string,
   ) => Promise<void>;
-  handleLogin: () => Promise<void>;
+  handleLogin: (email: string, password: string) => Promise<void>;
   handleChangePassword: (
     oldPassword: string,
     newPassword: string,
@@ -87,9 +87,10 @@ const useAuth = (): UseAuthReturn => {
   });
 
   const loginMutation = useMutation(
-    ({ email, password }: { email: string; password: string }) => signInUser(email, password),
+    ({email, password}: {email: string; password: string}) =>
+      signInUser(email, password),
     {
-      onSuccess: async (data) => {
+      onSuccess: async data => {
         console.log('받은 데이터:', data);
 
         if (data?.accessToken && data?.refreshToken) {
@@ -100,8 +101,8 @@ const useAuth = (): UseAuthReturn => {
           console.warn('토큰이 없습니다:', data);
           setUniqueMessage('로그인 실패 (토큰 없음)');
         }
-      }
-    }
+      },
+    },
   );
 
   const emailValidationMutation = useMutation(
@@ -146,7 +147,7 @@ const useAuth = (): UseAuthReturn => {
     {
       onSuccess: () => {
         setMessage('로그아웃 성공!');
-      }
+      },
     },
   );
 
@@ -180,11 +181,12 @@ const useAuth = (): UseAuthReturn => {
     signUpMutation.mutate();
   };
 
-  const handleLogin = async () => {
-    loginMutation.mutate({
-      email: username,
-      password: password,
-    });
+  const handleLogin = async (email: string, password: string) => {
+    if (!email || !password) {
+      console.warn('이메일 또는 비밀번호가 없습니다.');
+      return;
+    }
+    loginMutation.mutate({email, password});
   };
 
   const handleVerifiedEmail = async (email: string) => {
@@ -266,43 +268,42 @@ const useAuth = (): UseAuthReturn => {
   interface UseAuthReturn {
     handleSearch: (query: string, filter: string) => Promise<void>;
   }
-  
+
   const useAuth = (): UseAuthReturn => {
     const [searchResults, setSearchResults] = useState<any>(null);
-  
+
     // ✅ 검색 API 요청 (검색어 및 필터 전달)
     const searchMutation = useMutation(
-      async ({ query, filter }: { query: string; filter: string }) => {
+      async ({query, filter}: {query: string; filter: string}) => {
         const response = await axios.get(`${API_URL}/api/search/books`, {
-          params: { searchText: query, selectedOption: filter },
+          params: {searchText: query, selectedOption: filter},
         });
         return response.data;
       },
       {
-        onSuccess: (data) => {
+        onSuccess: data => {
           console.log('🔍 검색 결과:', data);
           setSearchResults(data);
         },
-        onError: (error) => {
+        onError: error => {
           console.error('❌ 검색 오류:', error);
         },
-      }
+      },
     );
-  
+
     // ✅ 검색 실행 함수 정의
     const handleSearch = async (query: string, filter: string) => {
       if (!query.trim() || !filter) {
         console.warn('🚨 검색어 또는 필터가 비어 있습니다.');
         return;
       }
-      searchMutation.mutate({ query, filter });
+      searchMutation.mutate({query, filter});
     };
-  
+
     return {
       handleSearch, // ✅ 검색 함수 반환
     };
   };
-  
 
   return {
     username,
@@ -326,7 +327,6 @@ const useAuth = (): UseAuthReturn => {
     handleVerifiedNickName,
     handleUserLogout,
     handleResetPassword,
-    
   };
 };
 
