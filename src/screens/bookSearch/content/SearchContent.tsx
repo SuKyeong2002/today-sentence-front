@@ -43,22 +43,15 @@ export default function SearchContent() {
   console.log('rawQuotes', rawQuotes);
   console.log('typeof rawQuotes', typeof rawQuotes);
 
-  // const quotes: QuoteData[] = Array.isArray(rawQuotes) ? rawQuotes : [];
-
   const quotes: QuoteData[] = 
   Array.isArray(rawQuotes) 
     ? rawQuotes 
     : typeof rawQuotes === 'object' && rawQuotes !== null && 'data' in rawQuotes
-      ? rawQuotes.data // 객체 안의 data 배열을 추출
+      ? rawQuotes.data 
       : [];
 
-  console.log('최종 변환된 quotes 데이터:', quotes);
-  console.log('최종 quotes가 배열인지:', Array.isArray(quotes));
-  
-
-  // console.log('🚀 개별 quote 확인:', rawQuotes.data[0]);
-  // console.log('🚀 postContent 타입:', typeof rawQuotes.data[0].postContent);
-  // console.log('🚀 hashtags 타입:', typeof rawQuotes.data[0].hashtags);
+  // console.log('최종 변환된 quotes 데이터:', quotes);
+  // console.log('최종 quotes가 배열인지:', Array.isArray(quotes));
 
   return (
     <ScrollContainer>
