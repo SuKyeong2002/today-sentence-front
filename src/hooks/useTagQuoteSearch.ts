@@ -11,8 +11,8 @@ export const useTagQuoteSearch = (tag: string, page = 1, size = 100) => {
         params: { type: "tag", search: tag, page: page - 1, size },
       });
 
-      console.log("태그 검색 결과:", response.data);
-      return response.data.data;
+      console.log("태그 검색 결과:", response.data.data);
+      return response.data;
     },
     {
       enabled: !!tag, 

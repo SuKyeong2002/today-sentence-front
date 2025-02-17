@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import styled from 'styled-components';
-import { useRoute } from '@react-navigation/native';
-import { useBookSearch } from '@/hooks/useBookSearch';
-import { useTagQuoteSearch } from '@/hooks/useTagQuoteSearch';
+import {useRoute} from '@react-navigation/native';
+import {useBookSearch} from '@/hooks/useBookSearch';
+import {useTagQuoteSearch} from '@/hooks/useTagQuoteSearch';
 import Sentence from '@/components/Book/Sentence';
 
 interface QuoteData {
@@ -22,21 +22,42 @@ interface QuoteData {
 
 export default function SearchContent() {
   const route = useRoute();
-  const { bookTitle, tag } = route.params as { bookTitle?: string; tag?: string };
-  const { data: bookQuotes = [], isLoading: bookLoading, error: bookError } = useBookSearch(bookTitle || '');
-  const { data: tagQuotes = [], isLoading: tagLoading, error: tagError } = useTagQuoteSearch(tag || '');
+  const {bookTitle, tag} = route.params as {bookTitle?: string; tag?: string};
+
+  const {
+    data: bookQuotes = [],
+    isLoading: bookLoading,
+    error: bookError,
+  } = useBookSearch(bookTitle || '');
+
+  const {
+    data: tagQuotes = [],
+    isLoading: tagLoading,
+    error: tagError,
+  } = useTagQuoteSearch(tag || '');
+
   const isLoading = bookLoading || tagLoading;
   const isError = bookError || tagError;
-  const quotes: QuoteData[] = bookTitle ? bookQuotes : tag ? tagQuotes : [];
+
+  const rawQuotes = bookTitle ? bookQuotes : tag ? tagQuotes : [];
+  console.log("rawQuotes", rawQuotes);
+  console.log(typeof rawQuotes);
+
+  // const quotes: QuoteData[] = Array.isArray(rawQuotes) ? rawQuotes : [];
+
+
+  console.log('🚀 개별 quote 확인:', rawQuotes.data[0]);
+  console.log('🚀 postContent 타입:', typeof rawQuotes.data[0].postContent);
+  console.log('🚀 hashtags 타입:', typeof rawQuotes.data[0].hashtags);
 
   return (
     <ScrollContainer>
-      {isLoading ? (
+      {/* {isLoading ? (
         <LoadingText>로딩 중...</LoadingText>
       ) : isError ? (
         <ErrorText>오류 발생</ErrorText>
       ) : quotes.length > 0 ? (
-        quotes.map((quote: QuoteData) => (
+        quotes.map(quote => (
           <SentenceContainer key={quote.postId}>
             <Sentence
               postId={quote.postId}
@@ -55,7 +76,7 @@ export default function SearchContent() {
         ))
       ) : (
         <NoResultText>검색 결과가 없습니다.</NoResultText>
-      )}
+      )} */}
     </ScrollContainer>
   );
 }

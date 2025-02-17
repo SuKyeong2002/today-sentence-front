@@ -69,7 +69,7 @@ export default function Interaction({
                 resizeMode="contain"
               />
             </HeartWrapper>
-            <HeartNumber>{currentLikes}</HeartNumber>
+            {/* <HeartNumber>{currentLikes}</HeartNumber> */}
           </HeartContainer>
         </TouchableOpacity>
 
@@ -97,7 +97,7 @@ export default function Interaction({
                 resizeMode="contain"
               />
             </BookmarkWrapper>
-            <BookmarkNumber>{currentBookmarks}</BookmarkNumber>
+            {/* <BookmarkNumber>{currentBookmarks}</BookmarkNumber> */}
           </BookmarkContainer>
         </TouchableOpacity>
 
