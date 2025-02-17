@@ -45,14 +45,16 @@ export default function SearchContent() {
 
   // const quotes: QuoteData[] = Array.isArray(rawQuotes) ? rawQuotes : [];
 
-  const quotes: QuoteData[] = Array.isArray(rawQuotes)
-    ? rawQuotes
-    : typeof rawQuotes === 'object' && rawQuotes !== null
-      ? Object.values(rawQuotes) // 객체라면 값들을 배열로 변환
+  const quotes: QuoteData[] = 
+  Array.isArray(rawQuotes) 
+    ? rawQuotes 
+    : typeof rawQuotes === 'object' && rawQuotes !== null && 'data' in rawQuotes
+      ? rawQuotes.data // 객체 안의 data 배열을 추출
       : [];
 
   console.log('최종 변환된 quotes 데이터:', quotes);
   console.log('최종 quotes가 배열인지:', Array.isArray(quotes));
+  
 
   // console.log('🚀 개별 quote 확인:', rawQuotes.data[0]);
   // console.log('🚀 postContent 타입:', typeof rawQuotes.data[0].postContent);
@@ -65,8 +67,8 @@ export default function SearchContent() {
       ) : isError ? (
         <ErrorText>오류 발생</ErrorText>
       ) : quotes.length > 0 ? (
-        quotes.map(quote => (
-          <SentenceContainer key={quote.postId}>
+        quotes.map((quote, index) => (
+          <SentenceContainer key={index}>
             <Sentence
               postId={quote.postId}
               postWriter={quote.postWriter}
