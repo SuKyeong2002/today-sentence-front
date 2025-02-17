@@ -23,7 +23,7 @@ interface SentenceProps {
   bookAuthor: string;
   bookCover: string;
   postContent: string;
-  hashtags: string;
+  hashtags: string | string[];
   likesCount: number;
   bookmarkCount: number;
   createAt: string;
@@ -44,6 +44,16 @@ export default function Sentence({
 }: SentenceProps) {
   const formattedDate = new Date(createAt).toLocaleString();
 
+  console.log('🚀 bookTitle 타입:', typeof bookTitle);
+  console.log('🚀 bookAuthor 타입:', typeof bookAuthor);
+  console.log('🚀 bookCover 타입:', typeof bookCover);
+  console.log('🚀 category 타입:', typeof category);
+  console.log('🚀 createAt 타입:', typeof createAt);
+  console.log('🚀 likesCount 타입:', typeof likesCount);
+  console.log('🚀 bookmarkCount 타입:', typeof bookmarkCount);
+
+  console.log(bookTitle);
+
   return (
     <ContentWrapper>
       <BookContainer>
@@ -63,7 +73,8 @@ export default function Sentence({
       </BookContainer>
       <BookRecord>
         <BookSentence>{postContent}</BookSentence>
-        <BookTag>#{hashtags.replace(/,/g, ' #')}</BookTag>
+        <BookTag>{hashtags}</BookTag>
+
         <BookDate>{formattedDate}</BookDate>
         <InteractionContainer>
           <Interaction
@@ -131,7 +142,7 @@ const BookSentence = styled(Text)`
 `;
 
 const BookTag = styled(Text)`
- margin: 4px 0;
+  margin: 4px 0;
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
   color: ${({theme}) => theme.colors.darkGray};
@@ -143,7 +154,6 @@ const BookDate = styled(Text)`
   font-weight: 400;
   color: ${({theme}) => theme.colors.darkGray};
 `;
-
 
 const BookImage = styled(Image)`
   width: 110px;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import styled from 'styled-components';
-import { useRoute } from '@react-navigation/native';
-import { useBookSearch } from '@/hooks/useBookSearch';
-import { useTagQuoteSearch } from '@/hooks/useTagQuoteSearch';
+import {useRoute} from '@react-navigation/native';
+import {useBookSearch} from '@/hooks/useBookSearch';
+import {useTagQuoteSearch} from '@/hooks/useTagQuoteSearch';
 import Sentence from '@/components/Book/Sentence';
 
 interface QuoteData {
@@ -22,12 +22,36 @@ interface QuoteData {
 
 export default function SearchContent() {
   const route = useRoute();
-  const { bookTitle, tag } = route.params as { bookTitle?: string; tag?: string };
-  const { data: bookQuotes = [], isLoading: bookLoading, error: bookError } = useBookSearch(bookTitle || '');
-  const { data: tagQuotes = [], isLoading: tagLoading, error: tagError } = useTagQuoteSearch(tag || '');
+  const {bookTitle, tag} = route.params as {bookTitle?: string; tag?: string};
+
+  const {
+    data: bookQuotes = [],
+    isLoading: bookLoading,
+    error: bookError,
+  } = useBookSearch(bookTitle || '');
+
+  const {
+    data: tagQuotes = [],
+    isLoading: tagLoading,
+    error: tagError,
+  } = useTagQuoteSearch(tag || '');
+
   const isLoading = bookLoading || tagLoading;
   const isError = bookError || tagError;
-  const quotes: QuoteData[] = bookTitle ? bookQuotes : tag ? tagQuotes : [];
+
+  const rawQuotes = bookTitle ? bookQuotes : tag ? tagQuotes : [];
+  console.log('rawQuotes', rawQuotes);
+  console.log('typeof rawQuotes', typeof rawQuotes);
+
+  const quotes: QuoteData[] = 
+  Array.isArray(rawQuotes) 
+    ? rawQuotes 
+    : typeof rawQuotes === 'object' && rawQuotes !== null && 'data' in rawQuotes
+      ? rawQuotes.data 
+      : [];
+
+  // console.log('최종 변환된 quotes 데이터:', quotes);
+  // console.log('최종 quotes가 배열인지:', Array.isArray(quotes));
 
   return (
     <ScrollContainer>
@@ -36,8 +60,8 @@ export default function SearchContent() {
       ) : isError ? (
         <ErrorText>오류 발생</ErrorText>
       ) : quotes.length > 0 ? (
-        quotes.map((quote: QuoteData) => (
-          <SentenceContainer key={quote.postId}>
+        quotes.map((quote, index) => (
+          <SentenceContainer key={index}>
             <Sentence
               postId={quote.postId}
               postWriter={quote.postWriter}

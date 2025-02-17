@@ -1,10 +1,10 @@
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {useTranslation} from 'react-i18next';
-import {changeLanguage, getStoredLanguage} from '@/utils/language';
-import styled from 'styled-components';
+import { ProfileEditHader } from '@/components/Header/ProfileEditHader';
+import { getStoredLanguage } from '@/utils/language';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import styled from 'styled-components';
 
 export default function PasswordPage() {
   const {t, i18n} = useTranslation();

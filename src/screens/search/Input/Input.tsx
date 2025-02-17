@@ -1,23 +1,21 @@
-import {Picker} from '@react-native-picker/picker';
-import React, {useEffect, useState} from 'react';
+import { useSearch } from '@/hooks/useSearch';
+import { useTagSearch } from '@/hooks/useTagSearch';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  View,
-  TextInput,
-  Image,
   Alert,
-  TouchableOpacity,
-  Text,
+  Image,
   ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 import styled from 'styled-components';
-import {useTranslation} from 'react-i18next';
-import {useSearch} from '@/hooks/useSearch';
-import {useTagSearch} from '@/hooks/useTagSearch';
-import {ActivityIndicator} from 'react-native-paper';
-import axios from 'axios';
-import {KAKAO_API_KEY} from '@env';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -83,7 +81,6 @@ export default function Input({onSearchResultChange}: InputProps) {
       onSearchResultChange(searchResults.length > 0);
     }
   }, [searchResults, onSearchResultChange]);
-
 
   const onSearchPress = async () => {
     if (!selectedOption) {
@@ -216,7 +213,7 @@ export default function Input({onSearchResultChange}: InputProps) {
                         <BookImage
                           source={{
                             uri:
-                              item.bookCover||
+                              item.bookCover ||
                               'https://via.placeholder.com/150',
                           }}
                         />
@@ -253,15 +250,6 @@ export default function Input({onSearchResultChange}: InputProps) {
                             </BookPublisher>
                           </BookPublisherContainer>
                         )}
-                        {/*
-                        {selectedOption === 'tag' && tags?.length > 0 && (
-                          <>
-                            {tags.map((tag, index) => (
-                              <BookTag key={index}>#{tag}</BookTag> 
-                            ))}
-                          </>
-                        )}
-                        */}
                       </BookInfo>
                     </BookWrapper>
                   </BookItem>
@@ -374,7 +362,7 @@ const BookWrapper = styled(View)`
   background: ${({theme}) => theme.colors.white};
 `;
 
-const BookTagsContainer = styled(Text)`
+const BookTagsContainer = styled(View)`
   flex-direction: column;
   justify-content: flex-start;
 `;
