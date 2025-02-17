@@ -40,19 +40,27 @@ export default function SearchContent() {
   const isError = bookError || tagError;
 
   const rawQuotes = bookTitle ? bookQuotes : tag ? tagQuotes : [];
-  console.log("rawQuotes", rawQuotes);
-  console.log(typeof rawQuotes);
+  console.log('rawQuotes', rawQuotes);
+  console.log('typeof rawQuotes', typeof rawQuotes);
 
   // const quotes: QuoteData[] = Array.isArray(rawQuotes) ? rawQuotes : [];
 
+  const quotes: QuoteData[] = Array.isArray(rawQuotes)
+    ? rawQuotes
+    : typeof rawQuotes === 'object' && rawQuotes !== null
+      ? Object.values(rawQuotes) // 객체라면 값들을 배열로 변환
+      : [];
 
-  console.log('🚀 개별 quote 확인:', rawQuotes.data[0]);
-  console.log('🚀 postContent 타입:', typeof rawQuotes.data[0].postContent);
-  console.log('🚀 hashtags 타입:', typeof rawQuotes.data[0].hashtags);
+  console.log('최종 변환된 quotes 데이터:', quotes);
+  console.log('최종 quotes가 배열인지:', Array.isArray(quotes));
+
+  // console.log('🚀 개별 quote 확인:', rawQuotes.data[0]);
+  // console.log('🚀 postContent 타입:', typeof rawQuotes.data[0].postContent);
+  // console.log('🚀 hashtags 타입:', typeof rawQuotes.data[0].hashtags);
 
   return (
     <ScrollContainer>
-      {/* {isLoading ? (
+      {isLoading ? (
         <LoadingText>로딩 중...</LoadingText>
       ) : isError ? (
         <ErrorText>오류 발생</ErrorText>
@@ -76,7 +84,7 @@ export default function SearchContent() {
         ))
       ) : (
         <NoResultText>검색 결과가 없습니다.</NoResultText>
-      )} */}
+      )}
     </ScrollContainer>
   );
 }

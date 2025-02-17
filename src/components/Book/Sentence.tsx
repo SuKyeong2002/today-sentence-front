@@ -52,9 +52,11 @@ export default function Sentence({
   console.log('🚀 likesCount 타입:', typeof likesCount);
   console.log('🚀 bookmarkCount 타입:', typeof bookmarkCount);
 
+  console.log(bookTitle);
+
   return (
     <ContentWrapper>
-      {/* <BookContainer>
+      <BookContainer>
         <BookImage source={{uri: bookCover}} resizeMode="contain" />
         <BookWrapper>
           <BookCategory>{categoryMap[category] || '기타'}</BookCategory>
@@ -81,7 +83,7 @@ export default function Sentence({
             bookmarkCount={bookmarkCount}
           />
         </InteractionContainer>
-      </BookRecord> */}
+      </BookRecord>
     </ContentWrapper>
   );
 }
