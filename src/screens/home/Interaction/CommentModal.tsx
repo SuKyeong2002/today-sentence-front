@@ -145,7 +145,7 @@ const LoadingText = styled(Text)`
 `;
 
 const CommentItem = styled(View)`
-  padding: 20px 0 20px 0;
+  padding: 20px 0 10px 0;
 `;
 
 // 프로필
@@ -183,7 +183,7 @@ const CommentText = styled(Text)`
 
 const CommentDate = styled(Text)`
   font-size: ${({theme}) => theme.fontSizes.small}px;
-  font-weight: 500;
+  font-weight: 400;
   color: ${({theme}) => theme.colors.darkGray};
 `;
 

@@ -33,12 +33,13 @@ export default function Interaction({
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [currentBookmarks, setCurrentBookmarks] = useState(bookmarkCount);
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
-  const [commentCounts, setCommentCounts] = useState(commentCount);
+  const [currentCommentCount, setCurrentCommentCount] = useState(commentCount);
 
   // postId 변경될 때 상태 업데이트
   useEffect(() => {
     setCurrentLikes(likesCount);
     setCurrentBookmarks(bookmarkCount);
+    setCurrentCommentCount(commentCount);
   }, [likesCount, bookmarkCount, postId]);
 
   // 공감 toggle
@@ -56,7 +57,7 @@ export default function Interaction({
 
   // 댓글 
   const handleCommentAdded = () => {
-    setCommentCounts(prev3 => prev3 + 1);
+    setCurrentCommentCount(prev => prev + 1);
   };
   
 
