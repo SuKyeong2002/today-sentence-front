@@ -15,6 +15,7 @@ interface Post {
   likesCount: number;
   bookmarkCount: number;
   createAt: string;
+  commentCount: number;
 }
 
 interface SearchContentProps {
@@ -34,6 +35,7 @@ export default function SearchContent2({post}: SearchContentProps) {
         hashtags={post.hashtags}
         createAt={post.createAt}
         likesCount={post.likesCount}
+        commentCount={post.commentCount}
         bookmarkCount={post.bookmarkCount}
         bookTitle={post.bookTitle}
         bookCover={post.bookCover}

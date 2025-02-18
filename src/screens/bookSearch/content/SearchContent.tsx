@@ -17,6 +17,7 @@ interface QuoteData {
   hashtags: string;
   likesCount: number;
   bookmarkCount: number;
+  commentCount: number;
   createAt: string;
 }
 
@@ -70,6 +71,7 @@ export default function SearchContent() {
               hashtags={quote.hashtags}
               createAt={quote.createAt}
               likesCount={quote.likesCount}
+              commentCount={quote.commentCount}
               bookmarkCount={quote.bookmarkCount}
               bookTitle={quote.bookTitle}
               bookAuthor={quote.bookAuthor}

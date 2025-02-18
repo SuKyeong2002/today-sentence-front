@@ -17,6 +17,7 @@ interface Post {
   postContent: string;
   hashtags: string;
   likesCount: number;
+  commentCount: number;
   createAt: string;
 }
 

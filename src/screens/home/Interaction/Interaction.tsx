@@ -1,19 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {View, Image, Text, Alert, TouchableOpacity} from 'react-native';
+import {View, Image, Text, Alert, TouchableOpacity, Share} from 'react-native';
 import {useLikeToggle} from '@/hooks/useLikeToggle';
 import {useBookmarkToggle} from '@/hooks/useBookmarkToggle';
+import CommentModal from './CommentModal';
 
 interface InteractionProps {
   postId: number;
   likesCount: number;
   bookmarkCount: number;
+  commentCount:number;
+  // bookCover: string;
+  bookTitle: string;
+  postContent: string;
+  bookAuthor: string;
 }
 
 export default function Interaction({
   postId,
   likesCount,
   bookmarkCount,
+  commentCount,
+  // bookCover,
+  bookTitle,
+  bookAuthor,
+  postContent,
 }: InteractionProps) {
   const likeMutation = useLikeToggle();
   const bookmarkMutation = useBookmarkToggle();
@@ -21,11 +32,14 @@ export default function Interaction({
   const [currentLikes, setCurrentLikes] = useState(likesCount);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [currentBookmarks, setCurrentBookmarks] = useState(bookmarkCount);
+  const [isCommentModalVisible, setCommentModalVisible] = useState(false);
+  const [currentCommentCount, setCurrentCommentCount] = useState(commentCount);
 
   // postId 변경될 때 상태 업데이트
   useEffect(() => {
     setCurrentLikes(likesCount);
     setCurrentBookmarks(bookmarkCount);
+    setCurrentCommentCount(commentCount);
   }, [likesCount, bookmarkCount, postId]);
 
   // 공감 toggle
@@ -41,6 +55,12 @@ export default function Interaction({
     });
   };
 
+  // 댓글 
+  const handleCommentAdded = () => {
+    setCurrentCommentCount(prev => prev + 1);
+  };
+  
+
   // 저장 toggle
   const handleBookmarkClick = () => {
     setIsBookmarked(!isBookmarked);
@@ -52,6 +72,27 @@ export default function Interaction({
         setCurrentBookmarks(prev2 => (isBookmarked ? prev2 + 1 : prev2 - 1));
       },
     });
+  };
+
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `💌 오늘의 한문장 💌\n\n\n책 '${bookTitle}', ${bookAuthor}\n\n"${postContent}"\n\n\n오늘 하루, 작은 힘이 되길 바라요 😊`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(`공유됨: ${result.activityType}`);
+        } else {
+          console.log('공유 완료!');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('공유 취소됨');
+      }
+    } catch (error) {
+      console.error('공유 오류:', error);
+      Alert.alert('공유 실패', '이미지를 공유하는 동안 문제가 발생했습니다.');
+    }
   };
 
   return (
@@ -73,7 +114,7 @@ export default function Interaction({
           </HeartContainer>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => Alert.alert('대화하시겠습니까?')}>
+        <TouchableOpacity onPress={() => setCommentModalVisible(true)}>
           <BookmarkContainer>
             <ChatWrapper>
               <ChatImage
@@ -81,9 +122,15 @@ export default function Interaction({
                 resizeMode="contain"
               />
             </ChatWrapper>
-            <ChatNumber>0</ChatNumber>
+            <ChatNumber>{commentCount}</ChatNumber>
           </BookmarkContainer>
         </TouchableOpacity>
+        <CommentModal
+          postId={postId}
+          isVisible={isCommentModalVisible}
+          onClose={() => setCommentModalVisible(false)}
+          onCommentAdded={handleCommentAdded}
+        />
 
         <TouchableOpacity onPress={handleBookmarkClick} activeOpacity={0.5}>
           <BookmarkContainer>
@@ -101,7 +148,7 @@ export default function Interaction({
           </BookmarkContainer>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => Alert.alert('공유하시겠습니까?')}>
+        <TouchableOpacity onPress={handleShare}>
           <ShareContainer>
             <ShareWrapper>
               <ShareImage
