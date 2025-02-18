@@ -1,9 +1,19 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, FlatList, Modal, TouchableOpacity, Alert } from "react-native";
-import styled from "styled-components";
-import { useCommentMutation } from "@/hooks/useCommentMutation";
-import { useComments } from "@/hooks/useComment.ts";
-import { formatDate } from "@/utils/formatDate";
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Modal,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+} from 'react-native';
+import styled from 'styled-components';
+import {useCommentMutation} from '@/hooks/useCommentMutation';
+import {useComments} from '@/hooks/useComment.ts';
+import {formatDate} from '@/utils/formatDate';
+import {Image} from 'react-native';
 
 interface CommentModalProps {
   postId: number;
@@ -12,9 +22,14 @@ interface CommentModalProps {
   onCommentAdded: () => void;
 }
 
-const CommentModal = ({ postId, isVisible, onClose, onCommentAdded }: CommentModalProps) => {
-  const [newComment, setNewComment] = useState("");
-  const { data: comments, isLoading } = useComments(postId);
+const CommentModal = ({
+  postId,
+  isVisible,
+  onClose,
+  onCommentAdded,
+}: CommentModalProps) => {
+  const [newComment, setNewComment] = useState('');
+  const {data: comments, isLoading} = useComments(postId);
   const commentMutation = useCommentMutation(postId);
 
   // 댓글 등록
@@ -23,10 +38,10 @@ const CommentModal = ({ postId, isVisible, onClose, onCommentAdded }: CommentMod
 
     try {
       await commentMutation.mutateAsync(newComment);
-      setNewComment(""); 
+      setNewComment('');
       onCommentAdded();
     } catch (error) {
-      Alert.alert("댓글 등록 실패", "댓글 등록 중 오류 발생");
+      Alert.alert('댓글 등록 실패', '댓글 등록 중 오류 발생');
     }
   };
 
@@ -34,18 +49,36 @@ const CommentModal = ({ postId, isVisible, onClose, onCommentAdded }: CommentMod
     <Modal visible={isVisible} transparent animationType="slide">
       <ModalContainer>
         <ModalContent>
-          <Title>댓글</Title>
+          <TitleContainer>
+            <Title>댓글</Title>
+            <TouchableOpacity onPress={onClose}>
+              <CancelImage
+                source={require('@/assets/image/cancel.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </TitleContainer>
           {isLoading ? (
             <LoadingText>불러오는 중...</LoadingText>
           ) : (
             <FlatList
               data={comments}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
+              renderItem={({item}) => (
                 <CommentItem>
-                  <Nickname>{item.nickname}</Nickname>
-                  <CommentText>{item.content}</CommentText>
-                  <CommentDate>{formatDate(item.createdAt)}</CommentDate>
+                  <ProfileContainer>
+                    <ProfileImage
+                      source={require('@/assets/image/other_user.png')}
+                      resizeMode="contain"
+                    />
+                    <ProfileTextContainer>
+                      <ProfileTextWrapper>
+                        <Nickname>{item.nickname}</Nickname>
+                        <CommentDate>{formatDate(item.createdAt)}</CommentDate>
+                      </ProfileTextWrapper>
+                      <CommentText>{item.content}</CommentText>
+                    </ProfileTextContainer>
+                  </ProfileContainer>
                 </CommentItem>
               )}
             />
@@ -57,14 +90,16 @@ const CommentModal = ({ postId, isVisible, onClose, onCommentAdded }: CommentMod
               onChangeText={setNewComment}
               placeholder="댓글을 입력해주세요."
             />
-            <SendButton onPress={handleAddComment}>
-              <SendButtonText>등록</SendButtonText>
-            </SendButton>
+            <TouchableOpacity
+              onPress={() => {
+                handleAddComment();
+              }}>
+              <SendImage
+                source={require('@/assets/image/send.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
           </InputContainer>
-
-          <CloseButton onPress={onClose}>
-            <CloseButtonText>닫기</CloseButtonText>
-          </CloseButton>
         </ModalContent>
       </ModalContainer>
     </Modal>
@@ -73,13 +108,19 @@ const CommentModal = ({ postId, isVisible, onClose, onCommentAdded }: CommentMod
 
 export default CommentModal;
 
-
 // 스타일
 const ModalContainer = styled(View)`
   flex: 1;
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const TitleContainer = styled(View)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const ModalContent = styled(View)`
@@ -91,9 +132,10 @@ const ModalContent = styled(View)`
 `;
 
 const Title = styled(Text)`
-  font-size: 18px;
-  font-weight: bold;
+  font-size: ${({theme}) => theme.fontSizes.xLarge}px;
+  font-weight: 600;
   margin-bottom: 10px;
+  color: ${({theme}) => theme.colors.text};
 `;
 
 const LoadingText = styled(Text)`
@@ -103,60 +145,78 @@ const LoadingText = styled(Text)`
 `;
 
 const CommentItem = styled(View)`
-  padding: 10px;
-  border-bottom-width: 1px;
-  border-bottom-color: #ccc;
+  padding: 20px 0 20px 0;
+`;
+
+// 프로필
+const ProfileContainer = styled(View)`
+  gap: 5px;
+  flex-direction: row;
+  justify-content: flex-start;
+`;
+
+const ProfileTextContainer = styled(View)`
+  gap: 5px;
+  width: 80%;
+  flex-direction: column;
+`;
+
+const ProfileTextWrapper = styled(View)`
+  gap: 8px;
+  width: 90%;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const Nickname = styled(Text)`
-  font-weight: bold;
+  font-weight: 600;
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
+  color: ${({theme}) => theme.colors.text};
 `;
 
+// 댓글
 const CommentText = styled(Text)`
-  margin-top: 5px;
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
+  font-weight: 400;
+  color: ${({theme}) => theme.colors.text};
 `;
 
 const CommentDate = styled(Text)`
-  font-size: 12px;
-  color: gray;
-  margin-top: 5px;
+  font-size: ${({theme}) => theme.fontSizes.small}px;
+  font-weight: 500;
+  color: ${({theme}) => theme.colors.darkGray};
 `;
 
 const InputContainer = styled(View)`
   flex-direction: row;
   align-items: center;
-  margin-top: 10px;
+  display: flex;
+  padding: 10px 0 0px 10px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
 `;
 
 const CommentInput = styled(TextInput)`
-  flex: 1;
-  border-width: 1px;
-  border-color: #ccc;
+  width: 90%;
   padding: 10px;
-  border-radius: 5px;
+  background-color: #F0F0F0;
+  border-radius: 30px;
 `;
 
-const SendButton = styled(TouchableOpacity)`
-  margin-left: 10px;
-  padding: 10px;
-  background-color: blue;
-  border-radius: 5px;
+// 이미지
+const ProfileImage = styled(Image)`
+  margin-right: 10px;
+  width: 32px;
+  height: 32px;
 `;
 
-const SendButtonText = styled(Text)`
-  color: white;
-  font-weight: bold;
+const CancelImage = styled(Image)`
+  width: 24px;
+  height: 24px;
 `;
 
-const CloseButton = styled(TouchableOpacity)`
-  margin-top: 10px;
-  padding: 10px;
-  background-color: gray;
-  border-radius: 5px;
-  align-items: center;
-`;
-
-const CloseButtonText = styled(Text)`
-  color: white;
-  font-weight: bold;
+const SendImage = styled(Image)`
+  width: 24px;
+  height: 24px;
 `;
