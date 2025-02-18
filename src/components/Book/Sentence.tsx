@@ -44,16 +44,6 @@ export default function Sentence({
 }: SentenceProps) {
   const formattedDate = new Date(createAt).toLocaleString();
 
-  console.log('🚀 bookTitle 타입:', typeof bookTitle);
-  console.log('🚀 bookAuthor 타입:', typeof bookAuthor);
-  console.log('🚀 bookCover 타입:', typeof bookCover);
-  console.log('🚀 category 타입:', typeof category);
-  console.log('🚀 createAt 타입:', typeof createAt);
-  console.log('🚀 likesCount 타입:', typeof likesCount);
-  console.log('🚀 bookmarkCount 타입:', typeof bookmarkCount);
-
-  console.log(bookTitle);
-
   return (
     <ContentWrapper>
       <BookContainer>
