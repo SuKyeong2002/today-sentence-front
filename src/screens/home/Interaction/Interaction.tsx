@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {View, Image, Text, Alert, TouchableOpacity, Share} from 'react-native';
 import {useLikeToggle} from '@/hooks/useLikeToggle';
 import {useBookmarkToggle} from '@/hooks/useBookmarkToggle';
+import CommentModal from './CommentModal';
 
 interface InteractionProps {
   postId: number;
@@ -29,6 +30,7 @@ export default function Interaction({
   const [currentLikes, setCurrentLikes] = useState(likesCount);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [currentBookmarks, setCurrentBookmarks] = useState(bookmarkCount);
+  const [isCommentModalVisible, setCommentModalVisible] = useState(false);
 
   // postId 변경될 때 상태 업데이트
   useEffect(() => {
@@ -102,7 +104,7 @@ export default function Interaction({
           </HeartContainer>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => Alert.alert('대화하시겠습니까?')}>
+        <TouchableOpacity onPress={() => setCommentModalVisible(true)}>
           <BookmarkContainer>
             <ChatWrapper>
               <ChatImage
@@ -113,6 +115,11 @@ export default function Interaction({
             <ChatNumber>0</ChatNumber>
           </BookmarkContainer>
         </TouchableOpacity>
+        <CommentModal
+          postId={postId}
+          isVisible={isCommentModalVisible}
+          onClose={() => setCommentModalVisible(false)}
+        />
 
         <TouchableOpacity onPress={handleBookmarkClick} activeOpacity={0.5}>
           <BookmarkContainer>
