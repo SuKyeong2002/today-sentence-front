@@ -71,6 +71,10 @@ export default function Sentence({
             postId={postId}
             likesCount={likesCount}
             bookmarkCount={bookmarkCount}
+            // bookCover={bookCover}
+            bookTitle={bookTitle}
+            postContent={postContent}
+            bookAuthor={bookAuthor}
           />
         </InteractionContainer>
       </BookRecord>

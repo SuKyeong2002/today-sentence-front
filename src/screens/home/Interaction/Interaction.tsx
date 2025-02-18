@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {View, Image, Text, Alert, TouchableOpacity} from 'react-native';
+import {View, Image, Text, Alert, TouchableOpacity, Share} from 'react-native';
 import {useLikeToggle} from '@/hooks/useLikeToggle';
 import {useBookmarkToggle} from '@/hooks/useBookmarkToggle';
 
@@ -8,12 +8,20 @@ interface InteractionProps {
   postId: number;
   likesCount: number;
   bookmarkCount: number;
+  // bookCover: string;
+  bookTitle: string;
+  postContent: string;
+  bookAuthor: string;
 }
 
 export default function Interaction({
   postId,
   likesCount,
   bookmarkCount,
+  // bookCover,
+  bookTitle,
+  bookAuthor,
+  postContent,
 }: InteractionProps) {
   const likeMutation = useLikeToggle();
   const bookmarkMutation = useBookmarkToggle();
@@ -52,6 +60,27 @@ export default function Interaction({
         setCurrentBookmarks(prev2 => (isBookmarked ? prev2 + 1 : prev2 - 1));
       },
     });
+  };
+
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `💌 오늘의 한문장 💌\n\n\n책 '${bookTitle}', ${bookAuthor}\n\n"${postContent}"\n\n\n오늘 하루, 작은 힘이 되길 바라요 😊`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(`공유됨: ${result.activityType}`);
+        } else {
+          console.log('공유 완료!');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('공유 취소됨');
+      }
+    } catch (error) {
+      console.error('공유 오류:', error);
+      Alert.alert('공유 실패', '이미지를 공유하는 동안 문제가 발생했습니다.');
+    }
   };
 
   return (
@@ -101,7 +130,7 @@ export default function Interaction({
           </BookmarkContainer>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => Alert.alert('공유하시겠습니까?')}>
+        <TouchableOpacity onPress={handleShare}>
           <ShareContainer>
             <ShareWrapper>
               <ShareImage
