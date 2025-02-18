@@ -24,7 +24,7 @@ export const fetchComments = async (postId: number) => {
   }
 
   try {
-    const response = await apiClient.get(`/posts/${postId}/comments?page=0&size=10`, {
+    const response = await apiClient.get(`/posts/${postId}/comments`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

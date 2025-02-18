@@ -3,14 +3,16 @@ import { View, Text, TextInput, FlatList, Modal, TouchableOpacity, Alert } from 
 import styled from "styled-components";
 import { useCommentMutation } from "@/hooks/useCommentMutation";
 import { useComments } from "@/hooks/useComment.ts";
+import { formatDate } from "@/utils/formatDate";
 
 interface CommentModalProps {
   postId: number;
   isVisible: boolean;
   onClose: () => void;
+  onCommentAdded: () => void;
 }
 
-const CommentModal = ({ postId, isVisible, onClose }: CommentModalProps) => {
+const CommentModal = ({ postId, isVisible, onClose, onCommentAdded }: CommentModalProps) => {
   const [newComment, setNewComment] = useState("");
   const { data: comments, isLoading } = useComments(postId);
   const commentMutation = useCommentMutation(postId);
@@ -22,6 +24,7 @@ const CommentModal = ({ postId, isVisible, onClose }: CommentModalProps) => {
     try {
       await commentMutation.mutateAsync(newComment);
       setNewComment(""); 
+      onCommentAdded();
     } catch (error) {
       Alert.alert("댓글 등록 실패", "댓글 등록 중 오류 발생");
     }
@@ -42,7 +45,7 @@ const CommentModal = ({ postId, isVisible, onClose }: CommentModalProps) => {
                 <CommentItem>
                   <Nickname>{item.nickname}</Nickname>
                   <CommentText>{item.content}</CommentText>
-                  <CommentDate>{item.createdAt}</CommentDate>
+                  <CommentDate>{formatDate(item.createdAt)}</CommentDate>
                 </CommentItem>
               )}
             />

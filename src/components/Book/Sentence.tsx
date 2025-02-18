@@ -25,6 +25,7 @@ interface SentenceProps {
   postContent: string;
   hashtags: string | string[];
   likesCount: number;
+  commentCount: number;
   bookmarkCount: number;
   createAt: string;
 }
@@ -41,8 +42,12 @@ export default function Sentence({
   createAt,
   likesCount,
   bookmarkCount,
+  commentCount
 }: SentenceProps) {
   const formattedDate = new Date(createAt).toLocaleString();
+
+  console.log("📌 전달된 commentCount:", commentCount);
+
 
   return (
     <ContentWrapper>
@@ -71,6 +76,7 @@ export default function Sentence({
             postId={postId}
             likesCount={likesCount}
             bookmarkCount={bookmarkCount}
+            commentCount={commentCount}
             // bookCover={bookCover}
             bookTitle={bookTitle}
             postContent={postContent}

@@ -33,6 +33,7 @@ export default function Content() {
         createAt={postData.createAt}
         likesCount={postData.likesCount}
         bookmarkCount={postData.bookmarkCount}
+        commentCount={postData.commentCount}
         bookTitle={postData.bookTitle}
         bookCover={postData.bookCover}
       />

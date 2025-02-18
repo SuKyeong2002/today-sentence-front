@@ -9,6 +9,7 @@ interface InteractionProps {
   postId: number;
   likesCount: number;
   bookmarkCount: number;
+  commentCount:number;
   // bookCover: string;
   bookTitle: string;
   postContent: string;
@@ -19,6 +20,7 @@ export default function Interaction({
   postId,
   likesCount,
   bookmarkCount,
+  commentCount,
   // bookCover,
   bookTitle,
   bookAuthor,
@@ -31,6 +33,7 @@ export default function Interaction({
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [currentBookmarks, setCurrentBookmarks] = useState(bookmarkCount);
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
+  const [commentCounts, setCommentCounts] = useState(commentCount);
 
   // postId 변경될 때 상태 업데이트
   useEffect(() => {
@@ -50,6 +53,12 @@ export default function Interaction({
       },
     });
   };
+
+  // 댓글 
+  const handleCommentAdded = () => {
+    setCommentCounts(prev3 => prev3 + 1);
+  };
+  
 
   // 저장 toggle
   const handleBookmarkClick = () => {
@@ -112,13 +121,14 @@ export default function Interaction({
                 resizeMode="contain"
               />
             </ChatWrapper>
-            <ChatNumber>0</ChatNumber>
+            <ChatNumber>{commentCount}</ChatNumber>
           </BookmarkContainer>
         </TouchableOpacity>
         <CommentModal
           postId={postId}
           isVisible={isCommentModalVisible}
           onClose={() => setCommentModalVisible(false)}
+          onCommentAdded={handleCommentAdded}
         />
 
         <TouchableOpacity onPress={handleBookmarkClick} activeOpacity={0.5}>
