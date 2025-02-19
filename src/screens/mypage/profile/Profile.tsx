@@ -1,10 +1,24 @@
 import React from 'react';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, ActivityIndicator} from 'react-native';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
+import {useUser} from '@/hooks/useUser';
 
 export default function Profile() {
   const {t} = useTranslation();
+  const {data: user, isLoading, error} = useUser();
+
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </LoadingContainer>
+    );
+  }
+
+  if (error) {
+    return <ErrorText>유저 정보를 불러올 수 없습니다.</ErrorText>;
+  }
 
   return (
     <>
@@ -16,8 +30,12 @@ export default function Profile() {
           />
         </ProfileImageContainer>
         <ProfileTextContainer>
-          <ProfileNickname>{t('명언 좀도둑')}</ProfileNickname>
-          <ProfileState>{t('상태 메시지를 입력해주세요.')}</ProfileState>
+          <ProfileNickname>
+            {user?.nickname || t('존재하지 않는 닉네임입니다.')}
+          </ProfileNickname>
+          <ProfileState>
+            {user?.statusMessage || t('존재하지 않는 상태 메시지입니다.')}
+          </ProfileState>
         </ProfileTextContainer>
       </ProfileContainer>
     </>
@@ -71,4 +89,18 @@ const ProfileState = styled(Text)`
 const ProfileImage = styled(Image)`
   width: 68px;
   height: 68px;
+`;
+
+// 로딩 및 오류 처리
+const LoadingContainer = styled(View)`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ErrorText = styled(Text)`
+  font-size: 16px;
+  color: red;
+  text-align: center;
+  margin-top: 20px;
 `;
