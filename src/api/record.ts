@@ -1,5 +1,8 @@
 import axios from 'axios';
 import {BookRecord, SearchResponse} from "../types/BookRecord";
+import { Statistics } from '../types/CategoryData';
+import { QuoteData } from '@/types/QuoteData';
+import { Bookmark } from '@/types/Bookmark';
 
 const API_URL = 'http://43.201.20.84';
 
@@ -92,3 +95,29 @@ export const SearchBookRecord = async (
     return response.data.data;
   };
   
+  export async function fetchStatistics(): Promise<Statistics> {
+    const response = await fetch("api/posts/statistics");
+    if (!response.ok) {
+      throw new Error("Failed to fetch statistics");
+    }
+    const data = await response.json();
+    return {
+      records: data.records || {},
+      bookmarks: data.bookmarks || {},
+    };
+  }
+
+  export async function saveQuote(data: QuoteData): Promise<void> {
+    const response = await axios.post('YOUR_API_ENDPOINT', data);
+    if (response.status !== 200) {
+      throw new Error('Failed to save quote');
+    }
+  }
+
+  export async function fetchBookmarks(): Promise<Bookmark[]> {
+    const response = await axios.get('/api/posts/bookmarks');
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch bookmarks');
+    }
+    return response.data.data;
+  }

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { StatsContentProps } from "@/types/CategoryData";
 
 const categories = [
   "시/소설/에세이",
@@ -19,13 +20,15 @@ const COLORS = [
   "#FF69B4", "#FF4500", "#DA70D6", "#808080"
 ];
 
-function StatsContent({ title, data }) {
-  const [selectedDate, setSelectedDate] = useState("");
-
-  const categoryData = categories.map((category) => ({
+function transformData(data: Record<string, number>) {
+  return categories.map((category, index) => ({
     category,
-    count: data.filter((item: any) => item.category === category).length,
+    count: data[category.replace(/[^\w]/g, "_").toUpperCase()] || 0,
   }));
+}
+
+const StatsContent: React.FC<StatsContentProps> = ({ title, data }) => {
+  const categoryData = transformData(data);
 
   return (
     <View style={styles.container}>
@@ -51,39 +54,18 @@ function StatsContent({ title, data }) {
         </PieChart>
       </View>
       <FlatList
-        data={data.filter((item:any) => item.date === selectedDate)}
-        keyExtractor={(item) => item.id}
+        data={categoryData}
+        keyExtractor={(item) => item.category}
         renderItem={({ item }) => (
           <View style={styles.itemDetail}>
             <Text>카테고리: {item.category}</Text>
+            <Text>카운트: {item.count}</Text>
           </View>
         )}
       />
     </View>
   );
-}
-
-export default function StatusContent() {
-  const [readBooks, setReadBooks] = useState([]);
-  const [savedQuotes, setSavedQuotes] = useState([]);
-
-  useEffect(() => {
-    fetch("api/posts/statistics")
-      .then((response) => response.json())
-      .then((data) => {
-        setReadBooks(data.readBooks || []);
-        setSavedQuotes(data.savedQuotes || []);
-      })
-      .catch((error) => console.error("Error fetching statistics:", error));
-  }, []);
-
-  return (
-    <View>
-      <StatsContent title="내가 읽은 책 통계" data={readBooks} />
-      <StatsContent title="내가 저장한 명언 통계" data={savedQuotes} />
-    </View>
-  );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -107,3 +89,5 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 });
+
+export default StatsContent;

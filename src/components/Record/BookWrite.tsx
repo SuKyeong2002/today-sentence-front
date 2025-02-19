@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -7,38 +7,44 @@ import {
   StyleSheet,
   SafeAreaView,
   Alert
-} from "react-native";
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';
-import SuccessModal from "./SuccessModal";
+import { useSaveQuote } from '../../hooks/useSaveQuote';
+import SuccessModal from './SuccessModal';
 
-export default function WriteScreen () {
-  const [category, setCategory] = useState('');
-  const [hashtags, setHashtags] = useState('');
-  const [quote, setQuote] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
+export default function WriteScreen() {
+  const [category, setCategory] = useState<string>('');
+  const [hashtags, setHashtags] = useState<string>('');
+  const [quote, setQuote] = useState<string>('');
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const { isSaving, error, handleSaveQuote } = useSaveQuote();
 
   const handleSubmit = async () => {
+    const data = {
+      bookTitle: '열두발자국',
+      bookAuthor: '정재승',
+      bookPublisher: '창비',
+      bookPublishingYear: 2007,
+      bookCover: 'http://coverurl.com/bookurl',
+      isbn: '1234567890abc',
+      category,
+      hashtags: hashtags.split(' '),
+      content: quote,
+    };
+
     try {
-      const response = await axios.post('YOUR_API_ENDPOINT', {
-        category,
-        hashtags,
-        quote
-      });
-      
-      if (response.status === 200) {
-        setModalVisible(true);
-      }
-    } catch (error) {
+      await handleSaveQuote(data);
+      setModalVisible(true);
+    } catch (err) {
       Alert.alert('오류', '저장 중 문제가 발생했습니다.');
-      console.error(error);
+      console.error(err);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>오늘의 문장은 무엇인가요?</Text>
-      
+
       <View style={styles.formContainer}>
         <Text style={styles.label}>카테고리</Text>
         <Picker
@@ -71,13 +77,14 @@ export default function WriteScreen () {
           multiline
         />
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.submitButton}
           onPress={handleSubmit}
+          disabled={isSaving}
         >
-          <Text style={styles.submitButtonText}>저장하기</Text>
+          <Text style={styles.submitButtonText}>{isSaving ? '저장 중...' : '저장하기'}</Text>
         </TouchableOpacity>
-        <SuccessModal 
+        <SuccessModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
         />
