@@ -98,7 +98,7 @@ const useAuth = (): UseAuthReturn => {
           setUniqueMessage('로그인 성공!');
         } else {
           console.warn('토큰이 없습니다:', data);
-          setUniqueMessage('로그인 실패 (토큰 없음)');
+          setUniqueMessage('회원정보가 없습니다.');
         }
       },
     },

@@ -15,6 +15,8 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import { deleteAccount } from '@/api/deleteAccount';
+import { useDeleteAccount } from '@/hooks/useDeleteAccount';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -28,8 +30,9 @@ export default function AccountPage() {
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation<NavigationProp>();
+  const {mutate: deleteAccount} = useDeleteAccount();
 
   useEffect(() => {
     (async () => {
@@ -57,15 +60,6 @@ export default function AccountPage() {
       }
     })();
   }, []);
-
-  const handleDeleteAccount = async () => {
-    try {
-      navigation.navigate('Login');
-      setModalVisible(false); 
-    } catch (error) {
-      console.error("계정 삭제 중 오류 발생:", error);
-    }
-  };
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
 
@@ -102,12 +96,12 @@ export default function AccountPage() {
           <ModalContainer>
             <ModalContent>
               <ModalText>{t('회원 탈퇴')}</ModalText>
-              <SubModalText>{t('계정을 삭제하시겠습니까?')}</SubModalText>
+              <SubModalText>{t('정말 계정을 삭제하시겠습니까?')}</SubModalText>
               <ModalButtons>
                 <CancelButton onPress={() => setModalVisible(false)}>
                   <ModalButtonText>{t('취소')}</ModalButtonText>
                 </CancelButton>
-                <ConfirmButton onPress={handleDeleteAccount}>
+                <ConfirmButton onPress={() => deleteAccount()}>
                   <ModalButtonText>{t('확인')}</ModalButtonText>
                 </ConfirmButton>
               </ModalButtons>

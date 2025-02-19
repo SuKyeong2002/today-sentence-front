@@ -15,7 +15,9 @@ export const useLogout = () => {
   return useMutation(logout, {
     onSuccess: async () => {
       try {
-        await AsyncStorage.removeItem("userToken"); 
+        await AsyncStorage.removeItem("accessToken"); 
+        await AsyncStorage.removeItem("refreshToken");
+        
         Alert.alert("로그아웃 성공", "로그아웃되었습니다.", [
           { text: "확인", onPress: () => navigation.replace("Login") },
         ]);
