@@ -1,9 +1,8 @@
-import React from 'react';
-import {View} from 'react-native';
 import CustomHeader from '@/components/Header/CustomHeader';
-import Title from './title/Title';
+import React from 'react';
+import { View } from 'react-native';
 import Content from './content/Content';
-import EmptyContent from './content/EmptyContent';
+import Title from './title/Title';
 
 export default function HomePage() {
   return (
@@ -13,12 +12,7 @@ export default function HomePage() {
         onNotificationPress={() => console.log('Notification clicked!')}
       />
       <Title />
-      
       <Content />
-      {/*
-      <EmptyContent />
-      */}
-      
     </View>
   );
 }
