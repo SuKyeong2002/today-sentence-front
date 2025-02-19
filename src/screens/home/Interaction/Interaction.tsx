@@ -165,10 +165,6 @@ export default function Interaction({
 }
 
 // 소통
-const IconTouchableOpacity = styled(TouchableOpacity)`
-  position: absolute;
-`;
-
 const InteractionContainer = styled(View)`
   display: flex;
   justify-content: center;
@@ -204,14 +200,6 @@ const HeartNumber = styled(Text)`
 `;
 
 // 댓글
-const ChatContainer = styled(View)`
-  display: flex;
-  width: 48px;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-`;
-
 const ChatWrapper = styled(View)`
   display: flex;
   padding: 10px;
@@ -282,8 +270,6 @@ const ShareNumber = styled(Text)`
 `;
 
 // 이미지
-const ResponsiveImage = styled(Image)``;
-
 const HeartImage = styled(Image)`
   width: 24px;
   height: 24px;

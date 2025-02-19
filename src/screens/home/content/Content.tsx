@@ -3,6 +3,7 @@ import { useHome } from '@/hooks/useHome';
 import React from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import styled from 'styled-components';
+import EmptyContent from './EmptyContent';
 
 export default function Content() {
   const {data: postData, isLoading, error} = useHome();
@@ -17,7 +18,7 @@ export default function Content() {
   const errorMessage =
     error instanceof Error ? error.message : '데이터를 불러오는 중 오류 발생';
   if (error) return <ErrorText>데이터 불러오기 실패: {errorMessage}</ErrorText>;
-  if (!postData) return <ErrorText>데이터가 없습니다.</ErrorText>;
+  if (!postData) return <EmptyContent />;
 
   console.log(postData);
 

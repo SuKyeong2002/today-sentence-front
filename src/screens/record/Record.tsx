@@ -9,15 +9,15 @@ import StatsContent from "@/components/Record/StatusContent";
 export default function Record({ navigation }: { navigation: any }) {
   const [activeTab, setActiveTab] = useState("기록");
 
-  const renderContent = () => {
-    if (activeTab === "기록") {
-      return <RecordContent navigation={navigation} />;
-    } else if (activeTab === "저장") {
-      return <SavedContent />;
-    } else if (activeTab === "통계") {
-      return <StatsContent />;
-    }
-  };
+  // const renderContent = () => {
+  //   if (activeTab === "기록") {
+  //     return <RecordContent navigation={navigation} />;
+  //   } else if (activeTab === "저장") {
+  //     return <SavedContent />;
+  //   } else if (activeTab === "통계") {
+  //     return <StatsContent />;
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -43,7 +43,7 @@ export default function Record({ navigation }: { navigation: any }) {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={styles.content}>{renderContent()}</View>
+      {/* <View style={styles.content}>{renderContent()}</View> */}
       <Footer />
     </View>
   );
