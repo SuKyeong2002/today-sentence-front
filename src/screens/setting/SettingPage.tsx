@@ -8,6 +8,8 @@ import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import { logout } from '@/api/logout';
+import { useLogout } from '@/hooks/useLogout';
 
 type RootStackParamList = {
   News: undefined;
@@ -23,6 +25,7 @@ export default function SettingPage() {
   const navigation = useNavigation<NavigationProp>();
   const {t} = useTranslation();
   const [font, setFont] = useState<string>('PretendardRegular');
+  const {mutate: logout} = useLogout();
 
   useEffect(() => {
     (async () => {
@@ -90,7 +93,7 @@ export default function SettingPage() {
           onPress={() =>
             Alert.alert(t('로그아웃'), t('로그아웃하시겠습니까?'), [
               {text: t('취소'), style: 'cancel'},
-              {text: t('로그아웃'), style: 'default'},
+              {text: t('로그아웃'), style: 'default', onPress: () => logout()},
             ])
           }
           font={font}
