@@ -182,6 +182,7 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 export const VerifiedEmail = async (email: string): Promise<AuthResponse> => {
   const response = await axios.post<AuthResponse>(
     `${API_URL}/api/member/check-email`,
@@ -293,5 +294,3 @@ export const resetPassword = async (
     newPassword,
   });
 };
-
-// 검색
