@@ -1,5 +1,6 @@
 {
   "설정": "Settings",
+  "닉네임": "Nickname",
   "테마": "Theme",
   "폰트": "Font",
   "언어": "Language",
@@ -12,6 +13,7 @@
   "영어": "English",
   "한국어": "Korean",
   "프로필": "Profile",
+  "프로필 이미지": "Profile Image",
   "계정": "Account",
   "화면": "Screen",
   "알림": "Notification",

@@ -1,26 +1,24 @@
-import React, {useEffect, useState} from 'react';
-import { Image ,View, Text, TextInput, TouchableOpacity, StyleSheet, Alert} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Image, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
 
 export default function LoginPage({ navigation }: { navigation: NavigationProp<any> }) {
-
   const { handleLogin, setUsername, setPassword, message } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPasswordState] = useState('');
 
   const onLoginPress = async () => {
-    setUsername(email);
-    setPassword(password);
-
-    await handleLogin();
+    await handleLogin(email, password);
   };
 
   useEffect(() => {
-    if (message === '로그인 성공!') {
-      navigation.navigate('Home');
-    } else {
-      Alert.alert('로그인 실패', message);
+    if (message) {
+      if (message === '로그인 성공!') {
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('로그인 실패', message);
+      }
     }
   }, [message, navigation]);
 

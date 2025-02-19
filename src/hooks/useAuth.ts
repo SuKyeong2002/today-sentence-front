@@ -19,6 +19,8 @@ import {
   resetPassword,
 } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+const API_URL = 'http://43.201.20.84';
 
 interface UseAuthReturn {
   username: string;
@@ -31,7 +33,7 @@ interface UseAuthReturn {
     password: string,
     nickname: string,
   ) => Promise<void>;
-  handleLogin: () => Promise<void>;
+  handleLogin: (email: string, password: string) => Promise<void>;
   handleChangePassword: (
     oldPassword: string,
     newPassword: string,
@@ -84,21 +86,22 @@ const useAuth = (): UseAuthReturn => {
   });
 
   const loginMutation = useMutation(
-    ({ email, password }: { email: string; password: string }) => signInUser(email, password),
+    ({email, password}: {email: string; password: string}) =>
+      signInUser(email, password),
     {
-      onSuccess: async (data) => {
-        console.log('로그인 성공, 받은 데이터:', data);
+      onSuccess: async data => {
+        console.log('받은 데이터:', data);
 
         if (data?.accessToken && data?.refreshToken) {
           await AsyncStorage.setItem('accessToken', data.accessToken);
           await AsyncStorage.setItem('refreshToken', data.refreshToken);
           setUniqueMessage('로그인 성공!');
         } else {
-          console.warn('토큰이 없거나 필요하지 않습니다. 서버 응답:', data);
-          setUniqueMessage('로그인 성공 (토큰 없음)');
+          console.warn('토큰이 없습니다:', data);
+          setUniqueMessage('로그인 실패 (토큰 없음)');
         }
-      }
-    }
+      },
+    },
   );
 
   const emailValidationMutation = useMutation(
@@ -143,7 +146,7 @@ const useAuth = (): UseAuthReturn => {
     {
       onSuccess: () => {
         setMessage('로그아웃 성공!');
-      }
+      },
     },
   );
 
@@ -177,11 +180,12 @@ const useAuth = (): UseAuthReturn => {
     signUpMutation.mutate();
   };
 
-  const handleLogin = async () => {
-    loginMutation.mutate({
-      email: username,
-      password: password,
-    });
+  const handleLogin = async (email: string, password: string) => {
+    if (!email || !password) {
+      console.warn('이메일 또는 비밀번호가 없습니다.');
+      return;
+    }
+    loginMutation.mutate({email, password});
   };
 
   const handleVerifiedEmail = async (email: string) => {
@@ -257,6 +261,47 @@ const useAuth = (): UseAuthReturn => {
     console.log(verified);
     setMessage(verified ? '코드 인증 성공!' : '코드 인증 실패.');
     return verified;
+  };
+
+  // 검색
+  interface UseAuthReturn {
+    handleSearch: (query: string, filter: string) => Promise<void>;
+  }
+
+  const useAuth = (): UseAuthReturn => {
+    const [searchResults, setSearchResults] = useState<any>(null);
+
+    // ✅ 검색 API 요청 (검색어 및 필터 전달)
+    const searchMutation = useMutation(
+      async ({query, filter}: {query: string; filter: string}) => {
+        const response = await axios.get(`${API_URL}/api/search/books`, {
+          params: {searchText: query, selectedOption: filter},
+        });
+        return response.data;
+      },
+      {
+        onSuccess: data => {
+          console.log('🔍 검색 결과:', data);
+          setSearchResults(data);
+        },
+        onError: error => {
+          console.error('❌ 검색 오류:', error);
+        },
+      },
+    );
+
+    // ✅ 검색 실행 함수 정의
+    const handleSearch = async (query: string, filter: string) => {
+      if (!query.trim() || !filter) {
+        console.warn('🚨 검색어 또는 필터가 비어 있습니다.');
+        return;
+      }
+      searchMutation.mutate({query, filter});
+    };
+
+    return {
+      handleSearch, // ✅ 검색 함수 반환
+    };
   };
 
   return {

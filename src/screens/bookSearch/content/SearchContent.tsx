@@ -1,110 +1,124 @@
 import React from 'react';
-import {View, Image, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import styled from 'styled-components';
-import Interaction from '../../home/Interaction/Interaction';
+import {useRoute} from '@react-navigation/native';
+import {useBookSearch} from '@/hooks/useBookSearch';
+import {useTagQuoteSearch} from '@/hooks/useTagQuoteSearch';
+import Sentence from '@/components/Book/Sentence';
+
+interface QuoteData {
+  postId: number;
+  postWriter: string;
+  category: string;
+  bookTitle: string;
+  bookAuthor: string;
+  bookCover: string;
+  postContent: string;
+  hashtags: string;
+  likesCount: number;
+  bookmarkCount: number;
+  commentCount: number;
+  createAt: string;
+}
 
 export default function SearchContent() {
+  const route = useRoute();
+  const {bookTitle, tag} = route.params as {bookTitle?: string; tag?: string};
+
+  const {
+    data: bookQuotes = [],
+    isLoading: bookLoading,
+    error: bookError,
+  } = useBookSearch(bookTitle || '');
+
+  const {
+    data: tagQuotes = [],
+    isLoading: tagLoading,
+    error: tagError,
+  } = useTagQuoteSearch(tag || '');
+
+  const isLoading = bookLoading || tagLoading;
+  const isError = bookError || tagError;
+
+  const rawQuotes = bookTitle ? bookQuotes : tag ? tagQuotes : [];
+  console.log('rawQuotes', rawQuotes);
+  console.log('typeof rawQuotes', typeof rawQuotes);
+
+  const quotes: QuoteData[] = 
+  Array.isArray(rawQuotes) 
+    ? rawQuotes 
+    : typeof rawQuotes === 'object' && rawQuotes !== null && 'data' in rawQuotes
+      ? rawQuotes.data 
+      : [];
+
+  // console.log('최종 변환된 quotes 데이터:', quotes);
+  // console.log('최종 quotes가 배열인지:', Array.isArray(quotes));
+
   return (
-    <>
-      <ContentWrapper>
-        <BookContainer>
-          <ResponsiveImage
-            source={require('@/assets/image/bookCover5.png')}
-            resizeMode="contain"
-          />
-          <BookWrapper>
-            <BookCategory>시/소설/에세이</BookCategory>
-            <BookTitle>살아갈 날들을 위한 괴테의 시</BookTitle>
-            <BookWriter>김종원</BookWriter>
-          </BookWrapper>
-        </BookContainer>
-        <BookRecord>
-          <BookSentence>
-            자신을 아는 것은 모든 삶의 출발점입니다. 우리는 수없이 많은 외부의
-            기대 속에서 흔들리고 길을 잃곤 하지만, 진정한 나를 발견하는 순간
-            삶은 비로소 그 의미를 드러냅니다. 스스로의 가치를 믿고 세상에
-            맞추기보다 나다운 삶을 선택하는 용기를 가지세요. 괴테는 말합니다.
-            '스스로에 대한 신뢰가 없다면, 큰일을 할 수 없으며, 작은 일에서도
-            기쁨을 찾을 수 없다.' 삶은 단순히 살아내는 것이 아니라 스스로 의미를
-            만들어가는 과정입니다. 오늘을 사랑하며 내일을 기대하세요. 그것이
-            당신의 인생을 빛나게 할 것입니다.
-          </BookSentence>
-          <BookTag>#오늘의책</BookTag>
-        </BookRecord>
-        <Interaction />
-      </ContentWrapper>
-    </>
+    <ScrollContainer>
+      {isLoading ? (
+        <LoadingText>로딩 중...</LoadingText>
+      ) : isError ? (
+        <ErrorText>오류 발생</ErrorText>
+      ) : quotes.length > 0 ? (
+        quotes.map((quote, index) => (
+          <SentenceContainer key={index}>
+            <Sentence
+              postId={quote.postId}
+              postWriter={quote.postWriter}
+              postContent={quote.postContent}
+              category={quote.category}
+              hashtags={quote.hashtags}
+              createAt={quote.createAt}
+              likesCount={quote.likesCount}
+              commentCount={quote.commentCount}
+              bookmarkCount={quote.bookmarkCount}
+              bookTitle={quote.bookTitle}
+              bookAuthor={quote.bookAuthor}
+              bookCover={quote.bookCover}
+            />
+          </SentenceContainer>
+        ))
+      ) : (
+        <NoResultText>검색 결과가 없습니다.</NoResultText>
+      )}
+    </ScrollContainer>
   );
 }
 
-const ContentWrapper = styled(View)`
-  padding: 20px;
-  align-items: flex-start;
-  gap: 20px;
-  margin: 0 20px;
-  elevation: 10;
-  border-radius: 15px;
-  shadow-color: #000;
-  background: ${({theme}) => theme.colors.white};
+// 스타일 정의
+const ScrollContainer = styled(ScrollView)`
+  margin: 10px 20px;
 `;
 
-// 책
-const BookContainer = styled(View)`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px;
+const SentenceContainer = styled(View)`
+  margin-bottom: 20px;
 `;
 
-const BookWrapper = styled(View)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  flex: 1 0 0;
-  align-self: stretch;
+const TitleText = styled(Text)`
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
 `;
 
-const BookCategory = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.small}px;
+const NoResultText = styled(Text)`
+  font-size: 16px;
   font-weight: 500;
-  color: var(--Gray, rgba(80, 80, 80, 0.33));
-  border-radius: 8px;
-  background: #f5f4f5;
-  padding: 4px 8px;
+  color: gray;
+  text-align: center;
+  margin-top: 20px;
 `;
 
-const BookTitle = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.title}px;
-  font-weight: 600;
-  color: ${({theme}) => theme.colors.text};
+const LoadingText = styled(Text)`
+  font-size: 16px;
+  text-align: center;
+  margin-top: 20px;
 `;
 
-const BookWriter = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.regular}px;
-  font-weight: 500;
-  color: ${({theme}) => theme.colors.text};
+const ErrorText = styled(Text)`
+  font-size: 16px;
+  color: red;
+  text-align: center;
+  margin-top: 20px;
 `;
-
-const BookRecord = styled(View)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
-  gap: 5px;
-`;
-
-const BookSentence = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.regular}px;
-  font-weight: 400;
-  color: ${({theme}) => theme.colors.text};
-`;
-
-const BookTag = styled(Text)`
-  font-size: ${({theme}) => theme.fontSizes.small}px;
-  font-weight: 400;
-  color: ${({theme}) => theme.colors.lightGray};
-`;
-
-// 이미지
-const ResponsiveImage = styled(Image)``;

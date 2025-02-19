@@ -8,7 +8,16 @@ module.exports = {
         alias: {
           '@': './src',
         },
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],  
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    ],
+    [
+      'module:react-native-dotenv',
+      {
+        moduleName: '@env',
+        path: '.env',
+        safe: true,
+        allowUndefined: false,
       },
     ],
     'react-native-reanimated/plugin',

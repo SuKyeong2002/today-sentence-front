@@ -121,7 +121,6 @@ export default function LandingPage({ navigation }: LandingPageProps) {
         )}
       />
 
-      {/* NewLogo 화면에서는 "건너뛰기" 버튼을 숨김 */}
       {currentIndex !== 0 && (
         <View style={styles.buttonContainer}>
           {slides[currentIndex].id === '5' ? (
