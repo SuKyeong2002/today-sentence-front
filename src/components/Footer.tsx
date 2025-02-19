@@ -3,7 +3,7 @@ import {Image, StyleSheet, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import HomeScreen from '../screens/home/HomePage';
-import RecordScreen from '../screens/main/RecordPage';
+import RecordScreen from '../screens/record/Record';
 import SearchScreen from '../screens/search/SearchPage';
 import CategoryScreen from '../screens/category/CategoryPage';
 import MyScreen from '../screens/mypage/MyPage';

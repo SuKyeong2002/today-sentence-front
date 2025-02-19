@@ -20,7 +20,6 @@ import {
 } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
 const API_URL = 'http://43.201.20.84';
 
 interface UseAuthReturn {
@@ -71,7 +70,7 @@ const useAuth = (): UseAuthReturn => {
 
   useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => setMessage(''), 3000); // 3초 후 메시지 초기화
+      const timer = setTimeout(() => setMessage(''), 3000); 
       return () => clearTimeout(timer);
     }
   }, [message]);

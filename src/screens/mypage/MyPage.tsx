@@ -1,7 +1,7 @@
 import {View, Text, Image, TouchableOpacity, Alert} from 'react-native';
 import styled from 'styled-components';
 import Profile from './profile/Profile';
-import Reac, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';

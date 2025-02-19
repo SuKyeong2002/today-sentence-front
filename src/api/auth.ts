@@ -277,11 +277,11 @@ export const verifyAuthCode = async (
   email: string,
   code: string,
 ): Promise<boolean> => {
-  const response = await axios.post<{verified: boolean | string}>(
+  const response = await axios.post<{data: boolean | string}>(
     `${API_URL}/api/member/check-code`,
     {email, code},
   );
-  return response.data.verified === true || response.data.verified === 'true';
+  return response.data.data === true || response.data.data === 'true';
 };
 
 export const resetPassword = async (
