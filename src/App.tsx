@@ -116,7 +116,7 @@ export default function App() {
         <ThemeProvider theme={appTheme}>
           <FontProvider>
             <NavigationContainer theme={MyNavigationTheme}>
-              <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Record'>
+              <Stack.Navigator screenOptions={{headerShown: false}}>
                 <Stack.Screen name="Landing" component={LandingScreen} />
                 <Stack.Screen name="EmailFind" component={EmailFindPage} />
                 <Stack.Screen

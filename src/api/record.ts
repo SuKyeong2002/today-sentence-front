@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {BookRecord, SearchResponse} from "../types/BookRecord";
 
 const API_URL = 'http://43.201.20.84';
 
@@ -76,3 +77,18 @@ export const ToggleSaveQuote = async (
   );
   return response.data;
 };
+
+export const SearchBookRecord = async (
+    searchQuery: string
+  ): Promise<BookRecord[]> => {
+    const response = await axios.get<SearchResponse>(
+      `${API_URL}/api/search/posts`,
+      {
+        params: {
+            query: searchQuery
+        }
+      }
+    );
+    return response.data.data;
+  };
+  
