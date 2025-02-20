@@ -1,26 +1,30 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {useTranslation} from 'react-i18next';
-import {changeLanguage, getStoredLanguage} from '@/utils/language';
+import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { changeLanguage, getStoredLanguage } from '@/utils/language';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ProfileTextEdit } from '@/components/Button/ProfileTextEdit';
 import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
+import { useUser } from '@/hooks/useUser';
+import { useQueryClient } from 'react-query';
 
 type RootStackParamList = {
   Nickname: undefined;
   Introduction: undefined;
-  
 };
 
 export default function ProfilePage() {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Nickname'>>();
+  const queryClient = useQueryClient();
+  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
 
+  // 언어 설정 및 폰트 설정 
   useEffect(() => {
     (async () => {
       const storedLang = await getStoredLanguage();
@@ -28,16 +32,6 @@ export default function ProfilePage() {
       i18n.changeLanguage(storedLang);
     })();
   }, []);
-
-  const handleLanguageChange = async (lang: string) => {
-    await changeLanguage(lang);
-    setLanguage(lang);
-  };
-
-  const handleFontChange = async (selectedFont: string) => {
-    await AsyncStorage.setItem('selectedFont', selectedFont);
-    setFont(selectedFont);
-  };
 
   useEffect(() => {
     (async () => {
@@ -48,10 +42,29 @@ export default function ProfilePage() {
     })();
   }, []);
 
-  type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
+  // 닉네임 변경 후 데이터 다시 불러오기
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      queryClient.invalidateQueries('user'); 
+    });
+
+    return unsubscribe;
+  }, [navigation, queryClient]);
+
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </LoadingContainer>
+    );
+  }
+
+  if (error) {
+    return <ErrorText>유저 정보를 불러올 수 없습니다.</ErrorText>;
+  }
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
@@ -60,10 +73,7 @@ export default function ProfilePage() {
 
       <ProfileWrapper>
         <ProfileImageContainer>
-          <ProfileImage
-            source={require('@/assets/image/profileUser.png')}
-            resizeMode="contain"
-          />
+          <ProfileImage source={require('@/assets/image/profileUser.png')} resizeMode="contain" />
         </ProfileImageContainer>
         <ProfileImgText fontFamily={font}>{t('프로필 이미지')}</ProfileImgText>
       </ProfileWrapper>
@@ -71,13 +81,13 @@ export default function ProfilePage() {
       <ScreenContainer fontFamily={font}>
         <ProfileTextEdit
           title={t('닉네임')}
-          title2={t('명언 좀도둑')}
+          title2={user?.nickname || t('존재하지 않는 닉네임입니다.')}
           onPress={() => navigation.navigate('Nickname')}
           font={font}
         />
         <ProfileTextEdit
           title={t('자기소개')}
-          title2={t('')}
+          title2={user?.statusMessage || t('존재하지 않는 상태 메시지입니다.')}
           onPress={() => navigation.navigate('Introduction')}
           font={font}
         />
@@ -86,16 +96,16 @@ export default function ProfilePage() {
   );
 }
 
-const ScreenContainer = styled(View)<{fontFamily: string}>`
+// 스타일 
+const ScreenContainer = styled(View)<{ fontFamily: string }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
   margin-top: 24px;
-  font-family: ${props => props.fontFamily};
+  font-family: ${(props) => props.fontFamily};
 `;
 
-// 프로필
 const ProfileImageContainer = styled(View)`
   display: flex;
   width: 60px;
@@ -120,14 +130,26 @@ const ProfileWrapper = styled(View)`
   margin-top: 20px;
 `;
 
-const ProfileImgText = styled(Text)<{fontFamily: string}>`
-  font-size: ${({theme}) => theme.fontSizes.small}px;
+const ProfileImgText = styled(Text)<{ fontFamily: string }>`
+  font-size: ${({ theme }) => theme.fontSizes.small}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.blue};
+  color: ${({ theme }) => theme.colors.blue};
 `;
 
-// 이미지
 const ProfileImage = styled(Image)`
   width: 68px;
   height: 68px;
+`;
+
+const LoadingContainer = styled(View)`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ErrorText = styled(Text)`
+  font-size: 16px;
+  color: red;
+  text-align: center;
+  margin-top: 20px;
 `;

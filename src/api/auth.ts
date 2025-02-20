@@ -21,7 +21,6 @@ export const signUpUser = async (
   return response.data;
 };
 
-//
 export const signInUser = async (
   email?: string,
   password?: string,
@@ -108,7 +107,7 @@ const startTokenRefreshTimer = () => {
 };
 
 // 모든 API 요청에 자동으로 `Device-Id` 및 `Access-Token` 포함
-//엑시오스 인터셉터 생성
+// 엑시오스 인터셉터 생성
 export const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
@@ -182,6 +181,7 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 export const VerifiedEmail = async (email: string): Promise<AuthResponse> => {
   const response = await axios.post<AuthResponse>(
     `${API_URL}/api/member/check-email`,
@@ -200,14 +200,15 @@ export const VerifiedPassword = async (
   return response.data;
 };
 
-export const verifiedNickName = async (
-  nickname: string,
-): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>(
-    `${API_URL}/api/member/check-nickname`,
-    {nickname},
-  );
-  return response.data;
+// 닉네임 중복 검증
+export const verifiedNickName = async (nickname: string): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const response = await axios.post(`${API_URL}/api/member/check-nickname`, { nickname });
+    return response.data; 
+  } catch (error: any) {
+    console.error("닉네임 검증 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "닉네임 검증 중 오류 발생");
+  }
 };
 
 export const userLogout = async (
@@ -227,14 +228,58 @@ export const changePassword = async (
   });
 };
 
-export const changeNickname = async (nickname: string): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/change-nickname`, {nickname});
+// 닉네임 변경 
+export const changeNickname = async (nickname: string): Promise<{ success: boolean; message?: string }> => {
+  console.log(nickname);
+  try {
+    const token = await AsyncStorage.getItem('accessToken'); 
+
+    if (!token) {
+      throw new Error("토큰이 없습니다.");
+    }
+
+    const response = await apiClient.put(
+      "/api/member/change-nickname",
+      { nickname },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    return response.data; 
+  } catch (error: any) {
+    console.error("닉네임 변경 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "닉네임 변경 중 오류 발생");
+  }
 };
 
-export const changeStatusMessage = async (
-  statusMessage: string,
-): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/change-message`, {statusMessage});
+// 상태메시지 변경 
+export const changeStatusMessage = async (message: string): Promise<{ success: boolean; message?: string }> => {
+  console.log(message);
+  try {
+    const token = await AsyncStorage.getItem('accessToken'); 
+
+    if (!token) {
+      throw new Error("토큰이 없습니다.");
+    }
+
+    const response = await apiClient.put(
+      "/api/member/change-message",
+      { message },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    return response.data; 
+  } catch (error: any) {
+    console.error("상태메시지 변경 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "상태메시지 변경 중 오류 발생");
+  }
 };
 
 export const checkPasswordMatch = async (
@@ -293,5 +338,3 @@ export const resetPassword = async (
     newPassword,
   });
 };
-
-// 검색
