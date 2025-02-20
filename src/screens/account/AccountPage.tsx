@@ -5,6 +5,7 @@ import {
   Image,
   Modal,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -17,6 +18,7 @@ import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
 import { deleteAccount } from '@/api/deleteAccount';
 import { useDeleteAccount } from '@/hooks/useDeleteAccount';
+import { useUser } from '@/hooks/useUser';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -33,6 +35,19 @@ export default function AccountPage() {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation<NavigationProp>();
   const {mutate: deleteAccount} = useDeleteAccount();
+  const {data: user, isLoading, error} = useUser();
+
+    if (isLoading) {
+      return (
+        <LoadingContainer>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </LoadingContainer>
+      );
+    }
+  
+    if (error) {
+      return <ErrorText>유저 정보를 불러올 수 없습니다.</ErrorText>;
+    }
 
   useEffect(() => {
     (async () => {
@@ -73,7 +88,7 @@ export default function AccountPage() {
       <ScreenContainer fontFamily={font}>
         <ProfileTextEdit
           title={t('이메일 변경')}
-          title2={t('onesentence@gmail.com')}
+          title2= {user?.email || t('존재하지 않는 이메일입니다.')}
           onPress={() => navigation.navigate('Email')}
           font={font}
         />
@@ -191,4 +206,18 @@ const ConfirmButton = styled(TouchableOpacity)`
   align-items: center;
   color: ${({theme}) => theme.colors.white};
   background-color: ${({theme}) => theme.colors.primary};
+`;
+
+// 로딩 및 오류 처리
+const LoadingContainer = styled(View)`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ErrorText = styled(Text)`
+  font-size: 16px;
+  color: red;
+  text-align: center;
+  margin-top: 20px;
 `;
