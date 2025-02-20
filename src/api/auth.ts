@@ -255,10 +255,31 @@ export const changeNickname = async (nickname: string): Promise<{ success: boole
   }
 };
 
-export const changeStatusMessage = async (
-  statusMessage: string,
-): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/change-message`, {statusMessage});
+// 상태메시지 변경 
+export const changeStatusMessage = async (message: string): Promise<{ success: boolean; message?: string }> => {
+  console.log(message);
+  try {
+    const token = await AsyncStorage.getItem('accessToken'); 
+
+    if (!token) {
+      throw new Error("토큰이 없습니다.");
+    }
+
+    const response = await apiClient.put(
+      "/api/member/change-message",
+      { message },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    return response.data; 
+  } catch (error: any) {
+    console.error("상태메시지 변경 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "상태메시지 변경 중 오류 발생");
+  }
 };
 
 export const checkPasswordMatch = async (

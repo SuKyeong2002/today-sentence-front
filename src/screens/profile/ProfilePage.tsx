@@ -22,7 +22,7 @@ export default function ProfilePage() {
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Nickname'>>();
   const queryClient = useQueryClient();
-  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회회
+  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
 
   // 언어 설정 및 폰트 설정 
   useEffect(() => {

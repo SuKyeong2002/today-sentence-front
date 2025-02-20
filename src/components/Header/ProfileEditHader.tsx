@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import useAuth from '@/hooks/useAuth';
 
 type RootStackParamList = {
@@ -24,39 +24,61 @@ interface BackHeaderProps {
   searchKeyword?: string;
   onBackPress?: () => void;
   nickname?: string;
+  message?: string;
 }
 
 export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   searchKeyword,
   onBackPress,
   nickname,
+  message,
 }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute();
-  const { handleChangeNickname } = useAuth(); 
+  const {handleChangeNickname, handleChangeStatusMessage} = useAuth();
 
   const handleConfirm = async () => {
-    if (!nickname || nickname.length === 0) {
-      setErrorMessage('닉네임을 입력해주세요.');
+    if (route.name === 'Nickname') {
+      if (!nickname || nickname.length === 0) {
+        setErrorMessage('닉네임을 입력해주세요.');
+        return;
+      }
+
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        await handleChangeNickname(nickname);
+        console.log('닉네임 변경 성공');
+        navigation.navigate('Profile');
+      } catch (error: any) {
+        console.error('닉네임 변경 실패:', error.message);
+      } finally {
+        setLoading(false);
+      }
       return;
     }
 
-    setLoading(true);
-    setErrorMessage(null);
-
-    try {
-      if (route.name === 'Nickname') {
-        await handleChangeNickname(nickname); 
-        console.log('닉네임 변경 성공');
+    if (route.name === 'Introduction') {
+      if (!message || message.length === 0) {
         navigation.navigate('Profile');
+        return;
       }
-    } catch (error: any) {
-      console.error('닉네임 변경 실패:', error.message);
-      // setErrorMessage('닉네임 변경 중 오류 발생');
-    } finally {
-      setLoading(false);
+
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        await handleChangeStatusMessage(message);
+        console.log('상태 메시지 변경 성공');
+        navigation.navigate('Profile');
+      } catch (error: any) {
+        console.error('상태 메시지 변경 실패:', error.message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
