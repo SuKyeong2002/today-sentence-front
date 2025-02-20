@@ -45,13 +45,6 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   const {handleChangeNickname, handleChangeStatusMessage} = useAuth();
 
   const handleConfirm = async () => {
-    if (!isDuplicateChecked) {
-      Alert.alert(t('닉네임 변경 실패'), t('중복검사를 진행해주세요'), [
-        {text: t('확인'), style: 'default'},
-      ]);
-      return;
-    }
-
     if (route.name === 'Nickname') {
       if (!nickname || nickname.length === 0) {
         navigation.navigate('Profile');
@@ -62,6 +55,12 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
       setErrorMessage(null);
 
       try {
+        if (!isDuplicateChecked) {
+          Alert.alert(t('닉네임 변경 실패'), t('중복검사를 진행해주세요'), [
+            {text: t('확인'), style: 'default'},
+          ]);
+          return;
+        }
         await handleChangeNickname(nickname);
         console.log('닉네임 변경 성공');
         navigation.navigate('Profile');
