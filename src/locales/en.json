@@ -1,6 +1,8 @@
 {
   "설정": "Settings",
   "닉네임": "Nickname",
+  "이메일 변경": "Change Email",
+  "비밀번호 재설정": "Reset Password",
   "중복검사를 진행해주세요": "Please perform a duplicate check",
   "닉네임 변경 실패": "Nickname change failed",
   "존재하지 않는 닉네임입니다.": "Nonexistent nickname",
@@ -20,6 +22,7 @@
   "프로필": "Profile",
   "프로필 이미지": "Profile Image",
   "계정": "Account",
+  "회원탈퇴": "Account Deletion",
   "화면": "Screen",
   "알림": "Notification",
   "공지사항": "Notice",

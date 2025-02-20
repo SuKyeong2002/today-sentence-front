@@ -107,7 +107,7 @@ const startTokenRefreshTimer = () => {
 };
 
 // 모든 API 요청에 자동으로 `Device-Id` 및 `Access-Token` 포함
-//엑시오스 인터셉터 생성
+// 엑시오스 인터셉터 생성
 export const apiClient = axios.create({
   baseURL: API_URL,
   headers: {

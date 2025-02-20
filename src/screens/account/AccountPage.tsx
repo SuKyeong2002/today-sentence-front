@@ -16,9 +16,10 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
-import { deleteAccount } from '@/api/deleteAccount';
-import { useDeleteAccount } from '@/hooks/useDeleteAccount';
-import { useUser } from '@/hooks/useUser';
+import {deleteAccount} from '@/api/deleteAccount';
+import {useDeleteAccount} from '@/hooks/useDeleteAccount';
+import {useUser} from '@/hooks/useUser';
+import CustomModal from '@/components/Modal/CustomModal';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -37,17 +38,17 @@ export default function AccountPage() {
   const {mutate: deleteAccount} = useDeleteAccount();
   const {data: user, isLoading, error} = useUser();
 
-    if (isLoading) {
-      return (
-        <LoadingContainer>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </LoadingContainer>
-      );
-    }
-  
-    if (error) {
-      return <ErrorText>유저 정보를 불러올 수 없습니다.</ErrorText>;
-    }
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </LoadingContainer>
+    );
+  }
+
+  if (error) {
+    return <ErrorText>유저 정보를 불러올 수 없습니다.</ErrorText>;
+  }
 
   useEffect(() => {
     (async () => {
@@ -76,6 +77,11 @@ export default function AccountPage() {
     })();
   }, []);
 
+  const handleDeleteAccount = () => {
+    deleteAccount();
+    setModalVisible(false);
+  };
+
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
 
   return (
@@ -88,7 +94,7 @@ export default function AccountPage() {
       <ScreenContainer fontFamily={font}>
         <ProfileTextEdit
           title={t('이메일 변경')}
-          title2= {user?.email || t('존재하지 않는 이메일입니다.')}
+          title2={user?.email || t('존재하지 않는 이메일입니다.')}
           onPress={() => navigation.navigate('Email')}
           font={font}
         />
@@ -103,26 +109,12 @@ export default function AccountPage() {
           <ButtonText>{t('계정 삭제하기')}</ButtonText>
         </DeleteAccountButton>
 
-        <Modal
-          transparent={true}
+        <CustomModal
           visible={modalVisible}
-          animationType="fade"
-          onRequestClose={() => setModalVisible(false)}>
-          <ModalContainer>
-            <ModalContent>
-              <ModalText>{t('회원 탈퇴')}</ModalText>
-              <SubModalText>{t('정말 계정을 삭제하시겠습니까?')}</SubModalText>
-              <ModalButtons>
-                <CancelButton onPress={() => setModalVisible(false)}>
-                  <ModalButtonText>{t('취소')}</ModalButtonText>
-                </CancelButton>
-                <ConfirmButton onPress={() => deleteAccount()}>
-                  <ModalButtonText>{t('확인')}</ModalButtonText>
-                </ConfirmButton>
-              </ModalButtons>
-            </ModalContent>
-          </ModalContainer>
-        </Modal>
+          title={t("회원탈퇴")}
+          message={t("정말 계정을 삭제하시겠습니까?")} 
+          onConfirm={handleDeleteAccount}
+          onCancel={() => setModalVisible(false)} />
       </ScreenContainer>
     </View>
   );
