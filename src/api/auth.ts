@@ -21,7 +21,6 @@ export const signUpUser = async (
   return response.data;
 };
 
-//
 export const signInUser = async (
   email?: string,
   password?: string,
@@ -182,6 +181,7 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 export const VerifiedEmail = async (email: string): Promise<AuthResponse> => {
   const response = await axios.post<AuthResponse>(
     `${API_URL}/api/member/check-email`,
@@ -228,8 +228,31 @@ export const changePassword = async (
   });
 };
 
-export const changeNickname = async (nickname: string): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/change-nickname`, {nickname});
+// 닉네임 변경 
+export const changeNickname = async (nickname: string): Promise<{ success: boolean; message?: string }> => {
+  console.log(nickname);
+  try {
+    const token = await AsyncStorage.getItem('accessToken'); 
+
+    if (!token) {
+      throw new Error("토큰이 없습니다.");
+    }
+
+    const response = await apiClient.put(
+      "/api/member/change-nickname",
+      { nickname },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    return response.data; 
+  } catch (error: any) {
+    console.error("닉네임 변경 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "닉네임 변경 중 오류 발생");
+  }
 };
 
 export const changeStatusMessage = async (

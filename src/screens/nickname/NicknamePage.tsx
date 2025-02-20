@@ -5,12 +5,13 @@ import { getStoredLanguage } from '@/utils/language';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useMutation } from 'react-query';
+import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components';
 
 export default function NicknamePage() {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
   const [nickname, setNickname] = useState<string>('');
@@ -18,7 +19,7 @@ export default function NicknamePage() {
   const [isError, setIsError] = useState<boolean>(false);
   const [isError2, setIsError2] = useState<boolean>(false);
   const [errorMessage2, setErrorMessage2] = useState<string>('');
-  const {handleVerifiedNickName} = useAuth();
+  const { handleChangeNickname } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -37,13 +38,14 @@ export default function NicknamePage() {
     })();
   }, []);
 
+  // 닉네임 중복 검사 
   const nicknameValidationMutation = useMutation(
     async (nickname: string) => {
       return await verifiedNickName(nickname);
     },
     {
       onSuccess: response => {
-        console.error('성공!', response);
+        console.log('닉네임 검증 성공:', response);
         setErrorMessage2('사용 가능한 닉네임입니다.');
         setIsError2(false);
       },
@@ -54,8 +56,8 @@ export default function NicknamePage() {
       },
     }
   );
-  
-  
+
+  // 닉네임 입력란 공백 확인 
   const handleDuplicateCheck = async () => {
     if (nickname.trim().length === 0) {
       setErrorMessage('닉네임을 입력해주세요.');
@@ -65,12 +67,30 @@ export default function NicknamePage() {
     nicknameValidationMutation.mutate(nickname);
   };
 
+  const handleConfirm = async () => {
+    if (errorMessage2 !== '사용 가능한 닉네임입니다.') {
+      setErrorMessage2('닉네임 중복 검사를 진행해주세요.');
+      setIsError2(true);
+      return;
+    } 
+
+    try {
+      await handleChangeNickname(nickname);
+      console.log('닉네임 변경 성공');
+    } catch (error: any) {
+      console.error('닉네임 변경 실패:', error.message);
+      setErrorMessage2('닉네임 변경 중 오류 발생');
+      setIsError2(true);
+    } finally {
+    }
+  };
+
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <ProfileEditHader
         searchKeyword={t('프로필 편집')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
+        nickname={nickname}
       />
       <ScreenContainer fontFamily={font}>
         <InputWrapper>
@@ -88,24 +108,19 @@ export default function NicknamePage() {
             />
             <CharacterCount>{`${nickname.length}/8`}</CharacterCount>
           </NicknameInputContainer>
-          <DuplicateCheckButton
-            onPress={handleDuplicateCheck}
-            isActive={nickname.length > 0}>
+          <DuplicateCheckButton onPress={handleDuplicateCheck} isActive={nickname.length > 0}>
             <ButtonText>중복확인</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
-        {errorMessage !== '' && (
-          <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>
-        )}
-        {errorMessage2 !== '' && (
-          <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
-        )}
+        {errorMessage !== '' && <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>}
+        {errorMessage2 !== '' && <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>}
       </ScreenContainer>
     </View>
   );
 }
 
-const ScreenContainer = styled(View)<{fontFamily: string}>`
+// 스타일 
+const ScreenContainer = styled(View)<{ fontFamily: string }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -129,8 +144,8 @@ const NicknameInputContainer = styled(View)`
 
 const NicknameInput = styled(TextInput)`
   height: 48px;
-  background-color: ${({theme}) => theme.colors.white};
-  border: 1px solid ${({theme}) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
   border-radius: 8px;
   padding: 0 50px 0 12px;
   font-size: 16px;
@@ -143,31 +158,50 @@ const CharacterCount = styled(Text)`
   top: 50%;
   margin-top: -8px;
   font-size: 14px;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.text};
 `;
 
-const DuplicateCheckButton = styled(TouchableOpacity)<{isActive: boolean}>`
+const DuplicateCheckButton = styled(TouchableOpacity)<{ isActive: boolean }>`
   height: 48px;
   padding: 0 16px;
   border-radius: 8px;
   justify-content: center;
   align-items: center;
-  background-color: ${({isActive, theme}) =>
+  background-color: ${({ isActive, theme }) =>
     isActive ? theme.colors.primary || 'brown' : theme.colors.gray};
 `;
 
 const ButtonText = styled(Text)`
-  color: ${({theme}) => theme.colors.white};
-  font-size: ${({theme}) => theme.fontSizes.regular}px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.regular}px;
   font-weight: 600;
 `;
 
-const ErrorMessage = styled(Text)<{isError: boolean}>`
-  color: ${({isError}) => (isError ? 'red' : 'green')};
+const ErrorMessage = styled(Text)<{ isError: boolean }>`
+  color: ${({ isError }) => (isError ? 'red' : 'green')};
   font-size: 14px;
 `;
 
-const ErrorMessage2 = styled(Text)<{isError2: boolean}>`
-  color: ${({isError2}) => (isError2 ? 'red' : 'green')};
+const ErrorMessage2 = styled(Text)<{ isError2: boolean }>`
+  color: ${({ isError2 }) => (isError2 ? 'red' : 'green')};
   font-size: 14px;
+`;
+
+const LoadingOverlay = styled(View)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+`;
+
+const LoadingText = styled(Text)`
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
 `;

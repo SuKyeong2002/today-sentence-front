@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Modal,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import useAuth from '@/hooks/useAuth';
 
 type RootStackParamList = {
   Profile: undefined;
   Account: undefined;
   Authentication: undefined;
+  Nickname: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
@@ -22,40 +23,41 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
 interface BackHeaderProps {
   searchKeyword?: string;
   onBackPress?: () => void;
-  onNotificationPress?: () => void;
+  nickname?: string;
 }
 
 export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   searchKeyword,
   onBackPress,
-  onNotificationPress,
+  nickname,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute();
+  const { handleChangeNickname } = useAuth(); 
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    if (!nickname || nickname.length === 0) {
+      setErrorMessage('닉네임을 입력해주세요.');
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    setErrorMessage(null);
+
+    try {
       if (route.name === 'Nickname') {
-        navigation.navigate('Profile');
-      } else if (route.name === 'Email') {
-        setShowModal(true);
-      } else if (route.name === 'Password') {
-        navigation.navigate('Account');
-      } else if (route.name === 'Authentication') {
-        navigation.navigate('Account');
-      } else if (route.name === 'Introduction') {
+        await handleChangeNickname(nickname); 
+        console.log('닉네임 변경 성공');
         navigation.navigate('Profile');
       }
-    }, 2000);
-  };
-
-  const handleModalConfirm = () => {
-    setShowModal(false);
-    navigation.navigate('Authentication');
+    } catch (error: any) {
+      console.error('닉네임 변경 실패:', error.message);
+      // setErrorMessage('닉네임 변경 중 오류 발생');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,23 +84,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
         </View>
       )}
 
-      <Modal
-        visible={showModal}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowModal(false)}>
-        <View style={styles.modalWrapper}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>인증번호 발송</Text>
-              <Text style={styles.modalSubtitle}>이메일을 확인해주세요.</Text>
-              <TouchableOpacity onPress={handleModalConfirm} style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>확인</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
     </View>
   );
 };
@@ -152,43 +138,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
-  modalWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 1001,
-  },
-  modalContainer: {
-    width: '80%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  modalContent: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: '600',
-    marginBottom: 10,
-  },
-  modalSubtitle: {
+  errorText: {
+    color: 'red',
     fontSize: 16,
-    color: '#828183',
-    marginBottom: 20,
-  },
-  modalButton: {
-    width: '100%',
-    paddingVertical: 10,
-    backgroundColor: '#8A715D',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  modalButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#fff',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
