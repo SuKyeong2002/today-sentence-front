@@ -128,18 +128,26 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
+  // 닉네임 중복 검증
   const nicknameValidationMutation = useMutation(
-    (nickname: string) => verifiedNickName(nickname),
-    {
-      onSuccess: () => {
-        setMessage('닉네임 검증 성공!');
-      },
-      onError: () => {
-        setMessage('닉네임 검증 실패.');
-      },
+    async (nickname: string) => {
+      return await verifiedNickName(nickname);
     },
+    {
+      onSuccess: (response) => {
+        if (response?.success) {
+          setMessage('사용 가능한 닉네임입니다.');
+        } else {
+          setMessage('중복된 닉네임입니다.');
+        }
+      },
+      onError: (error: any) => {
+        console.error('닉네임 검증 실패:', error.message);
+        setMessage('닉네임 검증 중 오류 발생');
+      },
+    }
   );
-
+  
   const logoutMutation = useMutation(
     (emailPassword: {email: string; password: string}) =>
       userLogout(emailPassword.email, emailPassword.password),

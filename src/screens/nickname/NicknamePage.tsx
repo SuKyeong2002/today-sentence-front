@@ -1,10 +1,13 @@
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {useTranslation} from 'react-i18next';
-import {changeLanguage, getStoredLanguage} from '@/utils/language';
-import styled from 'styled-components';
+import { verifiedNickName } from '@/api/auth';
+import { ProfileEditHader } from '@/components/Header/ProfileEditHader';
+import useAuth from '@/hooks/useAuth';
+import { getStoredLanguage } from '@/utils/language';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useMutation } from 'react-query';
+import styled from 'styled-components';
 
 export default function NicknamePage() {
   const {t, i18n} = useTranslation();
@@ -13,6 +16,9 @@ export default function NicknamePage() {
   const [nickname, setNickname] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
+  const [isError2, setIsError2] = useState<boolean>(false);
+  const [errorMessage2, setErrorMessage2] = useState<string>('');
+  const {handleVerifiedNickName} = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -31,22 +37,32 @@ export default function NicknamePage() {
     })();
   }, []);
 
-  const handleDuplicateCheck = () => {
-    if (nickname.length === 0) {
+  const nicknameValidationMutation = useMutation(
+    async (nickname: string) => {
+      return await verifiedNickName(nickname);
+    },
+    {
+      onSuccess: response => {
+        console.error('성공!', response);
+        setErrorMessage2('사용 가능한 닉네임입니다.');
+        setIsError2(false);
+      },
+      onError: (error: any) => {
+        console.error('닉네임 검증 실패:', error.message);
+        setErrorMessage2('이미 사용 중인 닉네임입니다.');
+        setIsError2(true);
+      },
+    }
+  );
+  
+  
+  const handleDuplicateCheck = async () => {
+    if (nickname.trim().length === 0) {
       setErrorMessage('닉네임을 입력해주세요.');
       setIsError(true);
       return;
     }
-
-    const isDuplicate = nickname === '사용불가닉네임';
-
-    if (isDuplicate) {
-      setErrorMessage('이미 사용 중인 닉네임입니다.');
-      setIsError(true);
-    } else {
-      setErrorMessage('사용 가능한 닉네임입니다.');
-      setIsError(false);
-    }
+    nicknameValidationMutation.mutate(nickname);
   };
 
   return (
@@ -65,6 +81,7 @@ export default function NicknamePage() {
               onChangeText={text => {
                 setNickname(text);
                 setErrorMessage('');
+                setErrorMessage2('');
               }}
               placeholderTextColor="#999"
               maxLength={8}
@@ -77,9 +94,11 @@ export default function NicknamePage() {
             <ButtonText>중복확인</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
-
         {errorMessage !== '' && (
           <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>
+        )}
+        {errorMessage2 !== '' && (
+          <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
         )}
       </ScreenContainer>
     </View>
@@ -145,5 +164,10 @@ const ButtonText = styled(Text)`
 
 const ErrorMessage = styled(Text)<{isError: boolean}>`
   color: ${({isError}) => (isError ? 'red' : 'green')};
+  font-size: 14px;
+`;
+
+const ErrorMessage2 = styled(Text)<{isError2: boolean}>`
+  color: ${({isError2}) => (isError2 ? 'red' : 'green')};
   font-size: 14px;
 `;

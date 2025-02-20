@@ -200,14 +200,15 @@ export const VerifiedPassword = async (
   return response.data;
 };
 
-export const verifiedNickName = async (
-  nickname: string,
-): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>(
-    `${API_URL}/api/member/check-nickname`,
-    {nickname},
-  );
-  return response.data;
+// 닉네임 중복 검증
+export const verifiedNickName = async (nickname: string): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const response = await axios.post(`${API_URL}/api/member/check-nickname`, { nickname });
+    return response.data; 
+  } catch (error: any) {
+    console.error("닉네임 검증 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "닉네임 검증 중 오류 발생");
+  }
 };
 
 export const userLogout = async (
@@ -293,5 +294,3 @@ export const resetPassword = async (
     newPassword,
   });
 };
-
-// 검색
