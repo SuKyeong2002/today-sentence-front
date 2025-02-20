@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
+import { useUser } from '@/hooks/useUser';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -18,6 +19,7 @@ export default function IntroductionaPage() {
   const [message, setMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
+  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
 
   useEffect(() => {
     (async () => {
@@ -58,7 +60,7 @@ export default function IntroductionaPage() {
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
-              placeholder="상태 메세지를 입력해주세요"
+              placeholder={user?.statusMessage || t('상태메시지를 입력해주세요.')}
               value={message}
               onChangeText={text => {
                 setMessage(text);
