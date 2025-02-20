@@ -42,7 +42,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   const handleConfirm = async () => {
     if (route.name === 'Nickname') {
       if (!nickname || nickname.length === 0) {
-        setErrorMessage('닉네임을 입력해주세요.');
+        navigation.navigate('Profile');
         return;
       }
 
