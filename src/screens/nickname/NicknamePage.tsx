@@ -9,6 +9,7 @@ import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from 'reac
 import { useMutation } from 'react-query';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components';
+import { useUser } from '@/hooks/useUser';
 
 export default function NicknamePage() {
   const { t, i18n } = useTranslation();
@@ -20,6 +21,7 @@ export default function NicknamePage() {
   const [isError2, setIsError2] = useState<boolean>(false);
   const [errorMessage2, setErrorMessage2] = useState<string>('');
   const { handleChangeNickname } = useAuth();
+  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
 
   useEffect(() => {
     (async () => {
@@ -96,7 +98,7 @@ export default function NicknamePage() {
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
-              placeholder="닉네임을 입력해주세요"
+              placeholder={user?.nickname || t('닉네임을 입력해주세요.')}
               value={nickname}
               onChangeText={text => {
                 setNickname(text);
