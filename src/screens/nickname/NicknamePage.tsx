@@ -20,7 +20,7 @@ export default function NicknamePage() {
   const [isError, setIsError] = useState<boolean>(false);
   const [isError2, setIsError2] = useState<boolean>(false);
   const [errorMessage2, setErrorMessage2] = useState<string>('');
-  const { handleChangeNickname } = useAuth();
+  const [isDuplicateChecked, setIsDuplicateChecked] = useState<boolean>(false);
   const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
 
   useEffect(() => {
@@ -50,11 +50,13 @@ export default function NicknamePage() {
         console.log('닉네임 검증 성공:', response);
         setErrorMessage2('사용 가능한 닉네임입니다.');
         setIsError2(false);
+        setIsDuplicateChecked(true);
       },
       onError: (error: any) => {
         console.error('닉네임 검증 실패:', error.message);
         setErrorMessage2('이미 사용 중인 닉네임입니다.');
         setIsError2(true);
+        setIsDuplicateChecked(false);
       },
     }
   );
@@ -69,30 +71,13 @@ export default function NicknamePage() {
     nicknameValidationMutation.mutate(nickname);
   };
 
-  const handleConfirm = async () => {
-    if (errorMessage2 !== '사용 가능한 닉네임입니다.') {
-      setErrorMessage2('닉네임 중복 검사를 진행해주세요.');
-      setIsError2(true);
-      return;
-    } 
-
-    try {
-      await handleChangeNickname(nickname);
-      console.log('닉네임 변경 성공');
-    } catch (error: any) {
-      console.error('닉네임 변경 실패:', error.message);
-      setErrorMessage2('닉네임 변경 중 오류 발생');
-      setIsError2(true);
-    } finally {
-    }
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <ProfileEditHader
         searchKeyword={t('프로필 편집')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         nickname={nickname}
+        isDuplicateChecked={isDuplicateChecked}
       />
       <ScreenContainer fontFamily={font}>
         <InputWrapper>

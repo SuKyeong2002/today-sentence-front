@@ -1,15 +1,17 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import useAuth from '@/hooks/useAuth';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import useAuth from '@/hooks/useAuth';
+import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 type RootStackParamList = {
   Profile: undefined;
@@ -25,6 +27,7 @@ interface BackHeaderProps {
   onBackPress?: () => void;
   nickname?: string;
   message?: string;
+  isDuplicateChecked?: boolean;
 }
 
 export const ProfileEditHader: React.FC<BackHeaderProps> = ({
@@ -32,14 +35,23 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   onBackPress,
   nickname,
   message,
+  isDuplicateChecked,
 }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute();
+  const {t} = useTranslation();
   const {handleChangeNickname, handleChangeStatusMessage} = useAuth();
 
   const handleConfirm = async () => {
+    if (!isDuplicateChecked) {
+      Alert.alert(t('닉네임 변경 실패'), t('중복검사를 진행해주세요'), [
+        {text: t('확인'), style: 'default'},
+      ]);
+      return;
+    }
+
     if (route.name === 'Nickname') {
       if (!nickname || nickname.length === 0) {
         navigation.navigate('Profile');

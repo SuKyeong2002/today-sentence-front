@@ -1,6 +1,8 @@
 {
   "설정": "Settings",
   "닉네임": "Nickname",
+  "중복검사를 진행해주세요": "Please perform a duplicate check",
+  "닉네임 변경 실패": "Nickname change failed",
   "존재하지 않는 닉네임입니다.": "Nonexistent nickname",
   "존재하지 않는 상태 메시지입니다.": "The status message does not exist.",
   "테마": "Theme",
