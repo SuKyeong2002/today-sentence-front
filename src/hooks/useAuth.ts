@@ -70,7 +70,7 @@ const useAuth = (): UseAuthReturn => {
 
   useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => setMessage(''), 3000); 
+      const timer = setTimeout(() => setMessage(''), 3000);
       return () => clearTimeout(timer);
     }
   }, [message]);
@@ -128,14 +128,51 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
+  // 닉네임 중복 검증
   const nicknameValidationMutation = useMutation(
-    (nickname: string) => verifiedNickName(nickname),
+    async (nickname: string) => {
+      return await verifiedNickName(nickname);
+    },
+    {
+      onSuccess: response => {
+        if (response?.success) {
+          setMessage('사용 가능한 닉네임입니다.');
+        } else {
+          setMessage('중복된 닉네임입니다.');
+        }
+      },
+      onError: (error: any) => {
+        console.error('닉네임 검증 실패:', error.message);
+        setMessage('닉네임 검증 중 오류 발생');
+      },
+    },
+  );
+
+  // 닉네임 변경 
+  const changeNicknameMutation = useMutation(
+    async (nickname: string) => await changeNickname(nickname),
     {
       onSuccess: () => {
-        setMessage('닉네임 검증 성공!');
+        setMessage('닉네임이 성공적으로 변경되었습니다.');
       },
-      onError: () => {
-        setMessage('닉네임 검증 실패.');
+      onError: (error: any) => {
+        setMessage(
+          `닉네임 변경 실패: ${error.response?.data?.message || '알 수 없는 오류'}`,
+        );
+      },
+    },
+  );
+
+  const changeMessageMutation = useMutation(
+    async (message: string) => await changeStatusMessage(message),
+    {
+      onSuccess: () => {
+        setMessage('상태메시지가 성공적으로 변경되었습니다.');
+      },
+      onError: (error: any) => {
+        setMessage(
+          `상태메시지 변경 실패: ${error.response?.data?.message || '알 수 없는 오류'}`,
+        );
       },
     },
   );
@@ -223,16 +260,28 @@ const useAuth = (): UseAuthReturn => {
     setMessage('비밀번호 변경 성공!');
   };
 
+  // 닉네임 변경 핸들러
   const handleChangeNickname = async (nickname: string) => {
-    await changeNickname(nickname);
-    setMessage('닉네임 변경 성공!');
-  };
+    try {
+      const response = await changeNicknameMutation.mutateAsync(nickname);
+      console.log('닉네임 변경 성공:', response);
+    } catch (error: any) {
+      console.error('닉네임 변경 실패:', error.message);
+      throw new Error(error.message || '닉네임 변경 실패');
+    }
+  };  
 
-  const handleChangeStatusMessage = async (statusMessage: string) => {
-    await changeStatusMessage(statusMessage);
-    setMessage('상태 메시지 변경 성공!');
-  };
-
+  // 상태메시지 변경 핸들러
+  const handleChangeStatusMessage = async (message: string) => {
+    try {
+      const response = await changeMessageMutation.mutateAsync(message);
+      console.log('상태메시지 변경 성공:', response);
+    } catch (error: any) {
+      console.error('상태메시지 변경 실패:', error.message);
+      throw new Error(error.message || '상태메시지 변경 실패');
+    }
+  };  
+  
   const handleCheckPasswordMatch = async (password: string) => {
     const match = await checkPasswordMatch(password);
     setMessage(match ? '비밀번호 일치!' : '비밀번호 불일치.');
@@ -330,3 +379,7 @@ const useAuth = (): UseAuthReturn => {
 };
 
 export default useAuth;
+function changeMessage(message: string): any {
+  throw new Error('Function not implemented.');
+}
+
