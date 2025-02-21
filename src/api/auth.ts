@@ -182,12 +182,15 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const VerifiedEmail = async (email: string): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>(
-    `${API_URL}/api/member/check-email`,
-    {email},
-  );
-  return response.data;
+// 이메일 중복 검증
+export const VerifiedEmail = async (email: string): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const response = await axios.post(`${API_URL}/api/member/check-email`, { email });
+    return response.data; 
+  } catch (error: any) {
+    console.error("이메일 검증 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "이메일 검증 중 오류 발생");
+  }
 };
 
 export const VerifiedPassword = async (

@@ -104,14 +104,22 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
+  // 이메일 중복 검증
   const emailValidationMutation = useMutation(
-    (email: string) => VerifiedEmail(email),
+    async (email: string) => {
+      return await VerifiedEmail(email);
+    },
     {
-      onSuccess: () => {
-        setMessage('이메일 검증 성공!');
+      onSuccess: response => {
+        if (response?.success) {
+          setMessage('사용 가능한 이메일입니다.');
+        } else {
+          setMessage('중복된 이메일입니다.');
+        }
       },
-      onError: () => {
-        setMessage('이메일 검증 실패.');
+      onError: (error: any) => {
+        console.error('이메일 검증 실패:', error.message);
+        setMessage('이메일 검증 중 오류 발생');
       },
     },
   );
@@ -148,7 +156,7 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
-  // 닉네임 변경 
+  // 닉네임 변경
   const changeNicknameMutation = useMutation(
     async (nickname: string) => await changeNickname(nickname),
     {
@@ -269,7 +277,7 @@ const useAuth = (): UseAuthReturn => {
       console.error('닉네임 변경 실패:', error.message);
       throw new Error(error.message || '닉네임 변경 실패');
     }
-  };  
+  };
 
   // 상태메시지 변경 핸들러
   const handleChangeStatusMessage = async (message: string) => {
@@ -280,8 +288,8 @@ const useAuth = (): UseAuthReturn => {
       console.error('상태메시지 변경 실패:', error.message);
       throw new Error(error.message || '상태메시지 변경 실패');
     }
-  };  
-  
+  };
+
   const handleCheckPasswordMatch = async (password: string) => {
     const match = await checkPasswordMatch(password);
     setMessage(match ? '비밀번호 일치!' : '비밀번호 불일치.');
@@ -382,4 +390,3 @@ export default useAuth;
 function changeMessage(message: string): any {
   throw new Error('Function not implemented.');
 }
-

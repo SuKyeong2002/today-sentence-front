@@ -5,16 +5,21 @@ import {changeLanguage, getStoredLanguage} from '@/utils/language';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
-import { useUser } from '@/hooks/useUser';
+import {useUser} from '@/hooks/useUser';
+import {useMutation} from 'react-query';
+import {VerifiedEmail} from '@/api/auth';
 
 export default function EmailPage() {
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
   const [email, setEmail] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
-  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
+  const [isError2, setIsError2] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [errorMessage2, setErrorMessage2] = useState<string>('');
+  const [isDuplicateChecked, setIsDuplicateChecked] = useState<boolean>(false);
+  const {data: user, isLoading, error} = useUser(); // 유저 정보 조회
 
   useEffect(() => {
     (async () => {
@@ -33,21 +38,35 @@ export default function EmailPage() {
     })();
   }, []);
 
+  // 이메일 중복 검사
+  const emailValidationMutation = useMutation(
+    async (email: string) => {
+      return await VerifiedEmail(email);
+    },
+    {
+      onSuccess: response => {
+        console.log('이메일 검증 성공:', response);
+        setErrorMessage2('사용 가능한 이메일입니다.');
+        setIsError2(false);
+        setIsDuplicateChecked(true);
+      },
+      onError: (error: any) => {
+        console.error('이메일 검증 실패:', error.message);
+        setErrorMessage2('이미 사용 중인 이메일입니다.');
+        setIsError2(true);
+        setIsDuplicateChecked(false);
+      },
+    },
+  );
+
+  // 이메일 입력란 공백 확인
   const handleDuplicateCheck = () => {
-    if (email.length === 0) {
+    if (email.trim().length === 0) {
       setErrorMessage('이메일을 입력해주세요.');
       setIsError(true);
       return;
     }
-    const isDuplicate = email === '사용불가닉네임';
-
-    if (isDuplicate) {
-      setErrorMessage('이미 사용 중인 이메일입니다.');
-      setIsError(true);
-    } else {
-      setErrorMessage('사용 가능한 이메일입니다.');
-      setIsError(false);
-    }
+    emailValidationMutation.mutate(email);
   };
 
   return (
@@ -55,7 +74,8 @@ export default function EmailPage() {
       <ProfileEditHader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
+        email={email}
+        isDuplicateChecked={isDuplicateChecked}
       />
       <ScreenContainer fontFamily={font}>
         <InputWrapper>
@@ -66,6 +86,7 @@ export default function EmailPage() {
               onChangeText={text => {
                 setEmail(text);
                 setErrorMessage('');
+                setErrorMessage2('');
               }}
               placeholderTextColor="#999"
             />
@@ -79,6 +100,9 @@ export default function EmailPage() {
 
         {errorMessage !== '' && (
           <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>
+        )}
+        {errorMessage2 !== '' && (
+          <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
         )}
       </ScreenContainer>
     </View>
@@ -117,15 +141,6 @@ const NicknameInput = styled(TextInput)`
   text-align: left;
 `;
 
-const CharacterCount = styled(Text)`
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  margin-top: -8px;
-  font-size: 14px;
-  color: ${({theme}) => theme.colors.text};
-`;
-
 const DuplicateCheckButton = styled(TouchableOpacity)<{isActive: boolean}>`
   height: 48px;
   padding: 0 16px;
@@ -144,5 +159,10 @@ const ButtonText = styled(Text)`
 
 const ErrorMessage = styled(Text)<{isError: boolean}>`
   color: ${({isError}) => (isError ? 'red' : 'green')};
+  font-size: 14px;
+`;
+
+const ErrorMessage2 = styled(Text)<{isError2: boolean}>`
+  color: ${({isError2}) => (isError2 ? 'red' : 'green')};
   font-size: 14px;
 `;
