@@ -7,6 +7,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomModal from '@/components/Modal/CustomModal';
 
 type RootStackParamList = {
   Setting: undefined;
@@ -18,6 +19,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'Setting'>;
 export default function MyPage() {
   const navigation = useNavigation<NavigationProp>();
   const {t} = useTranslation();
+  const [modalVisible, setModalVisible] = useState(false);
   const [font, setFont] = useState<string>('PretendardRegular');
 
   useEffect(() => {
@@ -48,24 +50,18 @@ export default function MyPage() {
         />
         <ProfileEditItem
           title={t('프리미엄')}
-          onPress={() =>
-            Alert.alert(
-              t('추후기능'),
-              t('오픈 준비 중입니다. 곧 이용하실 수 있어요 :)'),
-              [{text: t('확인'), style: 'default'}],
-            )
-          }
+          onPress={() => setModalVisible(true)}
           font={font}
+        />
+        <CustomModal
+          visible={modalVisible}
+          title={t('오픈 준비중')}
+          message={t('곧 이용하실 수 있어요 :)')}
+          onConfirm={() => setModalVisible(false)}
         />
         <ProfileEditItem
           title={t('커스터마이징')}
-          onPress={() =>
-            Alert.alert(
-              t('추후기능'),
-              t('오픈 준비 중입니다. 곧 이용하실 수 있어요 :)'),
-              [{text: t('확인'), style: 'default'}],
-            )
-          }
+          onPress={() => setModalVisible(true)}
           font={font}
         />
       </ListContainer>
