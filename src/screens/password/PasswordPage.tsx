@@ -1,11 +1,12 @@
+import { CheckedPassword } from '@/api/auth';
 import { ProfileEditHader } from '@/components/Header/ProfileEditHader';
 import { getStoredLanguage } from '@/utils/language';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useMutation } from 'react-query';
 import styled from 'styled-components';
-
 export default function PasswordPage() {
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
@@ -17,6 +18,7 @@ export default function PasswordPage() {
   const [errorMessage2, setErrorMessage2] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
   const [isError2, setIsError2] = useState<boolean>(false);
+  const [isDuplicateChecked, setIsDuplicateChecked] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -47,20 +49,35 @@ export default function PasswordPage() {
     }
   }, [changePassword, checkChangePassword]);
 
+  // 비밀번호 일치 여부 확인
+  const passwordCheckMutation = useMutation(
+    async (password: string) => {
+      return await CheckedPassword(password);
+    },
+    {
+      onSuccess: response => {
+        console.log('비밀번호 일치 여부 확인 성공:', response);
+        setErrorMessage2('확인되었습니다.');
+        setIsError2(false);
+        setIsDuplicateChecked(true);
+      },
+      onError: (error: any) => {
+        console.error('비밀번호 일치 여부 확인 실패:', error.message);
+        setErrorMessage2('잘못된 비밀번호입니다.');
+        setIsError2(true);
+        setIsDuplicateChecked(false);
+      },
+    },
+  );
+
+  // 비밀번호 확인
   const handleDuplicateCheck = () => {
     if (nickname.length === 0) {
-      setErrorMessage('비밀번호 입력해주세요.');
+      setErrorMessage('비밀번호를 입력해주세요.');
       setIsError(true);
       return;
     }
-    const isDuplicate = nickname === '사용불가닉네임';
-
-    if (isDuplicate) {
-      setErrorMessage('잘못된 비밀번호입니다.');
-    } else {
-      setErrorMessage('확인되었습니다.');
-      setIsError(false);
-    }
+    passwordCheckMutation.mutate(nickname);
   };
 
   return (
@@ -68,7 +85,6 @@ export default function PasswordPage() {
       <ProfileEditHader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
       <ScreenContainer fontFamily={font}>
         <InputWrapper>
@@ -81,6 +97,7 @@ export default function PasswordPage() {
                 setErrorMessage('');
               }}
               placeholderTextColor="#999"
+              secureTextEntry
             />
           </NicknameInputContainer>
           <DuplicateCheckButton
@@ -90,7 +107,10 @@ export default function PasswordPage() {
           </DuplicateCheckButton>
         </InputWrapper>
         {errorMessage !== '' && (
-          <ErrorMessage isError={isError} isError2={isError}>{errorMessage}</ErrorMessage>
+          <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>
+        )}
+        {errorMessage2 !== '' && (
+          <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
         )}
 
         <InputWrapper>
@@ -102,6 +122,7 @@ export default function PasswordPage() {
                 setChangePassword(text);
               }}
               placeholderTextColor="#999"
+              secureTextEntry
             />
           </NicknameInputContainer>
         </InputWrapper>
@@ -115,18 +136,22 @@ export default function PasswordPage() {
                 setCheckChangePassword(text);
               }}
               placeholderTextColor="#999"
+              secureTextEntry
             />
           </NicknameInputContainer>
         </InputWrapper>
 
-        {changePassword && checkChangePassword && changePassword !== checkChangePassword && (
-          <ErrorMessage isError={false} isError2={true}>비밀번호가 일치하지 않습니다.</ErrorMessage>
-        )}
+        {changePassword &&
+          checkChangePassword &&
+          changePassword !== checkChangePassword && (
+            <ErrorMessage isError>{errorMessage2}</ErrorMessage>
+          )}
       </ScreenContainer>
     </View>
   );
 }
 
+// 스타일
 const ScreenContainer = styled(View)<{fontFamily: string}>`
   display: flex;
   flex-direction: column;
@@ -159,15 +184,6 @@ const NicknameInput = styled(TextInput)`
   text-align: left;
 `;
 
-const CharacterCount = styled(Text)`
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  margin-top: -8px;
-  font-size: 14px;
-  color: ${({theme}) => theme.colors.text};
-`;
-
 const DuplicateCheckButton = styled(TouchableOpacity)<{isActive: boolean}>`
   height: 48px;
   padding: 0 16px;
@@ -184,7 +200,12 @@ const ButtonText = styled(Text)`
   font-weight: 600;
 `;
 
-const ErrorMessage = styled(Text)<{ isError: boolean, isError2: boolean }>`
-  color: ${({ isError, isError2 }) => isError ? 'red' : (isError2 ? 'red' : 'green')};
+const ErrorMessage = styled(Text)<{isError: boolean}>`
+  color: ${({isError}) => (isError ? 'red' : 'green')};
+  font-size: 14px;
+`;
+
+const ErrorMessage2 = styled(Text)<{isError2: boolean}>`
+  color: ${({isError2}) => (isError2 ? 'red' : 'green')};
   font-size: 14px;
 `;

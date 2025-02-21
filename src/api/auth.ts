@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 
-const API_URL = 'http://43.201.20.84';
+const API_URL = 'http://3.36.71.224';
 
 export interface AuthResponse {
   token?: string;
@@ -182,12 +182,15 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const VerifiedEmail = async (email: string): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>(
-    `${API_URL}/api/member/check-email`,
-    {email},
-  );
-  return response.data;
+// 이메일 중복 검증
+export const VerifiedEmail = async (email: string): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const response = await axios.post(`${API_URL}/api/member/check-email`, { email });
+    return response.data; 
+  } catch (error: any) {
+    console.error("이메일 검증 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "이메일 검증 중 오류 발생");
+  }
 };
 
 export const VerifiedPassword = async (
@@ -198,6 +201,17 @@ export const VerifiedPassword = async (
     {password},
   );
   return response.data;
+};
+
+// 비밀번호 일치 여부 확인 
+export const CheckedPassword = async (password: string): Promise<{ success: boolean }> => {
+  try {
+    const response = await apiClient.post("/api/member/verify-password", { password });
+    return response.data;
+  } catch (error: any) {
+    console.error("비밀번호 일치 여부 확인 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "비밀번호 일치 여부 확인 중 오류 발생");
+  }
 };
 
 // 닉네임 중복 검증
@@ -226,6 +240,69 @@ export const changePassword = async (
     oldPassword,
     newPassword,
   });
+};
+
+// 이메일 변경 
+export const changeEmailEdit = async (email: string): Promise<{ success: boolean; message?: string }> => {
+  console.log("이메일 변경 시도:", email);
+  try {
+    const token = await AsyncStorage.getItem('accessToken'); 
+
+    if (!token) {
+      throw new Error("토큰이 없습니다.");
+    }
+
+    const response = await apiClient.put(
+      "/api/member/change-email",
+      { email },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    const newAccessToken = response.headers["access-token"];
+    const newRefreshToken = response.headers["refresh-token"];
+
+    if (newAccessToken && newRefreshToken) {
+      console.log(" 이메일 변경 후 새 토큰 저장:", newAccessToken);
+      await AsyncStorage.setItem("accessToken", newAccessToken);
+      await AsyncStorage.setItem("refreshToken", newRefreshToken);
+    }
+
+    return response.data; 
+  } catch (error: any) {
+    console.error("이메일 변경 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "이메일 변경 중 오류 발생");
+  }
+};
+
+// 이메일 인증 코드 발송
+export const changeEmail = async (email: string): Promise<{ success: boolean; message?: string }> => {
+  console.log(email);
+  try {
+    const token = await AsyncStorage.getItem('accessToken'); 
+
+    if (!token) {
+      throw new Error("토큰이 없습니다.");
+    }
+
+    const response = await apiClient.post(
+      "/api/member/verify-code",
+      { email },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    return response.data; 
+  } catch (error: any) {
+    console.error("이메일 인증코드 발송 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "이메일 인증코드 발송 중 오류 발생");
+  }
 };
 
 // 닉네임 변경 
@@ -318,6 +395,7 @@ export const findUsername = async (email: string): Promise<string> => {
   return response.data.username;
 };
 
+// 이메일 인증코드 확인 
 export const verifyAuthCode = async (
   email: string,
   code: string,
