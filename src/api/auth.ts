@@ -203,6 +203,17 @@ export const VerifiedPassword = async (
   return response.data;
 };
 
+// 비밀번호 일치 여부 확인 
+export const CheckedPassword = async (password: string): Promise<{ success: boolean }> => {
+  try {
+    const response = await apiClient.post("/api/member/verify-password", { password });
+    return response.data;
+  } catch (error: any) {
+    console.error("비밀번호 일치 여부 확인 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "비밀번호 일치 여부 확인 중 오류 발생");
+  }
+};
+
 // 닉네임 중복 검증
 export const verifiedNickName = async (nickname: string): Promise<{ success: boolean; message?: string }> => {
   try {

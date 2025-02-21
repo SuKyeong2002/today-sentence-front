@@ -19,6 +19,7 @@ import {
   resetPassword,
   changeEmail,
   changeEmailEdit,
+  CheckedPassword,
 } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -44,6 +45,7 @@ interface UseAuthReturn {
   handleChangeEmail2: (email: string) => Promise<void>;
   handleChangeStatusMessage: (statusMessage: string) => Promise<void>;
   handleCheckPasswordMatch: (password: string) => Promise<boolean>;
+  handleCheckedPassword: (password: string) => Promise<void>;
   handleSendAuthCode: (email: string) => Promise<{data: boolean}>;
   handleFindPassword: (email: string) => Promise<void>;
   handleFindUsername: (email: string) => Promise<string>;
@@ -219,6 +221,26 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
+  // 비밀번호 일치 여부 확인
+  const passwordCheckMutation = useMutation(
+    async (password: string) => {
+      return await CheckedPassword(password);
+    },
+    {
+      onSuccess: response => {
+        if (response?.success) {
+          setMessage('확인되었습니다.');
+        } else {
+          setMessage('잘못된 비밀번호입니다.');
+        }
+      },
+      onError: (error: any) => {
+        console.error('비밀번호 일치 여부 확인 실패:', error.message);
+        setMessage('비밀번호 일치 여부 확인 중 오류 발생');
+      },
+    },
+  );
+
   const logoutMutation = useMutation(
     (emailPassword: {email: string; password: string}) =>
       userLogout(emailPassword.email, emailPassword.password),
@@ -300,6 +322,17 @@ const useAuth = (): UseAuthReturn => {
   ) => {
     await changePassword(oldPassword, newPassword);
     setMessage('비밀번호 변경 성공!');
+  };
+
+  // 비밀번호 일치 여부 확인 핸들러
+  const handleCheckedPassword = async (password: string) => {
+    try {
+      const response = await passwordCheckMutation.mutateAsync(password);
+      console.log('비밀번호 일치 여부 확인 성공', response);
+    } catch (error: any) {
+      console.error('비밀번호 일치 여부 확인 실패:', error.message);
+      throw new Error(error.message || '비밀번호 일치 여부 확인 실패');
+    }
   };
 
   // 이메일 변경 핸들러
@@ -429,6 +462,7 @@ const useAuth = (): UseAuthReturn => {
     handleChangePassword,
     handleChangeEmail,
     handleChangeEmail2,
+    handleCheckedPassword,
     handleChangeNickname,
     handleChangeStatusMessage,
     handleCheckPasswordMatch,
