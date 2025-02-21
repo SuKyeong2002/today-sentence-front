@@ -109,9 +109,6 @@ export default function PasswordPage() {
         {errorMessage !== '' && (
           <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>
         )}
-        {errorMessage2 !== '' && (
-          <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
-        )}
 
         <InputWrapper>
           <NicknameInputContainer>
