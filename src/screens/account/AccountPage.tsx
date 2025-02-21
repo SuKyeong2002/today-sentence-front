@@ -111,10 +111,13 @@ export default function AccountPage() {
 
         <CustomModal
           visible={modalVisible}
-          title={t("회원탈퇴")}
-          message={t("정말 계정을 삭제하시겠습니까?")} 
+          title={t('회원탈퇴')}
+          message={t('정말 계정을 삭제하시겠습니까?')}
+          leftButton={t('취소')}
+          rightButton={t('확인')}
           onConfirm={handleDeleteAccount}
-          onCancel={() => setModalVisible(false)} />
+          onCancel={() => setModalVisible(false)}
+        />
       </ScreenContainer>
     </View>
   );

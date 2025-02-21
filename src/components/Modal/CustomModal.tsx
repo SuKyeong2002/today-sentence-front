@@ -7,6 +7,8 @@ interface ModalProps {
   visible: boolean;
   title: string;
   message: string;
+  leftButton?: string;
+  rightButton?: string;
   onConfirm?: () => void;
   onCancel?: () => void;
 }
@@ -15,6 +17,8 @@ const CustomModal: React.FC<ModalProps> = ({
   visible,
   title,
   message,
+  leftButton='',
+  rightButton='',
   onConfirm,
   onCancel,
 }) => {
@@ -29,12 +33,12 @@ const CustomModal: React.FC<ModalProps> = ({
           <ModalButtons singleButton={!onCancel || !onConfirm}>
             {onCancel && (
               <CancelButton onPress={onCancel}>
-                <ModalButtonText>{t('취소')}</ModalButtonText>
+                <ModalButtonText>{leftButton}</ModalButtonText>
               </CancelButton>
             )}
             {onConfirm && (
               <ConfirmButton onPress={onConfirm}>
-                <ModalButtonText>{t('확인')}</ModalButtonText>
+                <ModalButtonText>{rightButton}</ModalButtonText>
               </ConfirmButton>
             )}
           </ModalButtons>

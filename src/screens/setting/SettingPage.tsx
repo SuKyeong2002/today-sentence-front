@@ -99,6 +99,8 @@ export default function SettingPage() {
           visible={modalVisible}
           title={t('로그아웃')}
           message={t('로그아웃하시겠습니까?')}
+          leftButton={t('취소')}
+          rightButton={t('확인')}
           onCancel={() => setModalVisible(false)}
           onConfirm={logout}
         />
