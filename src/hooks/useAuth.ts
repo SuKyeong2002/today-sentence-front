@@ -18,6 +18,7 @@ import {
   verifyAuthCode,
   resetPassword,
   changeEmail,
+  changeEmailEdit,
 } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -40,6 +41,7 @@ interface UseAuthReturn {
   ) => Promise<void>;
   handleChangeNickname: (nickname: string) => Promise<void>;
   handleChangeEmail: (email: string) => Promise<void>;
+  handleChangeEmail2: (email: string) => Promise<void>;
   handleChangeStatusMessage: (statusMessage: string) => Promise<void>;
   handleCheckPasswordMatch: (password: string) => Promise<boolean>;
   handleSendAuthCode: (email: string) => Promise<{data: boolean}>;
@@ -157,7 +159,7 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
-  // 이메일 변경
+  // 이메일 인증 번호 발송
   const changeEmailMutation = useMutation(
     async (email: string) => await changeEmail(email),
     {
@@ -171,6 +173,21 @@ const useAuth = (): UseAuthReturn => {
       },
     },
   );
+
+    // 이메일 변경
+    const changeEmailEditMutation = useMutation(
+      async (email: string) => await changeEmailEdit(email),
+      {
+        onSuccess: () => {
+          setMessage('이메일 변경 성공');
+        },
+        onError: (error: any) => {
+          setMessage(
+            `이메일 변경 실패: ${error.response?.data?.message || '알 수 없는 오류'}`,
+          );
+        },
+      },
+    );
 
   // 닉네임 변경
   const changeNicknameMutation = useMutation(
@@ -285,7 +302,7 @@ const useAuth = (): UseAuthReturn => {
     setMessage('비밀번호 변경 성공!');
   };
 
-  // 닉네임 변경 핸들러
+  // 이메일 변경 핸들러
   const handleChangeEmail = async (email: string) => {
     try {
       const response = await changeEmailMutation.mutateAsync(email);
@@ -295,6 +312,18 @@ const useAuth = (): UseAuthReturn => {
       throw new Error(error.message || '이메일 인증 실패');
     }
   };
+
+    // 이메일 변경 핸들러
+    const handleChangeEmail2 = async (email: string) => {
+      try {
+        const response = await changeEmailEditMutation.mutateAsync(email);
+        console.log('이메일 변경 성공:', response);
+      } catch (error: any) {
+        console.error('이메일 변경 실패:', error.message);
+        throw new Error(error.message || '이메일 변경 실패');
+      }
+    };
+
 
   // 닉네임 변경 핸들러
   const handleChangeNickname = async (nickname: string) => {
@@ -359,7 +388,7 @@ const useAuth = (): UseAuthReturn => {
     // ✅ 검색 API 요청 (검색어 및 필터 전달)
     const searchMutation = useMutation(
       async ({query, filter}: {query: string; filter: string}) => {
-        const response = await axios.get(`${API_URL}/api/search/books`, {
+        const response = await axios.get(`/api/search/books`, {
           params: {searchText: query, selectedOption: filter},
         });
         return response.data;
@@ -399,6 +428,7 @@ const useAuth = (): UseAuthReturn => {
     handleLogin,
     handleChangePassword,
     handleChangeEmail,
+    handleChangeEmail2,
     handleChangeNickname,
     handleChangeStatusMessage,
     handleCheckPasswordMatch,

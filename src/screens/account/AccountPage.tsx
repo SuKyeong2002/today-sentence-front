@@ -18,8 +18,9 @@ import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
 import {deleteAccount} from '@/api/deleteAccount';
 import {useDeleteAccount} from '@/hooks/useDeleteAccount';
-import {useUser} from '@/hooks/useUser';
+import {refetchUserData, useUser} from '@/hooks/useUser';
 import CustomModal from '@/components/Modal/CustomModal';
+import { useQueryClient } from 'react-query';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -30,6 +31,7 @@ type RootStackParamList = {
 };
 
 export default function AccountPage() {
+  const queryClient = useQueryClient();
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
@@ -37,6 +39,13 @@ export default function AccountPage() {
   const navigation = useNavigation<NavigationProp>();
   const {mutate: deleteAccount} = useDeleteAccount();
   const {data: user, isLoading, error} = useUser();
+
+  useEffect(() => {
+    (async () => {
+      console.log('🔄 최신 유저 정보 다시 불러오기');
+      await refetchUserData(queryClient);
+    })();
+  }, []);
 
   if (isLoading) {
     return (
