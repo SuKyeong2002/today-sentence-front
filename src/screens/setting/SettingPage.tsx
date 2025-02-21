@@ -8,8 +8,9 @@ import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
-import { logout } from '@/api/logout';
-import { useLogout } from '@/hooks/useLogout';
+import {logout} from '@/api/logout';
+import {useLogout} from '@/hooks/useLogout';
+import CustomModal from '@/components/Modal/CustomModal';
 
 type RootStackParamList = {
   News: undefined;
@@ -26,6 +27,7 @@ export default function SettingPage() {
   const {t} = useTranslation();
   const [font, setFont] = useState<string>('PretendardRegular');
   const {mutate: logout} = useLogout();
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -90,13 +92,15 @@ export default function SettingPage() {
         />
         <ProfileEditItem
           title={t('로그아웃')}
-          onPress={() =>
-            Alert.alert(t('로그아웃'), t('로그아웃하시겠습니까?'), [
-              {text: t('취소'), style: 'cancel'},
-              {text: t('로그아웃'), style: 'default', onPress: () => logout()},
-            ])
-          }
+          onPress={() => setModalVisible(true)}
           font={font}
+        />
+        <CustomModal
+          visible={modalVisible}
+          title={t('로그아웃')}
+          message={t('로그아웃하시겠습니까?')}
+          onCancel={() => setModalVisible(false)}
+          onConfirm={logout}
         />
       </ListContainer>
     </View>
