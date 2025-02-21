@@ -1,17 +1,24 @@
-import { apiClient } from "@/api/auth";
+import { apiClient, refreshAccessToken } from "@/api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+interface UserData {
+  email: string;
+  nickname: string;
+  statusMessage: string;
+  profileImg: string;
+}
+
 // 유저 정보 조회 
-export const user = async () => {
+export const user = async ():Promise<UserData|null> => {
   try {
-    const token = await AsyncStorage.getItem("accessToken");
+    let token = await AsyncStorage.getItem("accessToken");
 
     if (!token) {
       console.warn("액세스 토큰이 없습니다.");
-      return null; 
+      return null;
     }
 
-    console.log("저장된 액세스 토큰:", token);
+    console.log("현재 액세스 토큰:", token);
 
     const response = await apiClient.get("/api/member", {
       headers: {
@@ -20,28 +27,27 @@ export const user = async () => {
       },
     });
 
-    console.log("유저 정보 응답:", response.data);
+    console.log("유저 정보 조회 성공:", response.data);
 
-    if (!response.data || !response.data.data) {
-      console.warn("유저 데이터가 없습니다.");
-      return null; 
-    }
-
-    return response.data.data; 
+    return response.data.data || null;
   } catch (error: any) {
     console.error("유저 정보 조회 실패:", error.response?.data || error.message);
 
-    // 404 오류 처리
-    if (error.response?.status === 404) {
-      console.warn("유저 데이터가 없습니다.");
-      return null;
-    }
+    if (error.response?.status === 401 || 404) {
+      console.warn("토큰 문제 발생! 자동 재발급 시도중...");
 
-    // 401 오류 (토큰 만료) → 자동 로그아웃 유도 가능
-    if (error.response?.status === 401) {
-      console.warn("토큰이 만료되었습니다.");
-      await AsyncStorage.removeItem("accessToken");
-      return null;
+      const newTokens = await refreshAccessToken();
+      if (newTokens?.accessToken) {
+        console.log("새 액세스 토큰 발급 성공! 다시 요청 중...");
+
+        await AsyncStorage.setItem("accessToken", newTokens.accessToken);
+
+        return await user();
+      } else {
+        console.warn("토큰 갱신 실패! 로그아웃 필요");
+        await AsyncStorage.removeItem("accessToken");
+        return null;
+      }
     }
 
     return null;

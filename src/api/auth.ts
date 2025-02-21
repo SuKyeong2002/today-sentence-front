@@ -233,7 +233,7 @@ export const changePassword = async (
 
 // 이메일 변경 
 export const changeEmailEdit = async (email: string): Promise<{ success: boolean; message?: string }> => {
-  console.log(email);
+  console.log("이메일 변경 시도:", email);
   try {
     const token = await AsyncStorage.getItem('accessToken'); 
 
@@ -250,6 +250,15 @@ export const changeEmailEdit = async (email: string): Promise<{ success: boolean
         },
       }
     );
+
+    const newAccessToken = response.headers["access-token"];
+    const newRefreshToken = response.headers["refresh-token"];
+
+    if (newAccessToken && newRefreshToken) {
+      console.log(" 이메일 변경 후 새 토큰 저장:", newAccessToken);
+      await AsyncStorage.setItem("accessToken", newAccessToken);
+      await AsyncStorage.setItem("refreshToken", newRefreshToken);
+    }
 
     return response.data; 
   } catch (error: any) {
