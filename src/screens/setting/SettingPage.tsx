@@ -1,16 +1,15 @@
-import {View, Text, Image, Alert, Linking} from 'react-native';
-import styled from 'styled-components';
-import React, {useEffect, useState} from 'react';
-import {SettingItem} from '@/components/Button/SettingItem';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {useNavigation} from '@react-navigation/native';
-import {useTranslation} from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
-import {logout} from '@/api/logout';
-import {useLogout} from '@/hooks/useLogout';
+import { SettingItem } from '@/components/Button/SettingItem';
+import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
 import CustomModal from '@/components/Modal/CustomModal';
+import { useLogout } from '@/hooks/useLogout';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Alert, Linking, View } from 'react-native';
+import styled from 'styled-components';
 
 type RootStackParamList = {
   News: undefined;

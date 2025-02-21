@@ -1,14 +1,14 @@
-import {Alert, View, Text, StyleSheet} from 'react-native';
-import React, {useState, useEffect} from 'react';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
-import {useTranslation} from 'react-i18next';
-import {changeLanguage, getStoredLanguage} from '@/utils/language';
-import styled from 'styled-components';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
 import CustomModal from '@/components/Modal/CustomModal';
+import { changeLanguage, getStoredLanguage } from '@/utils/language';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
+import styled from 'styled-components';
 
 type RootStackParamList = {
   Font: undefined;

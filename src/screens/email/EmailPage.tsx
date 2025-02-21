@@ -5,14 +5,16 @@ import {changeLanguage, getStoredLanguage} from '@/utils/language';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
+import { useUser } from '@/hooks/useUser';
 
 export default function EmailPage() {
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
-  const [nickname, setNickname] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
+  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
 
   useEffect(() => {
     (async () => {
@@ -32,12 +34,12 @@ export default function EmailPage() {
   }, []);
 
   const handleDuplicateCheck = () => {
-    if (nickname.length === 0) {
+    if (email.length === 0) {
       setErrorMessage('이메일을 입력해주세요.');
       setIsError(true);
       return;
     }
-    const isDuplicate = nickname === '사용불가닉네임';
+    const isDuplicate = email === '사용불가닉네임';
 
     if (isDuplicate) {
       setErrorMessage('이미 사용 중인 이메일입니다.');
@@ -59,10 +61,10 @@ export default function EmailPage() {
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
-              placeholder="변경할 이메일을 입력해주세요"
-              value={nickname}
+              placeholder={user?.email || t('변경할 이메일을 입력해주세요.')}
+              value={email}
               onChangeText={text => {
-                setNickname(text);
+                setEmail(text);
                 setErrorMessage('');
               }}
               placeholderTextColor="#999"
@@ -70,7 +72,7 @@ export default function EmailPage() {
           </NicknameInputContainer>
           <DuplicateCheckButton
             onPress={handleDuplicateCheck}
-            isActive={nickname.length > 0}>
+            isActive={email.length > 0}>
             <ButtonText>중복확인</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
