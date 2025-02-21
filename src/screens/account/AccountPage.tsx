@@ -18,8 +18,9 @@ import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
 import {deleteAccount} from '@/api/deleteAccount';
 import {useDeleteAccount} from '@/hooks/useDeleteAccount';
-import {useUser} from '@/hooks/useUser';
+import {refetchUserData, useUser} from '@/hooks/useUser';
 import CustomModal from '@/components/Modal/CustomModal';
+import { useQueryClient } from 'react-query';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -30,6 +31,7 @@ type RootStackParamList = {
 };
 
 export default function AccountPage() {
+  const queryClient = useQueryClient();
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
@@ -37,7 +39,7 @@ export default function AccountPage() {
   const navigation = useNavigation<NavigationProp>();
   const {mutate: deleteAccount} = useDeleteAccount();
   const {data: user, isLoading, error} = useUser();
-
+  
   if (isLoading) {
     return (
       <LoadingContainer>
@@ -111,10 +113,13 @@ export default function AccountPage() {
 
         <CustomModal
           visible={modalVisible}
-          title={t("회원탈퇴")}
-          message={t("정말 계정을 삭제하시겠습니까?")} 
+          title={t('회원탈퇴')}
+          message={t('정말 계정을 삭제하시겠습니까?')}
+          leftButton={t('취소')}
+          rightButton={t('확인')}
           onConfirm={handleDeleteAccount}
-          onCancel={() => setModalVisible(false)} />
+          onCancel={() => setModalVisible(false)}
+        />
       </ScreenContainer>
     </View>
   );
@@ -139,65 +144,6 @@ const ButtonText = styled(Text)`
   color: ${({theme}) => theme.colors.red};
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-`;
-
-// 모달
-const ModalContainer = styled(View)`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
-
-const ModalContent = styled(View)`
-  width: 80%;
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  align-items: center;
-`;
-
-const ModalButtonText = styled(Text)`
-  font-size: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({theme}) => theme.colors.white};
-`;
-
-const ModalText = styled(Text)`
-  font-size: 18px;
-  margin-bottom: 8px;
-`;
-
-const SubModalText = styled(Text)`
-  font-size: 14px;
-  color: ${({theme}) => theme.colors.darkGray};
-  margin-bottom: 20px;
-`;
-
-const ModalButtons = styled(View)`
-  flex-direction: row;
-  gap: 12px;
-`;
-
-const CancelButton = styled(TouchableOpacity)`
-  width: 45%;
-  background-color: ${({theme}) => theme.colors.lightGray};
-  padding: 10px 20px;
-  border-radius: 8px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ConfirmButton = styled(TouchableOpacity)`
-  width: 45%;
-  padding: 10px 20px;
-  border-radius: 8px;
-  justify-content: center;
-  align-items: center;
-  color: ${({theme}) => theme.colors.white};
-  background-color: ${({theme}) => theme.colors.primary};
 `;
 
 // 로딩 및 오류 처리

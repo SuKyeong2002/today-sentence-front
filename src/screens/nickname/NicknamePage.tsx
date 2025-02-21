@@ -1,15 +1,13 @@
 import { verifiedNickName } from '@/api/auth';
 import { ProfileEditHader } from '@/components/Header/ProfileEditHader';
-import useAuth from '@/hooks/useAuth';
+import { useUser } from '@/hooks/useUser';
 import { getStoredLanguage } from '@/utils/language';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useMutation } from 'react-query';
-import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components';
-import { useUser } from '@/hooks/useUser';
 
 export default function NicknamePage() {
   const { t, i18n } = useTranslation();
@@ -172,23 +170,4 @@ const ErrorMessage = styled(Text)<{ isError: boolean }>`
 const ErrorMessage2 = styled(Text)<{ isError2: boolean }>`
   color: ${({ isError2 }) => (isError2 ? 'red' : 'green')};
   font-size: 14px;
-`;
-
-const LoadingOverlay = styled(View)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.7);
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-`;
-
-const LoadingText = styled(Text)`
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
 `;
