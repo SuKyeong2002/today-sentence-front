@@ -53,16 +53,17 @@ export default function MyPage() {
           onPress={() => setModalVisible(true)}
           font={font}
         />
-        <CustomModal
-          visible={modalVisible}
-          title={t('오픈 준비중')}
-          message={t('곧 이용하실 수 있어요 :)')}
-          onConfirm={() => setModalVisible(false)}
-        />
         <ProfileEditItem
           title={t('커스터마이징')}
           onPress={() => setModalVisible(true)}
           font={font}
+        />
+        <CustomModal
+          visible={modalVisible}
+          title={t('오픈 준비중')}
+          message={t('곧 이용하실 수 있어요 :)')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible(false)}
         />
       </ListContainer>
     </View>
