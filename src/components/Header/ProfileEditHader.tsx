@@ -27,6 +27,7 @@ interface BackHeaderProps {
   onBackPress?: () => void;
   nickname?: string;
   email?: string;
+  code?: string;
   message?: string;
   isDuplicateChecked?: boolean;
 }
@@ -36,6 +37,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   onBackPress,
   nickname,
   email,
+  code,
   message,
   isDuplicateChecked,
 }) => {

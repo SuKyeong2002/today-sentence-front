@@ -44,11 +44,12 @@ export default function EmailPage() {
       return await VerifiedEmail(email);
     },
     {
-      onSuccess: response => {
+      onSuccess: async response => {
         console.log('이메일 검증 성공:', response);
         setErrorMessage2('사용 가능한 이메일입니다.');
         setIsError2(false);
         setIsDuplicateChecked(true);
+        await AsyncStorage.setItem("verifiedEmail", email);
       },
       onError: (error: any) => {
         console.error('이메일 검증 실패:', error.message);

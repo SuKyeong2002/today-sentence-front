@@ -21,7 +21,6 @@ import {
 } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-const API_URL = 'http://43.201.20.84';
 
 interface UseAuthReturn {
   username: string;

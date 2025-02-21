@@ -1,18 +1,30 @@
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {useTranslation} from 'react-i18next';
-import {changeLanguage, getStoredLanguage} from '@/utils/language';
-import styled from 'styled-components';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {verifyAuthCode} from '@/api/auth';
 import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
+import {getStoredLanguage} from '@/utils/language';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from 'react-native';
+import {useMutation} from 'react-query';
+import styled from 'styled-components';
 
 export default function AuthenticationPage() {
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
-  const [nickname, setNickname] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [code, setCode] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
+  const [isError2, setIsError2] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [errorMessage2, setErrorMessage2] = useState<string>('');
+  const [isVerified, setIsVerified] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -22,30 +34,43 @@ export default function AuthenticationPage() {
     })();
   }, []);
 
+  // 이메일 불러오기 (이메일 중복 확인이 끝난 후)
   useEffect(() => {
     (async () => {
-      const storedFont = await AsyncStorage.getItem('selectedFont');
-      if (storedFont) {
-        setFont(storedFont);
+      const storedEmail = await AsyncStorage.getItem('verifiedEmail');
+      if (storedEmail) {
+        setEmail(storedEmail);
       }
     })();
   }, []);
 
-  const handleDuplicateCheck = () => {
-    if (nickname.length === 0) {
-      setErrorMessage('인증번호를 입력해주세요.');
+  const {mutate: verifyCode, isLoading} = useMutation(
+    async () => await verifyAuthCode(email, code),
+    {
+      onSuccess: response => {
+        console.log('이메일 인증 성공:', response);
+        setErrorMessage2('이메일 인증에 성공하였습니다.');
+        setIsError2(false);
+        setIsVerified(true);
+      },
+      onError: (error: any) => {
+        console.error('이메일 인증 실패:', error.message);
+        setErrorMessage2('잘못된 인증번호입니다.');
+        setIsError2(true);
+        setIsVerified(false);
+      },
+    },
+  );
+
+  // 인증 코드 검증
+  const handleVerifyCode = () => {
+    if (code.trim().length === 0) {
+      setErrorMessage('이메일 인증코드를 입력해주세요.');
       setIsError(true);
       return;
     }
-    const isDuplicate = nickname === '사용불가닉네임';
 
-    if (isDuplicate) {
-      setErrorMessage('잘못된 인증코드입니다.');
-      setIsError(true);
-    } else {
-      setErrorMessage('이메일 인증에 성공하였습니다.');
-      setIsError(false);
-    }
+    verifyCode();
   };
 
   return (
@@ -53,43 +78,50 @@ export default function AuthenticationPage() {
       <ProfileEditHader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
-      <ScreenContainer fontFamily={font}>
+      <ScreenContainer>
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
               placeholder="인증번호를 입력해주세요"
-              value={nickname}
+              value={code}
               onChangeText={text => {
-                setNickname(text);
+                setCode(text);
                 setErrorMessage('');
               }}
               placeholderTextColor="#999"
             />
           </NicknameInputContainer>
+
           <DuplicateCheckButton
-            onPress={handleDuplicateCheck}
-            isActive={nickname.length > 0}>
-            <ButtonText>인증완료</ButtonText>
+            onPress={handleVerifyCode}
+            isActive={code.length > 0}>
+            {isLoading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <ButtonText>인증완료</ButtonText>
+            )}
           </DuplicateCheckButton>
         </InputWrapper>
 
         {errorMessage !== '' && (
           <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>
         )}
+        {errorMessage2 !== '' && (
+          <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
+        )}
       </ScreenContainer>
     </View>
   );
 }
 
-const ScreenContainer = styled(View)<{fontFamily: string}>`
+// 스타일 정의
+const ScreenContainer = styled(View)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
   padding: 0 16px;
-  font-family: ${props => props.fontFamily};
 `;
 
 const InputWrapper = styled(View)`
@@ -115,15 +147,6 @@ const NicknameInput = styled(TextInput)`
   text-align: left;
 `;
 
-const CharacterCount = styled(Text)`
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  margin-top: -8px;
-  font-size: 14px;
-  color: ${({theme}) => theme.colors.text};
-`;
-
 const DuplicateCheckButton = styled(TouchableOpacity)<{isActive: boolean}>`
   height: 48px;
   padding: 0 16px;
@@ -142,5 +165,11 @@ const ButtonText = styled(Text)`
 
 const ErrorMessage = styled(Text)<{isError: boolean}>`
   color: ${({isError}) => (isError ? 'red' : 'green')};
+  font-size: 14px;
+  margin-top: 10px;
+`;
+
+const ErrorMessage2 = styled(Text)<{isError2: boolean}>`
+  color: ${({isError2}) => (isError2 ? 'red' : 'green')};
   font-size: 14px;
 `;
