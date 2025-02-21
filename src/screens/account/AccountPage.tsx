@@ -39,14 +39,7 @@ export default function AccountPage() {
   const navigation = useNavigation<NavigationProp>();
   const {mutate: deleteAccount} = useDeleteAccount();
   const {data: user, isLoading, error} = useUser();
-
-  useEffect(() => {
-    (async () => {
-      console.log('🔄 최신 유저 정보 다시 불러오기');
-      await refetchUserData(queryClient);
-    })();
-  }, []);
-
+  
   if (isLoading) {
     return (
       <LoadingContainer>
