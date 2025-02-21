@@ -17,6 +17,7 @@ import {
   findUsername,
   verifyAuthCode,
   resetPassword,
+  changeEmail,
 } from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -39,6 +40,7 @@ interface UseAuthReturn {
     newPassword: string,
   ) => Promise<void>;
   handleChangeNickname: (nickname: string) => Promise<void>;
+  handleChangeEmail: (email: string) => Promise<void>;
   handleChangeStatusMessage: (statusMessage: string) => Promise<void>;
   handleCheckPasswordMatch: (password: string) => Promise<boolean>;
   handleSendAuthCode: (email: string) => Promise<{data: boolean}>;
@@ -156,6 +158,21 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
+  // 이메일 변경
+  const changeEmailMutation = useMutation(
+    async (email: string) => await changeEmail(email),
+    {
+      onSuccess: () => {
+        setMessage('이메일로 인증번호가 발송되었습니다.');
+      },
+      onError: (error: any) => {
+        setMessage(
+          `이메일 인증 실패: ${error.response?.data?.message || '알 수 없는 오류'}`,
+        );
+      },
+    },
+  );
+
   // 닉네임 변경
   const changeNicknameMutation = useMutation(
     async (nickname: string) => await changeNickname(nickname),
@@ -171,6 +188,7 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
+  // 상태메세지 변경
   const changeMessageMutation = useMutation(
     async (message: string) => await changeStatusMessage(message),
     {
@@ -266,6 +284,17 @@ const useAuth = (): UseAuthReturn => {
   ) => {
     await changePassword(oldPassword, newPassword);
     setMessage('비밀번호 변경 성공!');
+  };
+
+  // 닉네임 변경 핸들러
+  const handleChangeEmail = async (email: string) => {
+    try {
+      const response = await changeEmailMutation.mutateAsync(email);
+      console.log('이메일 인증번호 발송 성공', response);
+    } catch (error: any) {
+      console.error('이메일 인증 실패:', error.message);
+      throw new Error(error.message || '이메일 인증 실패');
+    }
   };
 
   // 닉네임 변경 핸들러
@@ -370,6 +399,7 @@ const useAuth = (): UseAuthReturn => {
     handleSignUp,
     handleLogin,
     handleChangePassword,
+    handleChangeEmail,
     handleChangeNickname,
     handleChangeStatusMessage,
     handleCheckPasswordMatch,

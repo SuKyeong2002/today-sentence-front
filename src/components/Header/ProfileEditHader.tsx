@@ -44,9 +44,10 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute();
   const {t} = useTranslation();
-  const {handleChangeNickname, handleChangeStatusMessage} = useAuth();
+  const {handleChangeEmail, handleChangeNickname, handleChangeStatusMessage} = useAuth();
 
   const handleConfirm = async () => {
+    // 닉네임 페이지일 경우
     if (route.name === 'Nickname') {
       if (!nickname || nickname.length === 0) {
         navigation.navigate('Profile');
@@ -74,6 +75,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
       return;
     }
 
+    // 자기소개 페이지일 경우
     if (route.name === 'Introduction') {
       if (!message || message.length === 0) {
         navigation.navigate('Profile');
@@ -92,6 +94,34 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
       } finally {
         setLoading(false);
       }
+    }
+
+    // 이메일 페이지일 경우
+    if (route.name === 'Email') {
+      if (!email || email.length === 0) {
+        navigation.navigate('Account');
+        return;
+      }
+
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        if (!isDuplicateChecked) {
+          Alert.alert(t('이메일 변경 실패'), t('중복검사를 진행해주세요'), [
+            {text: t('확인'), style: 'default'},
+          ]);
+          return;
+        }
+        await handleChangeEmail(email);
+        console.log('이메일 변경 성공');
+        navigation.navigate('Authentication');
+      } catch (error: any) {
+        console.error('이메일 변경 실패:', error.message);
+      } finally {
+        setLoading(false);
+      }
+      return;
     }
   };
 

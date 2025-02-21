@@ -231,6 +231,33 @@ export const changePassword = async (
   });
 };
 
+// 이메일 변경 
+export const changeEmail = async (email: string): Promise<{ success: boolean; message?: string }> => {
+  console.log(email);
+  try {
+    const token = await AsyncStorage.getItem('accessToken'); 
+
+    if (!token) {
+      throw new Error("토큰이 없습니다.");
+    }
+
+    const response = await apiClient.post(
+      "/api/member/verify-code",
+      { email },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    return response.data; 
+  } catch (error: any) {
+    console.error("이메일 인증코드 발송 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "이메일 인증코드 발송 중 오류 발생");
+  }
+};
+
 // 닉네임 변경 
 export const changeNickname = async (nickname: string): Promise<{ success: boolean; message?: string }> => {
   console.log(nickname);
