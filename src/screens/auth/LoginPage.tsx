@@ -4,7 +4,7 @@ import { NavigationProp } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
 
 export default function LoginPage({ navigation }: { navigation: NavigationProp<any> }) {
-  const { handleLogin, setUsername, setPassword, message } = useAuth();
+  const { handleLogin, message } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPasswordState] = useState('');
 
