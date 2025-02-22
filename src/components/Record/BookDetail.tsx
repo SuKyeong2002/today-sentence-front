@@ -1,39 +1,40 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { RouteProp } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Ionicons } from "@expo/vector-icons"; // 아이콘 사용
-
-type RootStackParamList = {
-  BookDetail: { book: Book };
-};
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons'; 
+import { useFetchBookDetail } from '../../hooks/useFetchBookDetail';
+import { Book, RootStackParamList } from '../../types/Book';
 
 type BookDetailScreenProps = {
-  route: RouteProp<RootStackParamList, "BookDetail">;
+  route: RouteProp<RootStackParamList, 'BookDetail'>;
   navigation: NativeStackNavigationProp<RootStackParamList>;
 };
 
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  category: string;
-  coverImage: string;
-  hashtags: string[];
-  description: string;
-}
-
 const BookDetailScreen: React.FC<BookDetailScreenProps> = ({ route, navigation }) => {
-  const { book } = route.params;
+  const { postId } = route.params;
+  const { book, loading, error } = useFetchBookDetail(postId);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (error) {
+    return <Text style={styles.errorText}>Error: {error}</Text>;
+  }
+
+  if (!book) {
+    return <Text style={styles.errorText}>No data available</Text>;
+  }
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: book.coverImage }} style={styles.coverImage} />
+      <Image source={{ uri: book.bookCover }} style={styles.coverImage} />
 
       <View style={styles.infoContainer}>
         <Text style={styles.category}>{book.category}</Text>
-        <Text style={styles.title}>{book.title}</Text>
-        <Text style={styles.author}>{book.author}</Text>
+        <Text style={styles.title}>{book.bookTitle}</Text>
+        <Text style={styles.author}>{book.bookAuthor}</Text>
 
         <View style={styles.hashtagContainer}>
           {book.hashtags.map((tag, index) => (
@@ -42,8 +43,6 @@ const BookDetailScreen: React.FC<BookDetailScreenProps> = ({ route, navigation }
             </Text>
           ))}
         </View>
-
-        <Text style={styles.description}>{book.description}</Text>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -110,13 +109,6 @@ const styles = StyleSheet.create({
     color: "#007AFF",
     marginRight: 8,
   },
-  description: {
-    fontSize: 14,
-    color: "#444",
-    textAlign: "center",
-    marginTop: 8,
-    paddingHorizontal: 16,
-  },
   buttonContainer: {
     flexDirection: "row",
     marginTop: 16,
@@ -129,5 +121,10 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 12,
     marginTop: 4,
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
   },
 });

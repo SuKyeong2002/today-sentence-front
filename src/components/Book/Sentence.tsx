@@ -15,72 +15,74 @@ const categoryMap: Record<string, string> = {
   ETC: '기타',
 };
 
+interface Post {
+    postId: number;
+    postWriter: string;
+    category: string;
+    bookTitle: string;
+    bookAuthor: string;
+    bookCover: string;
+    postContent: string;
+    hashtags: string | string[];
+    likesCount: number;
+    commentCount: number;
+    bookmarkCount: number;
+    createAt: string;
+}
+
+interface Interaction{
+    isLiked:boolean,
+    isSaved:boolean
+}
+
+
 interface SentenceProps {
-  postId: number;
-  postWriter: string;
-  category: string;
-  bookTitle: string;
-  bookAuthor: string;
-  bookCover: string;
-  postContent: string;
-  hashtags: string | string[];
-  likesCount: number;
-  commentCount: number;
-  bookmarkCount: number;
-  createAt: string;
+  post : Post,
+  interaction : Interaction
+
 }
 
 export default function Sentence({
-  postId,
-  bookCover,
-  bookTitle,
-  bookAuthor,
-  postWriter,
-  postContent,
-  category,
-  hashtags,
-  createAt,
-  likesCount,
-  bookmarkCount,
-  commentCount
+  post,interaction
 }: SentenceProps) {
-  const formattedDate = new Date(createAt).toLocaleString();
+  const formattedDate = new Date(post.createAt).toLocaleString();
 
-  console.log("📌 전달된 commentCount:", commentCount);
+  console.log("📌 전달된 commentCount:", post.commentCount);
 
 
   return (
     <ContentWrapper>
       <BookContainer>
-        <BookImage source={{uri: bookCover}} resizeMode="contain" />
+        <BookImage source={{uri: post.bookCover}} resizeMode="contain" />
         <BookWrapper>
-          <BookCategory>{categoryMap[category] || '기타'}</BookCategory>
-          <BookTitle>{bookTitle}</BookTitle>
-          <BookWriter>{bookAuthor}</BookWriter>
+          <BookCategory>{categoryMap[post.category] || '기타'}</BookCategory>
+          <BookTitle>{post.bookTitle}</BookTitle>
+          <BookWriter>{post.bookAuthor}</BookWriter>
           <PostProfileContainer>
             <ChatImage
               source={require('@/assets/image/other_user.png')}
               resizeMode="contain"
             />
-            <PostWriter>{postWriter}</PostWriter>
+            <PostWriter>{post.postWriter}</PostWriter>
           </PostProfileContainer>
         </BookWrapper>
       </BookContainer>
       <BookRecord>
-        <BookSentence>{postContent}</BookSentence>
-        <BookTag>{hashtags}</BookTag>
+        <BookSentence>{post.postContent}</BookSentence>
+        <BookTag>{post.hashtags}</BookTag>
 
-        <BookDate>{formattedDate}</BookDate>
+        <BookDate>{post.formattedDate}</BookDate>
         <InteractionContainer>
           <Interaction
-            postId={postId}
-            likesCount={likesCount}
-            bookmarkCount={bookmarkCount}
-            commentCount={commentCount}
+            postId={post.postId}
+            likesCount={post.likesCount}
+            bookmarkCount={post.bookmarkCount}
+            commentCount={post.commentCount}
             // bookCover={bookCover}
-            bookTitle={bookTitle}
-            postContent={postContent}
-            bookAuthor={bookAuthor}
+            bookTitle={post.bookTitle}
+            postContent={post.postContent}
+            bookAuthor={post.bookAuthor}
+            interaction = {interaction}
           />
         </InteractionContainer>
       </BookRecord>

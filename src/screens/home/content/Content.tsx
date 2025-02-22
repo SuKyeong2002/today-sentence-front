@@ -20,23 +20,13 @@ export default function Content() {
   if (error) return <ErrorText>데이터 불러오기 실패: {errorMessage}</ErrorText>;
   if (!postData) return <EmptyContent />;
 
-  console.log(postData);
+  const { posts, interaction } = postData;
 
   return (
     <ScrollContainer>
       <Sentence
-        bookAuthor={postData.bookAuthor}
-        postId={postData.postId}
-        postWriter={postData.postWriter}
-        postContent={postData.postContent}
-        category={postData.category}
-        hashtags={postData.hashtags}
-        createAt={postData.createAt}
-        likesCount={postData.likesCount}
-        bookmarkCount={postData.bookmarkCount}
-        commentCount={postData.commentCount}
-        bookTitle={postData.bookTitle}
-        bookCover={postData.bookCover}
+        post={ posts }
+        interaction = { interaction }
       />
     </ScrollContainer>
   );

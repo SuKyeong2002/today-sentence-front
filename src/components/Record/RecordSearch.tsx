@@ -1,40 +1,22 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
-import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  publisher: string;
-  year: string;
-  coverImage: string;
-}
-
-type RootStackParamList = {
-  BookWrite: { book: Book };
-};
+import React from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ActivityIndicator
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSearchBooks } from '../../hooks/useSearchBook';
+import { Book, RootStackParamList } from '../../types/Book';
 
 export default function RecordSearchScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>(); // ✅ 타입 적용
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Book[]>([]);
-
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
-    if (!query) return;
-
-    try {
-      const response = await axios.get<{ data: Book[] }>(
-        `https://your-api.com/search?q=${query}`
-      );
-      setSearchResults(response.data.data); 
-    } catch (error) {
-      console.error("Search error:", error);
-    }
-  };
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { searchQuery, searchResults, loading, error, handleSearch, setSearchQuery } = useSearchBooks();
 
   return (
     <View style={styles.container}>
@@ -44,18 +26,22 @@ export default function RecordSearchScreen() {
         onChangeText={handleSearch}
         placeholder="책 제목을 검색하세요"
       />
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+      {error && <Text style={styles.errorText}>Error: {error}</Text>}
       <FlatList
         data={searchResults}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.bookItem}
-            onPress={() => navigation.navigate("BookWrite", { book: item })} 
+            onPress={() => navigation.navigate('BookWrite', { book: item })}
           >
-            <Image source={{ uri: item.coverImage }} style={styles.bookCover} />
+            <Image source={{ uri: item.coverUrl }} style={styles.bookCover} />
             <View style={styles.bookInfo}>
-              <Text style={styles.bookTitle}>{item.title}</Text>
-              <Text style={styles.bookAuthor}>{item.author}</Text>
+              <Text style={styles.bookTitle}>{item.bookTitle}</Text>
+              <Text style={styles.bookAuthor}>저자: {item.author}</Text>
+              <Text style={styles.bookPublisher}>출판사: {item.publisher}</Text>
+              <Text style={styles.bookYear}>출판 연도: {item.publishingYear}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -100,5 +86,18 @@ const styles = StyleSheet.create({
   bookAuthor: {
     fontSize: 14,
     color: "#666",
+  },
+  bookPublisher: {
+    fontSize: 14,
+    color: "#666",
+  },
+  bookYear: {
+    fontSize: 14,
+    color: "#666",
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
   },
 });
