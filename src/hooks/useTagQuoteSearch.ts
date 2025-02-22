@@ -12,7 +12,7 @@ export const useTagQuoteSearch = (tag: string, page = 1, size = 100) => {
       });
 
       console.log("태그 검색 결과:", response.data.data);
-      return response.data;
+      return response.data.data;
     },
     {
       enabled: !!tag, 
