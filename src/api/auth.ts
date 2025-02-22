@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 
-const API_URL = 'http://3.36.71.224';
+const API_URL = 'http://3.34.197.35';
 
 export interface AuthResponse {
   token?: string;
