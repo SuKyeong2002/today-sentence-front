@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useTranslation} from 'react-i18next';
+import {useFamousTags} from '@/hooks/useFamousTags';
 
 type RootStackParamList = {
   BookSearch: undefined;
@@ -22,7 +23,15 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'BookSearch'>;
 
 export default function InquiryTag() {
   const navigation = useNavigation<NavigationProp>();
-  const {t} = useTranslation(); 
+  const {t} = useTranslation();
+  const {data, isLoading, error} = useFamousTags();
+
+  if (isLoading) return <Text>{t('로딩 중...')}</Text>;
+  if (error) return <Text>{t('태그를 불러오지 못했습니다')}</Text>;
+  if (!data) return <Text>{t('태그 데이터가 없습니다')}</Text>;
+
+  // 최대 6개 태그만 표시
+  const searchTags: string[] = (data.search || []).slice(0, 6);
 
   return (
     <KeyboardAvoidingView
@@ -37,26 +46,15 @@ export default function InquiryTag() {
               <RegistrationText>🤎 {t('인기 조회 태그')}</RegistrationText>
               <TagContainer>
                 <TagWrapper>
-                  <TagText onPress={() => navigation.navigate('BookSearch')}>
-                    <TagTextLabel>{t('오늘의책')}</TagTextLabel>
-                  </TagText>
-                  <TagText>
-                    <TagTextLabel>{t('명언추천')}</TagTextLabel>
-                  </TagText>
-                  <TagText>
-                    <TagTextLabel>{t('1일1독')}</TagTextLabel>
-                  </TagText>
-                </TagWrapper>
-                <TagWrapper>
-                  <TagText>
-                    <TagTextLabel>{t('책추천')}</TagTextLabel>
-                  </TagText>
-                  <TagText>
-                    <TagTextLabel>{t('느좋')}</TagTextLabel>
-                  </TagText>
-                  <TagText>
-                    <TagTextLabel>{t('카페')}</TagTextLabel>
-                  </TagText>
+                  {searchTags.map((tag: string, index: number) => (
+                    <TagText
+                      key={index}
+                      onPress={() => navigation.navigate('BookSearch')}>
+                      <TagTextLabel>
+                        {tag.length > 3 ? `${tag.substring(0, 3)}...` : tag}
+                      </TagTextLabel>
+                    </TagText>
+                  ))}
                 </TagWrapper>
               </TagContainer>
             </RegistrationTagContainer>
@@ -69,15 +67,12 @@ export default function InquiryTag() {
 
 const RegistrationTagContainer = styled(View)`
   width: 90%;
-  height: auto;
-  display: flex;
   padding: 20px;
-  flex-wrap: wrap;
   border-radius: 10px;
-  gap: 20px;
   margin: 10px 20px;
-  flex-direction: row;
+  flex-direction: column;
   background: ${({theme}) => theme.colors.white};
+  gap: 20px;
 `;
 
 const RegistrationText = styled(Text)`
@@ -88,22 +83,17 @@ const RegistrationText = styled(Text)`
 
 const TagContainer = styled(View)`
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  height: auto;
 `;
 
 const TagWrapper = styled(View)`
-  display: flex;
   flex-direction: row;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   align-items: center;
   gap: 10px;
 `;
 
 const TagText = styled(TouchableOpacity)`
-  display: flex;
   width: 30%;
   height: 40px;
   padding: 4px 10px;
@@ -111,7 +101,6 @@ const TagText = styled(TouchableOpacity)`
   align-items: center;
   border-radius: 30px;
   background: ${({theme}) => theme.colors.background};
-  text-align: center;
 `;
 
 const TagTextLabel = styled(Text)`
