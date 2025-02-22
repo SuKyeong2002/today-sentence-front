@@ -41,18 +41,19 @@ export default function SearchContent() {
   const isError = bookError || tagError;
 
   const rawQuotes = bookTitle ? bookQuotes : tag ? tagQuotes : [];
-  console.log('rawQuotes', rawQuotes);
-  console.log('typeof rawQuotes', typeof rawQuotes);
+//   console.log('rawQuotes', rawQuotes);
+//   console.log('typeof rawQuotes', typeof rawQuotes);
 
-  const quotes: QuoteData[] = 
-  Array.isArray(rawQuotes) 
-    ? rawQuotes 
-    : typeof rawQuotes === 'object' && rawQuotes !== null && 'data' in rawQuotes
-      ? rawQuotes.data 
-      : [];
 
-  // console.log('최종 변환된 quotes 데이터:', quotes);
-  // console.log('최종 quotes가 배열인지:', Array.isArray(quotes));
+
+  const posts = rawQuotes?.posts || [];
+  const interaction = rawQuotes?.interaction || [];
+
+  const combinedData = posts.map((post, index) => ({
+      post,
+      interaction: interaction[index],
+  }));
+
 
   return (
     <ScrollContainer>
@@ -60,23 +61,13 @@ export default function SearchContent() {
         <LoadingText>로딩 중...</LoadingText>
       ) : isError ? (
         <ErrorText>오류 발생</ErrorText>
-      ) : quotes.length > 0 ? (
-        quotes.map((quote, index) => (
+      ) : combinedData.length > 0 ? (
+        combinedData.map((combinedData, index) => (
           <SentenceContainer key={index}>
             <Sentence
-              postId={quote.postId}
-              postWriter={quote.postWriter}
-              postContent={quote.postContent}
-              category={quote.category}
-              hashtags={quote.hashtags}
-              createAt={quote.createAt}
-              likesCount={quote.likesCount}
-              commentCount={quote.commentCount}
-              bookmarkCount={quote.bookmarkCount}
-              bookTitle={quote.bookTitle}
-              bookAuthor={quote.bookAuthor}
-              bookCover={quote.bookCover}
-            />
+                post ={ combinedData.post}
+                interaction = {combinedData.interaction}
+                        />
           </SentenceContainer>
         ))
       ) : (
