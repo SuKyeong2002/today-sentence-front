@@ -17,28 +17,23 @@ interface Post {
   createAt: string;
   commentCount: number;
 }
+interface Interaction{
+  isLiked:boolean,
+  isSaved:boolean
+  }
 
 interface SearchContentProps {
   post: Post;
+  interaction: Interaction;
   sortByLatest: boolean;
 }
 
-export default function SearchContent2({post}: SearchContentProps) {
+export default function SearchContent2({post,interaction}: SearchContentProps) {
   return (
     <ScrollContainer>
       <Sentence
-        bookAuthor={post.bookAuthor}
-        postId={post.postId}
-        postWriter={post.postWriter}
-        postContent={post.postContent}
-        category={post.category}
-        hashtags={post.hashtags}
-        createAt={post.createAt}
-        likesCount={post.likesCount}
-        commentCount={post.commentCount}
-        bookmarkCount={post.bookmarkCount}
-        bookTitle={post.bookTitle}
-        bookCover={post.bookCover}
+       post={post}
+       interaction={interaction}
       />
     </ScrollContainer>
   );

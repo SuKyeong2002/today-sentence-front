@@ -25,6 +25,7 @@ export default function Interaction({
   bookTitle,
   bookAuthor,
   postContent,
+  interaction
 }: InteractionProps) {
   const likeMutation = useLikeToggle();
   const bookmarkMutation = useBookmarkToggle();
@@ -40,7 +41,9 @@ export default function Interaction({
     setCurrentLikes(likesCount);
     setCurrentBookmarks(bookmarkCount);
     setCurrentCommentCount(commentCount);
-  }, [likesCount, bookmarkCount, postId]);
+    setIsLiked(interaction.isLiked);
+    setIsBookmarked(interaction.isSaved);
+  }, [likesCount, bookmarkCount, postId,interaction]);
 
   // 공감 toggle
   const handleHeartClick = () => {
@@ -55,11 +58,11 @@ export default function Interaction({
     });
   };
 
-  // 댓글 
+  // 댓글
   const handleCommentAdded = () => {
     setCurrentCommentCount(prev => prev + 1);
   };
-  
+
 
   // 저장 toggle
   const handleBookmarkClick = () => {
