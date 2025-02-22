@@ -29,6 +29,7 @@ interface BackHeaderProps {
   onBackPress?: () => void;
   nickname?: string;
   email?: string;
+  checkChangePassword?: string;
   storedEmail?: string;
   code?: string;
   message?: string;
@@ -41,6 +42,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   onBackPress,
   nickname,
   email,
+  checkChangePassword,
   storedEmail,
   code,
   message,
@@ -58,6 +60,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
     handleChangeEmail2,
     handleChangeNickname,
     handleChangeStatusMessage,
+    handleChangePassword
   } = useAuth();
 
   const [localStoredEmail, setLocalStoredEmail] = useState<string | null>(null);
@@ -154,7 +157,6 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
     }
 
     // 이메일 인증 페이지일 경우
-    // 이메일 인증 페이지일 경우
     if (route.name === 'Authentication') {
       if (!isVerified || !email) {
         console.log('이메일 변경 시작, 변경할 이메일:', email);
@@ -166,15 +168,8 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
 
       try {
         console.log('이메일 변경 시작, 변경할 이메일:', email);
-
-        if (!email) {
-          console.error('이메일이 존재하지 않습니다.');
-          return;
-        }
-
         await handleChangeEmail2(email);
 
-        // ✅ 유저 정보 갱신
         await queryClient.invalidateQueries('user');
         await queryClient.refetchQueries('user');
 
@@ -185,6 +180,34 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
       } finally {
         setLoading(false);
       }
+    }
+
+    // 비밀번호 페이지일 경우
+    if (route.name === 'Password') {
+      if (!checkChangePassword || checkChangePassword.length === 0) {
+        navigation.navigate('Profile');
+        return;
+      }
+
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        if (!isDuplicateChecked) {
+          Alert.alert(t('비밀번호 변경 실패'), t('비밀번호가 일치하지 않습니다.'), [
+            {text: t('확인'), style: 'default'},
+          ]);
+          return;
+        }
+        await handleChangePassword(checkChangePassword);
+        console.log('비밀번호 변경 성공');
+        navigation.navigate('Profile');
+      } catch (error: any) {
+        console.error('비밀번호 변경 실패:', error.message);
+      } finally {
+        setLoading(false);
+      }
+      return;
     }
   };
 

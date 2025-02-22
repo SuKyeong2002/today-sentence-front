@@ -11,7 +11,7 @@ export default function PasswordPage() {
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
-  const [nickname, setNickname] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [changePassword, setChangePassword] = useState<string>('');
   const [checkChangePassword, setCheckChangePassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -58,13 +58,13 @@ export default function PasswordPage() {
       onSuccess: response => {
         console.log('비밀번호 일치 여부 확인 성공:', response);
         setErrorMessage2('확인되었습니다.');
-        setIsError2(false);
+        setIsError(false);
         setIsDuplicateChecked(true);
       },
       onError: (error: any) => {
         console.error('비밀번호 일치 여부 확인 실패:', error.message);
         setErrorMessage2('잘못된 비밀번호입니다.');
-        setIsError2(true);
+        setIsError(true);
         setIsDuplicateChecked(false);
       },
     },
@@ -72,12 +72,12 @@ export default function PasswordPage() {
 
   // 비밀번호 확인
   const handleDuplicateCheck = () => {
-    if (nickname.length === 0) {
+    if (password.length === 0) {
       setErrorMessage('비밀번호를 입력해주세요.');
       setIsError(true);
       return;
     }
-    passwordCheckMutation.mutate(nickname);
+    passwordCheckMutation.mutate(password);
   };
 
   return (
@@ -85,15 +85,17 @@ export default function PasswordPage() {
       <ProfileEditHader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
+        checkChangePassword={checkChangePassword}
+        isDuplicateChecked={isDuplicateChecked}
       />
       <ScreenContainer fontFamily={font}>
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
               placeholder="현재 비밀번호"
-              value={nickname}
+              value={password}
               onChangeText={text => {
-                setNickname(text);
+                setPassword(text);
                 setErrorMessage('');
               }}
               placeholderTextColor="#999"
@@ -102,16 +104,11 @@ export default function PasswordPage() {
           </NicknameInputContainer>
           <DuplicateCheckButton
             onPress={handleDuplicateCheck}
-            isActive={nickname.length > 0}>
+            isActive={password.length > 0}>
             <ButtonText>확인</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
-        {errorMessage !== '' && (
-          <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>
-        )}
-        {errorMessage2 !== '' && (
-          <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
-        )}
+        {errorMessage2 !== '' && <ErrorMessage isError={isError}>{errorMessage2}</ErrorMessage>}
 
         <InputWrapper>
           <NicknameInputContainer>

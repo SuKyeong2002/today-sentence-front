@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 
-const API_URL = 'http://3.36.71.224';
+const API_URL = 'http://3.34.197.35';
 
 export interface AuthResponse {
   token?: string;
@@ -232,14 +232,31 @@ export const userLogout = async (
   await axios.post(`${API_URL}/api/member/sign-out`, {password, email});
 };
 
-export const changePassword = async (
-  oldPassword: string,
-  newPassword: string,
-): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/change-password`, {
-    oldPassword,
-    newPassword,
-  });
+// 비밀번호 변경
+export const changePassword = async (password: string): Promise<{ success: boolean; message?: string }> => {
+  console.log(password);
+  try {
+    const token = await AsyncStorage.getItem('accessToken'); 
+
+    if (!token) {
+      throw new Error("토큰이 없습니다.");
+    }
+
+    const response = await apiClient.put(
+      "/api/member/change-password",
+      { password },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
+    );
+
+    return response.data; 
+  } catch (error: any) {
+    console.error("비밀번호 변경 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "비밀번호 변경 중 오류 발생");
+  }
 };
 
 // 이메일 변경 
