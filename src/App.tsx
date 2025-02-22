@@ -34,7 +34,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ThemeProviderWrapper} from '@/context/ThemeContext';
 import {FontProvider} from './context/FontContext';
 import {lightTheme} from '@/styles/theme';
-
 import {QueryClient, QueryClientProvider} from 'react-query';
 
 const theme = {
@@ -87,11 +86,12 @@ const queryClient = new QueryClient();
     Landing: undefined;
     EmailFind: undefined;
     PasswordFind: undefined;
+    SearchFooter: undefined;
     NotFound: undefined;
     SavedContent: undefined;
     Login: undefined;
     SignUp: undefined;
-    Home: undefined;
+    HomeFooter: undefined;
     StatusContent: undefined;
     Record: undefined;
     Search: undefined;
@@ -154,14 +154,13 @@ export default function App() {
                     name="PasswordFind"
                     component={PasswordFindPage}
                   />
-                  <Stack.Screen name="StatusContent" component={StatsContent} options={{title: "독서 통계"}}/>
                   <Stack.Screen name="RecordContent" component={RecordContent}/>
                   <Stack.Screen name="NotFound" component={NotFoundPage} />
                   <Stack.Screen name="Login" component={LoginScreen} />
                   <Stack.Screen name="SignUp" component={SignUpScreen} />
-                  <Stack.Screen name="Home" component={Footer} />
+                  <Stack.Screen name="HomeFooter" component={Footer} />
                   <Stack.Screen name="RecordFooter" component={Footer} />
-                  <Stack.Screen name="Search" component={Footer} />
+                  <Stack.Screen name="SearchFooter" component={Footer} />
                   <Stack.Screen
                     name="BookSearch"
                     component={BookSearchScreen}

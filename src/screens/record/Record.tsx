@@ -13,7 +13,7 @@ export default function Record({ navigation }: { navigation: any }) {
   const renderContent = () => {
     switch (activeTab) {
       case "기록":
-        return <RecordContent />;
+        return <RecordContent/>;
       case "저장":
         return <SavedContent />;
       case "통계":
