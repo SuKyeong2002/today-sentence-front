@@ -60,7 +60,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
     handleChangeEmail2,
     handleChangeNickname,
     handleChangeStatusMessage,
-    handleChangePassword
+    handleChangePassword,
   } = useAuth();
 
   const [localStoredEmail, setLocalStoredEmail] = useState<string | null>(null);
@@ -194,16 +194,22 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
 
       try {
         if (!isDuplicateChecked) {
-          Alert.alert(t('비밀번호 변경 실패'), t('비밀번호가 일치하지 않습니다.'), [
-            {text: t('확인'), style: 'default'},
-          ]);
+          Alert.alert(
+            t('비밀번호 변경 실패'),
+            t('비밀번호가 일치하지 않습니다.'),
+            [{text: t('확인'), style: 'default'}],
+          );
           return;
         }
         await handleChangePassword(checkChangePassword);
         console.log('비밀번호 변경 성공');
         navigation.navigate('Profile');
       } catch (error: any) {
-        console.error('비밀번호 변경 실패:', error.message);
+        Alert.alert(
+          t('비밀번호 변경 실패'),
+          t('변경하실 비밀번호는 영문자, 숫자, 특문 조합의 10자 이상 16자 이하여야 합니다.'),
+          [{text: t('확인'), style: 'default'}],
+        );
       } finally {
         setLoading(false);
       }
