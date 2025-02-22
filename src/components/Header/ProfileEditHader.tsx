@@ -35,6 +35,7 @@ interface BackHeaderProps {
   message?: string;
   isVerified?: boolean;
   isDuplicateChecked?: boolean;
+  isError2?: boolean;
 }
 
 export const ProfileEditHader: React.FC<BackHeaderProps> = ({
@@ -48,6 +49,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   message,
   isVerified,
   isDuplicateChecked,
+  isError2
 }) => {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
@@ -185,7 +187,12 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
     // 비밀번호 페이지일 경우
     if (route.name === 'Password') {
       if (!checkChangePassword || checkChangePassword.length === 0) {
-        navigation.navigate('Profile');
+        Alert.alert(
+          t('비밀번호 변경 중단'),
+          t('확인 시 기존의 비밀번호로 유지됩니다.'),
+          [{text: t('확인'), style: 'default'}],
+        );
+        navigation.navigate('Account');
         return;
       }
 
