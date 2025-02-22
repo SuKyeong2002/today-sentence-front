@@ -1,13 +1,14 @@
-import {Alert, View, Text, StyleSheet} from 'react-native';
-import React, {useState, useEffect} from 'react';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
-import {useTranslation} from 'react-i18next';
-import {changeLanguage, getStoredLanguage} from '@/utils/language';
-import styled from 'styled-components';
+import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
+import CustomModal from '@/components/Modal/CustomModal';
+import { changeLanguage, getStoredLanguage } from '@/utils/language';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
+import styled from 'styled-components';
 
 type RootStackParamList = {
   Font: undefined;
@@ -18,6 +19,8 @@ export default function ScreenPage() {
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
   const navigation = useNavigation<NavigationProp>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -30,6 +33,7 @@ export default function ScreenPage() {
   const handleLanguageChange = async (lang: string) => {
     await changeLanguage(lang);
     setLanguage(lang);
+    setModalVisible(false);
   };
 
   const handleFontChange = async (selectedFont: string) => {
@@ -58,13 +62,17 @@ export default function ScreenPage() {
       <ScreenContainer fontFamily={font}>
         <ProfileEditItem
           title={t('테마')}
-          onPress={() =>
-            Alert.alert(t('테마 선택'), t('원하는 테마를 선택하세요'), [
-              {text: t('라이트'), style: 'cancel'},
-              {text: t('다크'), style: 'default'},
-            ])
-          }
+          onPress={() => setModalVisible2(true)}
           font={font}
+        />
+        <CustomModal
+          visible={modalVisible2}
+          title={t('테마 선택')}
+          message={t('원하는 테마를 선택하세요')}
+          leftButton={t('라이트')}
+          rightButton={t('다크')}
+          onCancel={() => setModalVisible2(false)}
+          onConfirm={() => setModalVisible2(false)}
         />
         <ProfileEditItem
           title={t('폰트')}
@@ -73,13 +81,17 @@ export default function ScreenPage() {
         />
         <ProfileEditItem
           title={t('언어')}
-          onPress={() =>
-            Alert.alert(t('언어 선택'), t('사용할 언어를 선택해주세요'), [
-              {text: t('영어'), onPress: () => handleLanguageChange('en')},
-              {text: t('한국어'), onPress: () => handleLanguageChange('ko')},
-            ])
-          }
+          onPress={() => setModalVisible(true)}
           font={font}
+        />
+        <CustomModal
+          visible={modalVisible}
+          title={t('언어 선택')}
+          message={t('사용할 언어를 선택해주세요')}
+          leftButton={t('한국어')}
+          rightButton={t('영어')}
+          onCancel={() => handleLanguageChange('ko')}
+          onConfirm={() => handleLanguageChange('en')}
         />
       </ScreenContainer>
     </View>

@@ -13,7 +13,7 @@ import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
 import Footer from './components/Footer/Footer';
 import SettingScreen from './screens/setting/SettingPage';
-//import NewsScreen from './screens/news/NewsPage';
+import NewsScreen from './screens/news/NewsPage';
 import AlertScreen from './screens/alert/AlertPage';
 import ScreenScreen from './screens/screen/ScreenPage';
 import FontScreen from './screens/font/FontPage';

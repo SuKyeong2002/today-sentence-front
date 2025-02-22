@@ -12,25 +12,29 @@ interface BookRecord {
 }
 
 type RootStackParamList = {
-  BookDetail: { book: BookRecord };
+  BookDetail: {book: BookRecord};
   RecordSearch: undefined;
 };
 
 const sampleRecords: BookRecord[] = [
-  { id: "1", title: "책 제목 A", author: "저자 A", date: "2025-01" },
-  { id: "2", title: "책 제목 B", author: "저자 B", date: "2025-01" },
-  { id: "3", title: "책 제목 C", author: "저자 C", date: "2025-02" },
+  {id: '1', title: '책 제목 A', author: '저자 A', date: '2025-01'},
+  {id: '2', title: '책 제목 B', author: '저자 B', date: '2025-01'},
+  {id: '3', title: '책 제목 C', author: '저자 C', date: '2025-02'},
 ];
 
 const groupByMonth = (records: BookRecord[]) => {
-  return records.reduce((acc, book) => {
-    acc[book.date] = acc[book.date] ? [...acc[book.date], book] : [book];
-    return acc;
-  }, {} as Record<string, BookRecord[]>);
+  return records.reduce(
+    (acc, book) => {
+      acc[book.date] = acc[book.date] ? [...acc[book.date], book] : [book];
+      return acc;
+    },
+    {} as Record<string, BookRecord[]>,
+  );
 };
 
 export default function SavedContent() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleBookSelect = (book: BookRecord) => {
     navigation.navigate("BookDetail", { book });
@@ -43,16 +47,15 @@ export default function SavedContent() {
     <View style={styles.container}>
       <FlatList
         data={Object.keys(groupedRecords)}
-        keyExtractor={(item) => item}
-        renderItem={({ item: month }) => (
+        keyExtractor={item => item}
+        renderItem={({item: month}) => (
           <View>
             <Text style={styles.monthHeader}>{month}</Text>
-            {groupedRecords[month].map((book) => (
+            {groupedRecords[month].map(book => (
               <TouchableOpacity
                 key={book.id}
                 style={styles.bookItem}
-                onPress={() => handleBookSelect(book)}
-              >
+                onPress={() => handleBookSelect(book)}>
                 <Text style={styles.bookTitle}>{book.title}</Text>
                 <Text style={styles.bookAuthor}>{book.author}</Text>
               </TouchableOpacity>
@@ -60,6 +63,7 @@ export default function SavedContent() {
           </View>
         )}
       />
+
       <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("RecordSearch") }>
         <Ionicons name="add" size={30} color="#fff" />
       </TouchableOpacity>
@@ -70,39 +74,39 @@ export default function SavedContent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     padding: 16,
   },
   monthHeader: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginVertical: 10,
   },
   bookItem: {
     padding: 10,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: '#f5f5f5',
     marginVertical: 5,
     borderRadius: 8,
   },
   bookTitle: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   bookAuthor: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
   },
   addButton: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: "#007AFF",
+    backgroundColor: '#007AFF',
     width: 60,
     height: 60,
     borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 5,
   },

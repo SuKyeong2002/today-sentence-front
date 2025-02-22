@@ -1,13 +1,15 @@
-import {View, Text, Image, Alert, Linking} from 'react-native';
-import styled from 'styled-components';
-import React, {useEffect, useState} from 'react';
-import {SettingItem} from '@/components/Button/SettingItem';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {useNavigation} from '@react-navigation/native';
-import {useTranslation} from 'react-i18next';
+import { SettingItem } from '@/components/Button/SettingItem';
+import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
+import CustomModal from '@/components/Modal/CustomModal';
+import { useLogout } from '@/hooks/useLogout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Alert, Linking, View } from 'react-native';
+import styled from 'styled-components';
 
 type RootStackParamList = {
   News: undefined;
@@ -23,6 +25,8 @@ export default function SettingPage() {
   const navigation = useNavigation<NavigationProp>();
   const {t} = useTranslation();
   const [font, setFont] = useState<string>('PretendardRegular');
+  const {mutate: logout} = useLogout();
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -87,13 +91,17 @@ export default function SettingPage() {
         />
         <ProfileEditItem
           title={t('로그아웃')}
-          onPress={() =>
-            Alert.alert(t('로그아웃'), t('로그아웃하시겠습니까?'), [
-              {text: t('취소'), style: 'cancel'},
-              {text: t('로그아웃'), style: 'default'},
-            ])
-          }
+          onPress={() => setModalVisible(true)}
           font={font}
+        />
+        <CustomModal
+          visible={modalVisible}
+          title={t('로그아웃')}
+          message={t('로그아웃하시겠습니까?')}
+          leftButton={t('취소')}
+          rightButton={t('확인')}
+          onCancel={() => setModalVisible(false)}
+          onConfirm={logout}
         />
       </ListContainer>
     </View>

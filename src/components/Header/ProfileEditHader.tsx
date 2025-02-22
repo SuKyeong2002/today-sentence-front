@@ -1,20 +1,25 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  Modal,
-} from 'react-native';
+import useAuth from '@/hooks/useAuth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {useQueryClient} from 'react-query';
 
 type RootStackParamList = {
   Profile: undefined;
   Account: undefined;
   Authentication: undefined;
+  Nickname: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
@@ -22,40 +27,165 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'Profile'>;
 interface BackHeaderProps {
   searchKeyword?: string;
   onBackPress?: () => void;
-  onNotificationPress?: () => void;
+  nickname?: string;
+  email?: string;
+  storedEmail?: string;
+  code?: string;
+  message?: string;
+  isVerified?: boolean;
+  isDuplicateChecked?: boolean;
 }
 
 export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   searchKeyword,
   onBackPress,
-  onNotificationPress,
+  nickname,
+  email,
+  storedEmail,
+  code,
+  message,
+  isVerified,
+  isDuplicateChecked,
 }) => {
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute();
+  const {t} = useTranslation();
+  const {
+    handleChangeEmail,
+    handleChangeEmail2,
+    handleChangeNickname,
+    handleChangeStatusMessage,
+  } = useAuth();
 
-  const handleConfirm = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      if (route.name === 'Nickname') {
-        navigation.navigate('Profile');
-      } else if (route.name === 'Email') {
-        setShowModal(true);
-      } else if (route.name === 'Password') {
-        navigation.navigate('Account');
-      } else if (route.name === 'Authentication') {
-        navigation.navigate('Account');
-      } else if (route.name === 'Introduction') {
-        navigation.navigate('Profile');
+  const [localStoredEmail, setLocalStoredEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStoredEmail = async () => {
+      try {
+        const email = await AsyncStorage.getItem('verifiedEmail');
+        console.log('불러온 저장된 이메일:', email);
+      } catch (error) {
+        console.error('이메일 불러오기 실패:', error);
       }
-    }, 2000);
-  };
+    };
 
-  const handleModalConfirm = () => {
-    setShowModal(false);
-    navigation.navigate('Authentication');
+    fetchStoredEmail();
+  }, [isVerified]);
+
+  const handleConfirm = async () => {
+    // 닉네임 페이지일 경우
+    if (route.name === 'Nickname') {
+      if (!nickname || nickname.length === 0) {
+        navigation.navigate('Profile');
+        return;
+      }
+
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        if (!isDuplicateChecked) {
+          Alert.alert(t('닉네임 변경 실패'), t('중복검사를 진행해주세요'), [
+            {text: t('확인'), style: 'default'},
+          ]);
+          return;
+        }
+        await handleChangeNickname(nickname);
+        console.log('닉네임 변경 성공');
+        navigation.navigate('Profile');
+      } catch (error: any) {
+        console.error('닉네임 변경 실패:', error.message);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // 자기소개 페이지일 경우
+    if (route.name === 'Introduction') {
+      if (!message || message.length === 0) {
+        navigation.navigate('Profile');
+        return;
+      }
+
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        await handleChangeStatusMessage(message);
+        console.log('상태 메시지 변경 성공');
+        navigation.navigate('Profile');
+      } catch (error: any) {
+        console.error('상태 메시지 변경 실패:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // 이메일 페이지일 경우
+    if (route.name === 'Email') {
+      if (!email || email.length === 0) {
+        navigation.navigate('Account');
+        return;
+      }
+
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        if (!isDuplicateChecked) {
+          Alert.alert(t('이메일 변경 실패'), t('중복검사를 진행해주세요'), [
+            {text: t('확인'), style: 'default'},
+          ]);
+          return;
+        }
+        await handleChangeEmail(email);
+        console.log('이메일 인증 페이지로 이동');
+        navigation.navigate('Authentication');
+      } catch (error: any) {
+        console.error('이메일 변경 실패:', error.message);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    // 이메일 인증 페이지일 경우
+    // 이메일 인증 페이지일 경우
+    if (route.name === 'Authentication') {
+      if (!isVerified || !email) {
+        console.log('이메일 변경 시작, 변경할 이메일:', email);
+        Alert.alert(t('이메일 변경 실패'), t('이메일 인증을 진행해주세요'), [
+          {text: t('확인'), style: 'default'},
+        ]);
+        return;
+      }
+
+      try {
+        console.log('이메일 변경 시작, 변경할 이메일:', email);
+
+        if (!email) {
+          console.error('이메일이 존재하지 않습니다.');
+          return;
+        }
+
+        await handleChangeEmail2(email);
+
+        // ✅ 유저 정보 갱신
+        await queryClient.invalidateQueries('user');
+        await queryClient.refetchQueries('user');
+
+        console.log('이메일 변경 성공:', email);
+        navigation.navigate('Profile');
+      } catch (error: any) {
+        console.error('이메일 변경 실패:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -82,23 +212,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
         </View>
       )}
 
-      <Modal
-        visible={showModal}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowModal(false)}>
-        <View style={styles.modalWrapper}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>인증번호 발송</Text>
-              <Text style={styles.modalSubtitle}>이메일을 확인해주세요.</Text>
-              <TouchableOpacity onPress={handleModalConfirm} style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>확인</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
     </View>
   );
 };
@@ -152,43 +266,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
-  modalWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 1001,
-  },
-  modalContainer: {
-    width: '80%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  modalContent: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: '600',
-    marginBottom: 10,
-  },
-  modalSubtitle: {
+  errorText: {
+    color: 'red',
     fontSize: 16,
-    color: '#828183',
-    marginBottom: 20,
-  },
-  modalButton: {
-    width: '100%',
-    paddingVertical: 10,
-    backgroundColor: '#8A715D',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  modalButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#fff',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
+import { useUser } from '@/hooks/useUser';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -15,9 +16,10 @@ export default function IntroductionaPage() {
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
-  const [nickname, setNickname] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
+  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
 
   useEffect(() => {
     (async () => {
@@ -37,28 +39,37 @@ export default function IntroductionaPage() {
   }, []);
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
+  
+    // 상태 메시지 입력란 공백 확인 
+    const handleDuplicateCheck = async () => {
+      if (message.trim().length === 0) {
+        setErrorMessage('닉네임을 입력해주세요.');
+        setIsError(true);
+        return;
+      }
+    };
 
   return (
     <View style={{flex: 1}}>
       <ProfileEditHader
         searchKeyword={t('프로필 편집')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
+        message={message}
       />
       <ScreenContainer fontFamily={font}>
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
-              placeholder="상태 메세지를 입력해주세요"
-              value={nickname}
+              placeholder={user?.statusMessage || t('상태메시지를 입력해주세요.')}
+              value={message}
               onChangeText={text => {
-                setNickname(text);
+                setMessage(text);
                 setErrorMessage('');
               }}
               placeholderTextColor="#999"
               maxLength={50}
             />
-            <CharacterCount>{`${nickname.length}/50`}</CharacterCount>
+            <CharacterCount>{`${message.length}/50`}</CharacterCount>
           </NicknameInputContainer>
         </InputWrapper>
 

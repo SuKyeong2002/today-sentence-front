@@ -5,6 +5,7 @@ import {
   Image,
   Modal,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -15,6 +16,11 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import {deleteAccount} from '@/api/deleteAccount';
+import {useDeleteAccount} from '@/hooks/useDeleteAccount';
+import {refetchUserData, useUser} from '@/hooks/useUser';
+import CustomModal from '@/components/Modal/CustomModal';
+import { useQueryClient } from 'react-query';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -25,11 +31,26 @@ type RootStackParamList = {
 };
 
 export default function AccountPage() {
+  const queryClient = useQueryClient();
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation<NavigationProp>();
+  const {mutate: deleteAccount} = useDeleteAccount();
+  const {data: user, isLoading, error} = useUser();
+  
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </LoadingContainer>
+    );
+  }
+
+  if (error) {
+    return <ErrorText>유저 정보를 불러올 수 없습니다.</ErrorText>;
+  }
 
   useEffect(() => {
     (async () => {
@@ -58,13 +79,9 @@ export default function AccountPage() {
     })();
   }, []);
 
-  const handleDeleteAccount = async () => {
-    try {
-      navigation.navigate('Login');
-      setModalVisible(false); 
-    } catch (error) {
-      console.error("계정 삭제 중 오류 발생:", error);
-    }
+  const handleDeleteAccount = () => {
+    deleteAccount();
+    setModalVisible(false);
   };
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
@@ -79,7 +96,7 @@ export default function AccountPage() {
       <ScreenContainer fontFamily={font}>
         <ProfileTextEdit
           title={t('이메일 변경')}
-          title2={t('onesentence@gmail.com')}
+          title2={user?.email || t('존재하지 않는 이메일입니다.')}
           onPress={() => navigation.navigate('Email')}
           font={font}
         />
@@ -94,26 +111,15 @@ export default function AccountPage() {
           <ButtonText>{t('계정 삭제하기')}</ButtonText>
         </DeleteAccountButton>
 
-        <Modal
-          transparent={true}
+        <CustomModal
           visible={modalVisible}
-          animationType="fade"
-          onRequestClose={() => setModalVisible(false)}>
-          <ModalContainer>
-            <ModalContent>
-              <ModalText>{t('회원 탈퇴')}</ModalText>
-              <SubModalText>{t('계정을 삭제하시겠습니까?')}</SubModalText>
-              <ModalButtons>
-                <CancelButton onPress={() => setModalVisible(false)}>
-                  <ModalButtonText>{t('취소')}</ModalButtonText>
-                </CancelButton>
-                <ConfirmButton onPress={handleDeleteAccount}>
-                  <ModalButtonText>{t('확인')}</ModalButtonText>
-                </ConfirmButton>
-              </ModalButtons>
-            </ModalContent>
-          </ModalContainer>
-        </Modal>
+          title={t('회원탈퇴')}
+          message={t('정말 계정을 삭제하시겠습니까?')}
+          leftButton={t('취소')}
+          rightButton={t('확인')}
+          onConfirm={handleDeleteAccount}
+          onCancel={() => setModalVisible(false)}
+        />
       </ScreenContainer>
     </View>
   );
@@ -140,61 +146,16 @@ const ButtonText = styled(Text)`
   font-weight: 400;
 `;
 
-// 모달
-const ModalContainer = styled(View)`
+// 로딩 및 오류 처리
+const LoadingContainer = styled(View)`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const ModalContent = styled(View)`
-  width: 80%;
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  align-items: center;
-`;
-
-const ModalButtonText = styled(Text)`
-  font-size: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({theme}) => theme.colors.white};
-`;
-
-const ModalText = styled(Text)`
-  font-size: 18px;
-  margin-bottom: 8px;
-`;
-
-const SubModalText = styled(Text)`
-  font-size: 14px;
-  color: ${({theme}) => theme.colors.darkGray};
-  margin-bottom: 20px;
-`;
-
-const ModalButtons = styled(View)`
-  flex-direction: row;
-  gap: 12px;
-`;
-
-const CancelButton = styled(TouchableOpacity)`
-  width: 45%;
-  background-color: ${({theme}) => theme.colors.lightGray};
-  padding: 10px 20px;
-  border-radius: 8px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ConfirmButton = styled(TouchableOpacity)`
-  width: 45%;
-  padding: 10px 20px;
-  border-radius: 8px;
-  justify-content: center;
-  align-items: center;
-  color: ${({theme}) => theme.colors.white};
-  background-color: ${({theme}) => theme.colors.primary};
+const ErrorText = styled(Text)`
+  font-size: 16px;
+  color: red;
+  text-align: center;
+  margin-top: 20px;
 `;
