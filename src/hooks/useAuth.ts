@@ -37,8 +37,7 @@ interface UseAuthReturn {
   ) => Promise<void>;
   handleLogin: (email: string, password: string) => Promise<void>;
   handleChangePassword: (
-    oldPassword: string,
-    newPassword: string,
+    checkChangePassword: string
   ) => Promise<void>;
   handleChangeNickname: (nickname: string) => Promise<void>;
   handleChangeEmail: (email: string) => Promise<void>;
@@ -176,20 +175,20 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
-    // 이메일 변경
-    const changeEmailEditMutation = useMutation(
-      async (email: string) => await changeEmailEdit(email),
-      {
-        onSuccess: () => {
-          setMessage('이메일 변경 성공');
-        },
-        onError: (error: any) => {
-          setMessage(
-            `이메일 변경 실패: ${error.response?.data?.message || '알 수 없는 오류'}`,
-          );
-        },
+  // 이메일 변경
+  const changeEmailEditMutation = useMutation(
+    async (email: string) => await changeEmailEdit(email),
+    {
+      onSuccess: () => {
+        setMessage('이메일 변경 성공');
       },
-    );
+      onError: (error: any) => {
+        setMessage(
+          `이메일 변경 실패: ${error.response?.data?.message || '알 수 없는 오류'}`,
+        );
+      },
+    },
+  );
 
   // 닉네임 변경
   const changeNicknameMutation = useMutation(
@@ -201,6 +200,21 @@ const useAuth = (): UseAuthReturn => {
       onError: (error: any) => {
         setMessage(
           `닉네임 변경 실패: ${error.response?.data?.message || '알 수 없는 오류'}`,
+        );
+      },
+    },
+  );
+
+  // 비밀번호 변경
+  const changePasswordMutation = useMutation(
+    async (password: string) => await changePassword(password),
+    {
+      onSuccess: () => {
+        setMessage('비밀번호가 성공적으로 변경되었습니다.');
+      },
+      onError: (error: any) => {
+        setMessage(
+          `비밀번호 변경 실패: ${error.response?.data?.message || '알 수 없는 오류'}`,
         );
       },
     },
@@ -316,14 +330,6 @@ const useAuth = (): UseAuthReturn => {
     resetPasswordMutation.mutate({temporaryPassword, newPassword});
   };
 
-  const handleChangePassword = async (
-    oldPassword: string,
-    newPassword: string,
-  ) => {
-    await changePassword(oldPassword, newPassword);
-    setMessage('비밀번호 변경 성공!');
-  };
-
   // 비밀번호 일치 여부 확인 핸들러
   const handleCheckedPassword = async (password: string) => {
     try {
@@ -346,17 +352,16 @@ const useAuth = (): UseAuthReturn => {
     }
   };
 
-    // 이메일 변경 핸들러
-    const handleChangeEmail2 = async (email: string) => {
-      try {
-        const response = await changeEmailEditMutation.mutateAsync(email);
-        console.log('이메일 변경 성공:', response);
-      } catch (error: any) {
-        console.error('이메일 변경 실패:', error.message);
-        throw new Error(error.message || '이메일 변경 실패');
-      }
-    };
-
+  // 이메일 변경 핸들러
+  const handleChangeEmail2 = async (email: string) => {
+    try {
+      const response = await changeEmailEditMutation.mutateAsync(email);
+      console.log('이메일 변경 성공:', response);
+    } catch (error: any) {
+      console.error('이메일 변경 실패:', error.message);
+      throw new Error(error.message || '이메일 변경 실패');
+    }
+  };
 
   // 닉네임 변경 핸들러
   const handleChangeNickname = async (nickname: string) => {
@@ -368,6 +373,18 @@ const useAuth = (): UseAuthReturn => {
       throw new Error(error.message || '닉네임 변경 실패');
     }
   };
+
+  // 비밀번호 변경 핸들러
+  const handleChangePassword = async (password: string) => {
+    try {
+      const response = await changePasswordMutation.mutateAsync(password);
+      console.log('비밀번호 변경 성공:', response);
+    } catch (error: any) {
+      console.error('비밀번호 변경 실패:', error.message);
+      throw new Error(error.message || '비밀번호 변경 실패');
+    }
+  };
+
 
   // 상태메시지 변경 핸들러
   const handleChangeStatusMessage = async (message: string) => {

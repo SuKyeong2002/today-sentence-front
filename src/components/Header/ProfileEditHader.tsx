@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import {useQueryClient} from 'react-query';
+import CustomModal from '../Modal/CustomModal';
 
 type RootStackParamList = {
   Profile: undefined;
@@ -29,11 +30,15 @@ interface BackHeaderProps {
   onBackPress?: () => void;
   nickname?: string;
   email?: string;
+  changePassword?: string;
+  checkChangePassword?: string;
   storedEmail?: string;
   code?: string;
   message?: string;
   isVerified?: boolean;
   isDuplicateChecked?: boolean;
+  isError2?: boolean;
+  isError3?: boolean;
 }
 
 export const ProfileEditHader: React.FC<BackHeaderProps> = ({
@@ -41,11 +46,15 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   onBackPress,
   nickname,
   email,
+  changePassword,
+  checkChangePassword,
   storedEmail,
   code,
   message,
   isVerified,
   isDuplicateChecked,
+  isError2,
+  isError3
 }) => {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
@@ -58,9 +67,14 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
     handleChangeEmail2,
     handleChangeNickname,
     handleChangeStatusMessage,
+    handleChangePassword,
   } = useAuth();
 
   const [localStoredEmail, setLocalStoredEmail] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisible3, setModalVisible3] = useState(false);
+  const [modalVisible4, setModalVisible4] = useState(false);
 
   useEffect(() => {
     const fetchStoredEmail = async () => {
@@ -154,7 +168,6 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
     }
 
     // 이메일 인증 페이지일 경우
-    // 이메일 인증 페이지일 경우
     if (route.name === 'Authentication') {
       if (!isVerified || !email) {
         console.log('이메일 변경 시작, 변경할 이메일:', email);
@@ -166,15 +179,8 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
 
       try {
         console.log('이메일 변경 시작, 변경할 이메일:', email);
-
-        if (!email) {
-          console.error('이메일이 존재하지 않습니다.');
-          return;
-        }
-
         await handleChangeEmail2(email);
 
-        // ✅ 유저 정보 갱신
         await queryClient.invalidateQueries('user');
         await queryClient.refetchQueries('user');
 
@@ -185,6 +191,38 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
       } finally {
         setLoading(false);
       }
+    }
+
+    // 비밀번호 페이지일 경우
+    if (route.name === 'Password') {
+      if (!checkChangePassword || checkChangePassword.length === 0) {
+        setModalVisible2(true);
+        return;
+      }
+      
+      console.log('비교 값:', changePassword?.trim(), checkChangePassword.trim());
+      if (isError3) {
+        setModalVisible4(true);
+        return;
+      }
+
+      setLoading(true);
+      setErrorMessage(null);
+
+      try {
+        if (!isDuplicateChecked) {
+          setModalVisible2(true);
+          return;
+        }
+        await handleChangePassword(checkChangePassword);
+        console.log('비밀번호 변경 성공');
+        navigation.navigate('Profile');
+      } catch (error: any) {
+        setModalVisible3(true);
+      } finally {
+        setLoading(false);
+      }
+      return;
     }
   };
 
@@ -213,6 +251,52 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
       )}
 
       {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+
+      {modalVisible && (
+        <CustomModal
+          visible={modalVisible}
+          title={t('비밀번호 변경 실패')}
+          message={t('변경하실 비밀번호를 다시 확인해주세요.')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible(false)}
+        />
+      )}
+
+      {modalVisible2 && (
+        <CustomModal
+          visible={modalVisible2}
+          title={t('비밀번호 변경 중단')}
+          message={t('확인 시 기존의 비밀번호로 유지됩니다.')}
+          leftButton={t('취소')}
+          rightButton={t('확인')}
+          onCancel={() => setModalVisible2(false)}
+          onConfirm={() => {
+            navigation.navigate('Account');
+          }}
+        />
+      )}
+
+      {modalVisible3 && (
+        <CustomModal
+          visible={modalVisible3}
+          title={t('비밀번호 변경 실패')}
+          message={t(
+            '변경하실 비밀번호는 영문자, 숫자, 특문 조합의 10자 이상 16자 이하여야 합니다.',
+          )}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible3(false)}
+        />
+      )}
+
+      {modalVisible4 && (
+        <CustomModal
+          visible={modalVisible4}
+          title={t('비밀번호 변경 실패')}
+          message={t('비밀번호가 일치하지 않습니다.')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible4(false)}
+        />
+      )}
     </View>
   );
 };
