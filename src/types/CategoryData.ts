@@ -12,3 +12,5 @@ export interface CategoryData {
     records: Record<string, number>;
     bookmarks: Record<string, number>;
   }
+
+  

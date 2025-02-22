@@ -1,29 +1,30 @@
 import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { StatsContentProps } from "@/types/CategoryData";
 
-const categories = [
-  "시/소설/에세이",
-  "경제/경영",
-  "역사/사회",
-  "철학/심리학",
-  "자기계발",
-  "예체능",
-  "아동/청소년",
-  "여행/문화",
-  "기타",
-];
+const categories = {
+  "시/소설/에세이": 10,
+  "경제/경영": 5,
+  "역사/사회": 8,
+  "철학/심리학": 3,
+  "자기계발": 7,
+  "예체능": 4,
+  "아동/청소년": 6,
+  "여행/문화": 2,
+  "기타": 1,
+};
 
 const COLORS = [
   "#FF6F61", "#FFD700", "#6A5ACD", "#1E90FF", "#32CD32",
   "#FF69B4", "#FF4500", "#DA70D6", "#808080"
 ];
 
+// 데이터를 변환하는 함수
 function transformData(data: Record<string, number>) {
-  return categories.map((category, index) => ({
+  return Object.keys(categories).map((category) => ({
     category,
-    count: data[category.replace(/[^\w]/g, "_").toUpperCase()] || 0,
+    count: data[category] || 0,
   }));
 }
 
@@ -34,16 +35,15 @@ const StatsContent: React.FC<StatsContentProps> = ({ title, data }) => {
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.chartContainer}>
-        <PieChart width={300} height={300}>
+        <PieChart width={320} height={320}>
           <Pie
             data={categoryData}
             dataKey="count"
             nameKey="category"
             cx="50%"
             cy="50%"
-            innerRadius={60}
-            outerRadius={100}
-            fill="#8884d8"
+            innerRadius={70}
+            outerRadius={120}
             label={({ name, value }) => (value > 0 ? `${name} (${value})` : "")}
           >
             {categoryData.map((entry, index) => (
@@ -51,6 +51,7 @@ const StatsContent: React.FC<StatsContentProps> = ({ title, data }) => {
             ))}
           </Pie>
           <Tooltip />
+          <Legend />
         </PieChart>
       </View>
       <FlatList
@@ -58,8 +59,8 @@ const StatsContent: React.FC<StatsContentProps> = ({ title, data }) => {
         keyExtractor={(item) => item.category}
         renderItem={({ item }) => (
           <View style={styles.itemDetail}>
-            <Text>카테고리: {item.category}</Text>
-            <Text>카운트: {item.count}</Text>
+            <Text style={styles.itemText}>📚 {item.category}</Text>
+            <Text style={styles.countText}>{item.count}권</Text>
           </View>
         )}
       />
@@ -69,24 +70,38 @@ const StatsContent: React.FC<StatsContentProps> = ({ title, data }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 350,
-    height: 320,
-    marginBottom: 20,
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 15,
   },
   chartContainer: {
-    paddingTop: 20,
-    width: 350,
-    height: 280,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   itemDetail: {
-    flex: 1,
-    padding: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 300,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  itemText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  countText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#5A403D",
   },
 });
 
