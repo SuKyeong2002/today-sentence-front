@@ -100,6 +100,7 @@ const queryClient = new QueryClient();
     BookSearch3: undefined;
     BookSearch4: undefined;
     Category: undefined;
+    RecordFooter: undefined;
     CategorySearch: undefined;
     My: undefined;
     Setting: undefined;
@@ -159,7 +160,7 @@ export default function App() {
                   <Stack.Screen name="Login" component={LoginScreen} />
                   <Stack.Screen name="SignUp" component={SignUpScreen} />
                   <Stack.Screen name="Home" component={Footer} />
-                  <Stack.Screen name="Record" component={Footer} />
+                  <Stack.Screen name="RecordFooter" component={Footer} />
                   <Stack.Screen name="Search" component={Footer} />
                   <Stack.Screen
                     name="BookSearch"
