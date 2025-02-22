@@ -20,7 +20,6 @@ const COLORS = [
   "#FF69B4", "#FF4500", "#DA70D6", "#808080"
 ];
 
-// 데이터를 변환하는 함수
 function transformData(data: Record<string, number>) {
   return Object.keys(categories).map((category) => ({
     category,
@@ -28,7 +27,8 @@ function transformData(data: Record<string, number>) {
   }));
 }
 
-const StatsContent: React.FC<StatsContentProps> = ({ title, data }) => {
+const StatsContent = ({ route }: StatsContentProps) => {
+  const { title, data } = route.params;
   const categoryData = transformData(data);
 
   return (
