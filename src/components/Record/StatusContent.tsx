@@ -1,35 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { StatsContentProps } from "@/types/CategoryData";
-
-const categories = {
-  "시/소설/에세이": 10,
-  "경제/경영": 5,
-  "역사/사회": 8,
-  "철학/심리학": 3,
-  "자기계발": 7,
-  "예체능": 4,
-  "아동/청소년": 6,
-  "여행/문화": 2,
-  "기타": 1,
-};
+import { useStatistics } from "@/hooks/useStatistics"; // hook 가져오기
 
 const COLORS = [
   "#FF6F61", "#FFD700", "#6A5ACD", "#1E90FF", "#32CD32",
   "#FF69B4", "#FF4500", "#DA70D6", "#808080"
 ];
 
-function transformData(data: Record<string, number>) {
-  return Object.keys(categories).map((category) => ({
+function transformData(data: Record<string, number>, categoryType: string) {
+  return Object.keys(data).map((category) => ({
     category,
     count: data[category] || 0,
+    type: categoryType,
   }));
 }
 
 const StatsContent = ({ route }: StatsContentProps) => {
-  const { title, data } = route.params;
-  const categoryData = transformData(data);
+  const { title } = route.params;
+  const { statistics, isLoading, error } = useStatistics(); // hook 사용
+  const [categoryData, setCategoryData] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (statistics) {
+      // records와 bookmarks 데이터를 각각 변환하여 categoryData로 설정
+      const recordsData = transformData(statistics.records, "records");
+      const bookmarksData = transformData(statistics.bookmarks, "bookmarks");
+
+      // 두 데이터를 합침
+      setCategoryData([...recordsData, ...bookmarksData]);
+    }
+  }, [statistics]);
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
 
   return (
     <View style={styles.container}>
@@ -56,10 +66,12 @@ const StatsContent = ({ route }: StatsContentProps) => {
       </View>
       <FlatList
         data={categoryData}
-        keyExtractor={(item) => item.category}
+        keyExtractor={(item) => `${item.category}-${item.type}`}
         renderItem={({ item }) => (
           <View style={styles.itemDetail}>
-            <Text style={styles.itemText}>📚 {item.category}</Text>
+            <Text style={styles.itemText}>
+              {item.type === "records" ? "📚" : "🔖"} {item.category}
+            </Text>
             <Text style={styles.countText}>{item.count}권</Text>
           </View>
         )}
