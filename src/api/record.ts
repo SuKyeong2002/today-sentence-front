@@ -3,8 +3,17 @@ import {BookRecord, SearchResponse} from "../types/BookRecord";
 import { Statistics } from '../types/CategoryData';
 import { QuoteData } from '@/types/QuoteData';
 import { Bookmark } from '@/types/Bookmark';
+import { Book } from '@/types/Book';
 
-const API_URL = 'http://43.201.20.84';
+const API_URL = 'http://3.36.71.224';
+
+interface SearchResponse {
+  data: {
+    content: Book[];
+    totalElements: number;
+    totalPages: number;
+  };
+}
 
 export const RecordQuote = async (
   bookTitle: string,
@@ -118,6 +127,22 @@ export const SearchBookRecord = async (
     const response = await axios.get('/api/posts/bookmarks');
     if (response.status !== 200) {
       throw new Error('Failed to fetch bookmarks');
+    }
+    return response.data.data;
+  }
+
+  export async function searchBooks(query: string): Promise<Book[]> {
+    const response = await axios.get<SearchResponse>(`https://your-api.com/search?q=${query}`);
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch search results');
+    }
+    return response.data.data.content;
+  }
+
+  export async function fetchBookDetail(postId: number): Promise<Book> {
+    const response = await axios.get<{ data: Book }>(`/api/posts/${postId}`);
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch book detail');
     }
     return response.data.data;
   }

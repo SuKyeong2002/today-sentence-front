@@ -29,7 +29,7 @@ export const fetchHomeData = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data.data;  
+    return response.data.data;
   } catch (error) {
     console.error("홈 데이터 불러오기 실패:", error);
     throw error;
