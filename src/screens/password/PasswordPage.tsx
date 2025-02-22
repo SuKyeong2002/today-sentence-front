@@ -16,8 +16,10 @@ export default function PasswordPage() {
   const [checkChangePassword, setCheckChangePassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [errorMessage2, setErrorMessage2] = useState<string>('');
+  const [errorMessage3, setErrorMessage3] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
   const [isError2, setIsError2] = useState<boolean>(false);
+  const [isError3, setIsError3] = useState<boolean>(false);
   const [isDuplicateChecked, setIsDuplicateChecked] = useState<boolean>(false);
 
   useEffect(() => {
@@ -40,11 +42,12 @@ export default function PasswordPage() {
   useEffect(() => {
     if (changePassword && checkChangePassword) {
       if (changePassword !== checkChangePassword) {
-        setErrorMessage2('비밀번호가 일치하지 않습니다.');
-        setIsError2(true);
+        setErrorMessage3('비밀번호가 일치하지 않습니다.');
+        console.log(changePassword, checkChangePassword);
+        setIsError3(true);
       } else {
-        setErrorMessage2('');
-        setIsError2(false);
+        setErrorMessage3('');
+        setIsError3(false);
       }
     }
   }, [changePassword, checkChangePassword]);
@@ -58,13 +61,13 @@ export default function PasswordPage() {
       onSuccess: response => {
         console.log('비밀번호 일치 여부 확인 성공:', response);
         setErrorMessage2('확인되었습니다.');
-        setIsError(false);
+        setIsError2(false);
         setIsDuplicateChecked(true);
       },
       onError: (error: any) => {
         console.error('비밀번호 일치 여부 확인 실패:', error.message);
         setErrorMessage2('잘못된 비밀번호입니다.');
-        setIsError(true);
+        setIsError2(true);
         setIsDuplicateChecked(false);
       },
     },
@@ -85,8 +88,10 @@ export default function PasswordPage() {
       <ProfileEditHader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
+        changePassword={changePassword}
         checkChangePassword={checkChangePassword}
         isDuplicateChecked={isDuplicateChecked}
+        isError3={isError3}
       />
       <ScreenContainer fontFamily={font}>
         <InputWrapper>
@@ -108,7 +113,8 @@ export default function PasswordPage() {
             <ButtonText>확인</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
-        {errorMessage2 !== '' && <ErrorMessage isError={isError}>{errorMessage2}</ErrorMessage>}
+        {errorMessage !== '' && <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>}
+        {errorMessage2 !== '' && <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>}
 
         <InputWrapper>
           <NicknameInputContainer>
@@ -138,11 +144,12 @@ export default function PasswordPage() {
           </NicknameInputContainer>
         </InputWrapper>
 
-        {changePassword &&
-          checkChangePassword &&
+        {errorMessage3 !== '' && <ErrorMessage3 isError3={isError3}>{errorMessage3}</ErrorMessage3>}
+
+        {/* {changePassword &&
           changePassword !== checkChangePassword && (
-            <ErrorMessage isError>{errorMessage2}</ErrorMessage>
-          )}
+            <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
+          )} */}
       </ScreenContainer>
     </View>
   );
@@ -204,5 +211,10 @@ const ErrorMessage = styled(Text)<{isError: boolean}>`
 
 const ErrorMessage2 = styled(Text)<{isError2: boolean}>`
   color: ${({isError2}) => (isError2 ? 'red' : 'green')};
+  font-size: 14px;
+`;
+
+const ErrorMessage3 = styled(Text)<{isError3: boolean}>`
+  color: ${({isError3}) => (isError3 ? 'red' : 'green')};
   font-size: 14px;
 `;
