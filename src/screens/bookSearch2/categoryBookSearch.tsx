@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo,useEffect } from 'react';
 import { View, FlatList, ActivityIndicator, Text, Switch } from 'react-native';
 import styled from 'styled-components';
 import BackHeader from '@/components/Header/BackHeader';
@@ -31,20 +31,38 @@ interface Props {
 
 export default function categoryBookSearch({ route }: Props) {
   const { category } = route.params;
-  const { data: posts, isLoading } = useCategorySearch(category);
-  const [sortByLatest, setSortByLatest] = useState(false); 
+  const { data, isLoading } = useCategorySearch(category);
+  const [sortByLatest, setSortByLatest] = useState(false);
 
-  const sortedPosts = useMemo(() => {
-    if (!posts) return [];
 
-    return [...posts].sort((a, b) => {
-      if (sortByLatest) {
-        return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
-      } else {
-        return b.likesCount - a.likesCount;
+  const posts = data?.posts;
+  const interaction = data?.interaction;
+
+  const combinedPosts = useMemo(() => {
+      if (!posts || !interaction) {
+        return [];
       }
-    });
-  }, [posts, sortByLatest]);
+
+      return posts.map((post, index) => ({
+        ...post,
+        interaction: interaction[index] || { isLiked: false, isSaved: false },
+      }));
+    }, [posts, interaction]);
+
+
+   const sortedPosts = useMemo(() => {
+       if (!combinedPosts.length) {
+         return [];
+       }
+
+       return [...combinedPosts].sort((a, b) => {
+         if (sortByLatest) {
+           return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
+         } else {
+           return b.likesCount - a.likesCount;
+         }
+       });
+     }, [combinedPosts, sortByLatest]);
 
   return (
     <Container>
@@ -59,20 +77,20 @@ export default function categoryBookSearch({ route }: Props) {
       </ToggleContainer>
 
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : sortedPosts.length > 0 ? (
-        <FlatList
-          data={sortedPosts}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <BooklistWrapper>
-              <SearchContent2 post={item} sortByLatest={false} />
-            </BooklistWrapper>
-          )}
-        />
-      ) : (
-        <NoDataText>검색 결과가 없습니다.</NoDataText>
-      )}
+              <ActivityIndicator size="large" color="#0000ff" />
+            ) : sortedPosts.length > 0 ? (
+              <FlatList
+                data={sortedPosts}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <BooklistWrapper>
+                    <SearchContent2 post={item} interaction={item.interaction} sortByLatest={false} />
+                  </BooklistWrapper>
+                )}
+              />
+            ) : (
+              <NoDataText>검색 결과가 없습니다.</NoDataText>
+            )}
     </Container>
   );
 }
