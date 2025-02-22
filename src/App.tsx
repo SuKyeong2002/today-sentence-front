@@ -164,7 +164,6 @@ export default function App() {
                   <Stack.Screen name="Category" component={Footer} />
                   <Stack.Screen name="My" component={Footer} />
                   <Stack.Screen name="Setting" component={SettingScreen} />
-                  <Stack.Screen name="News" component={NewsScreen} />
                   <Stack.Screen name="Alert" component={AlertScreen} />
                   <Stack.Screen name="Screen" component={ScreenScreen} />
                   <Stack.Screen name="Font" component={FontScreen} />
