@@ -36,7 +36,7 @@ export default function Record({ navigation }: { navigation: any }) {
           options={{ tabBarLabel: '통계' }}
         />
       </Tab.Navigator>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

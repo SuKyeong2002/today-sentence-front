@@ -1,13 +1,12 @@
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import {Image, StyleSheet, Text} from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { Image, StyleSheet, Text } from 'react-native';
+import CategoryScreen from '../../screens/category/CategoryPage';
 import HomeScreen from '../../screens/home/HomePage';
+import MyScreen from '../../screens/mypage/MyPage';
 import RecordScreen from '../../screens/record/Record';
 import SearchScreen from '../../screens/search/SearchPage';
-import CategoryScreen from '../../screens/category/CategoryPage';
-import MyScreen from '../../screens/mypage/MyPage';
-import {useTranslation} from 'react-i18next';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,10 +16,10 @@ export default function Footer() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      screenOptions={({route}) => ({
+      screenOptions={({ route }) => ({
         headerShown: false,
         tabBarHideOnKeyboard: true,
-        tabBarIcon: ({focused}) => {
+        tabBarIcon: ({ focused }) => {
           let iconName;
 
           switch (route.name) {
@@ -53,7 +52,7 @@ export default function Footer() {
 
           return <Image source={iconName} style={styles.logoImage} />;
         },
-        tabBarLabel: ({focused}) => {
+        tabBarLabel: ({ focused }) => {
           let label;
 
           switch (route.name) {

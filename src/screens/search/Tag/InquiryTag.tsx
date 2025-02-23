@@ -1,19 +1,19 @@
+import { useFamousTags } from '@/hooks/useFamousTags';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  View,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   Text,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
   TouchableWithoutFeedback,
-  Keyboard,
+  View,
 } from 'react-native';
 import styled from 'styled-components';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {useTranslation} from 'react-i18next';
-import {useFamousTags} from '@/hooks/useFamousTags';
 
 type RootStackParamList = {
   BookSearch: undefined;
@@ -30,7 +30,6 @@ export default function InquiryTag() {
   if (error) return <Text>{t('태그를 불러오지 못했습니다')}</Text>;
   if (!data) return <Text>{t('태그 데이터가 없습니다')}</Text>;
 
-  // 최대 6개 태그만 표시
   const searchTags: string[] = (data.search || []).slice(0, 6);
 
   return (

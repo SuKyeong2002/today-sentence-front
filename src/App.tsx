@@ -83,6 +83,7 @@ const MyNavigationTheme = {
 const queryClient = new QueryClient();
 
   type RootStackParamList = {
+    Main: undefined;
     Landing: undefined;
     EmailFind: undefined;
     PasswordFind: undefined;
@@ -147,7 +148,7 @@ export default function App() {
           <ThemeProvider theme={appTheme}>
             <FontProvider>
               <NavigationContainer theme={MyNavigationTheme}>
-                <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Login'>
+                <Stack.Navigator screenOptions={{headerShown: false}}>
                   <Stack.Screen name="Landing" component={LandingScreen} />
                   <Stack.Screen name="EmailFind" component={EmailFindPage} />
                   <Stack.Screen
@@ -155,13 +156,13 @@ export default function App() {
                     component={PasswordFindPage}
                   />
                   <Stack.Screen name="StatusContent" component={StatsContent}/>
-                  <Stack.Screen name="RecordContent" component={RecordContent}/>
+                  {/* <Stack.Screen name="RecordContent" component={RecordContent}/> */}
                   <Stack.Screen name="NotFound" component={NotFoundPage} />
                   <Stack.Screen name="Login" component={LoginScreen} />
                   <Stack.Screen name="SignUp" component={SignUpScreen} />
                   <Stack.Screen name="Home" component={Footer} />
-                  <Stack.Screen name="RecordFooter" component={Footer} />
-                  <Stack.Screen name="SearchFooter" component={Footer} />
+                  {/* <Stack.Screen name="RecordFooter" component={Footer} />
+                  <Stack.Screen name="SearchFooter" component={Footer} /> */}
                   <Stack.Screen
                     name="BookSearch"
                     component={BookSearchScreen}
@@ -170,12 +171,12 @@ export default function App() {
                     name="categoryBookSearch"
                     component={categoryBookSearchScreen2}
                   />
-                  <Stack.Screen name="Category" component={Footer} />
-                  <Stack.Screen name="My" component={Footer} />
+                  {/* <Stack.Screen name="Category" component={Footer} />
+                  <Stack.Screen name="My" component={Footer} /> */}
                   <Stack.Screen name="Setting" component={SettingScreen} />
                   <Stack.Screen name="Alert" component={AlertScreen} />
                   <Stack.Screen name="Screen" component={ScreenScreen} />
-                  <Stack.Screen name="Record" component={RecordScreen}/>
+                  {/* <Stack.Screen name="Record" component={RecordScreen}/> */}
                   <Stack.Screen name="SavedContent" component={SavedContent}/>
                   <Stack.Screen name="Font" component={FontScreen} />
                   <Stack.Screen name="Profile" component={ProfileScreen} />
