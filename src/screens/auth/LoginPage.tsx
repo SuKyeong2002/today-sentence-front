@@ -12,6 +12,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
     await handleLogin(email, password);
   };
 
+  console.log("메세지1", message);
   useEffect(() => {
     if (message) {
       if (message === '로그인 성공!') {

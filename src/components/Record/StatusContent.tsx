@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import { StatsContentProps } from "@/types/CategoryData";
 import { useStatistics } from "@/hooks/useStatistics"; // hook 가져오기
 
 const COLORS = [
@@ -17,8 +16,8 @@ function transformData(data: Record<string, number>, categoryType: string) {
   }));
 }
 
-const StatsContent = ({ route }: StatsContentProps) => {
-  const { title } = route.params;
+
+const StatsContent = () => {
   const { statistics, isLoading, error } = useStatistics(); // hook 사용
   const [categoryData, setCategoryData] = useState<any[]>([]);
 
@@ -43,7 +42,6 @@ const StatsContent = ({ route }: StatsContentProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
       <View style={styles.chartContainer}>
         <PieChart width={320} height={320}>
           <Pie

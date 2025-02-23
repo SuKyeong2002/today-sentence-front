@@ -91,7 +91,7 @@ const queryClient = new QueryClient();
     SavedContent: undefined;
     Login: undefined;
     SignUp: undefined;
-    HomeFooter: undefined;
+    Home: undefined;
     StatusContent: undefined;
     Record: undefined;
     Search: undefined;
@@ -147,18 +147,19 @@ export default function App() {
           <ThemeProvider theme={appTheme}>
             <FontProvider>
               <NavigationContainer theme={MyNavigationTheme}>
-                <Stack.Navigator screenOptions={{headerShown: false}}>
+                <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Login'>
                   <Stack.Screen name="Landing" component={LandingScreen} />
                   <Stack.Screen name="EmailFind" component={EmailFindPage} />
                   <Stack.Screen
                     name="PasswordFind"
                     component={PasswordFindPage}
                   />
+                  <Stack.Screen name="StatusContent" component={StatsContent}/>
                   <Stack.Screen name="RecordContent" component={RecordContent}/>
                   <Stack.Screen name="NotFound" component={NotFoundPage} />
                   <Stack.Screen name="Login" component={LoginScreen} />
                   <Stack.Screen name="SignUp" component={SignUpScreen} />
-                  <Stack.Screen name="HomeFooter" component={Footer} />
+                  <Stack.Screen name="Home" component={Footer} />
                   <Stack.Screen name="RecordFooter" component={Footer} />
                   <Stack.Screen name="SearchFooter" component={Footer} />
                   <Stack.Screen
