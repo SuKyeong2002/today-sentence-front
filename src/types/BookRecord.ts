@@ -1,3 +1,5 @@
+import { Book} from "./Book";
+
 export interface BookRecord {
     bookTitle: string;
     author: string;
@@ -13,6 +15,10 @@ export interface BookRecord {
   }
 
 export interface SearchResponse {
-    data: BookRecord[];
+    data: {
+      content: Book[];
+      totalElements: number;
+      totalPages: number;
+    };
   }
 

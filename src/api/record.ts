@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {BookRecord, SearchResponse} from "../types/BookRecord";
+import {BookRecord} from "../types/BookRecord";
 import { Statistics } from '../types/CategoryData';
 import { QuoteData } from '@/types/QuoteData';
 import { Bookmark } from '@/types/Bookmark';
@@ -117,7 +117,7 @@ export const SearchBookRecord = async (
   }
 
   export async function saveQuote(data: QuoteData): Promise<void> {
-    const response = await axios.post('YOUR_API_ENDPOINT', data);
+    const response = await axios.post('/api/posts/bookmarks', data);
     if (response.status !== 200) {
       throw new Error('Failed to save quote');
     }
@@ -132,7 +132,7 @@ export const SearchBookRecord = async (
   }
 
   export async function searchBooks(query: string): Promise<Book[]> {
-    const response = await axios.get<SearchResponse>(`https://your-api.com/search?q=${query}`);
+    const response = await axios.get<SearchResponse>(`/search?q=${query}`);
     if (response.status !== 200) {
       throw new Error('Failed to fetch search results');
     }

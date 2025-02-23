@@ -4,7 +4,7 @@ import { NavigationProp } from '@react-navigation/native';
 import useAuth from '../../hooks/useAuth';
 
 export default function LoginPage({ navigation }: { navigation: NavigationProp<any> }) {
-  const { handleLogin, setUsername, setPassword, message } = useAuth();
+  const { handleLogin, message } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPasswordState] = useState('');
 
@@ -12,6 +12,7 @@ export default function LoginPage({ navigation }: { navigation: NavigationProp<a
     await handleLogin(email, password);
   };
 
+  console.log("메세지1", message);
   useEffect(() => {
     if (message) {
       if (message === '로그인 성공!') {
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
       loginButton: {
         width: '100%',
         height: 50,
-        backgroundColor: '#C4C4C4',
+        backgroundColor: '#8A715D',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,

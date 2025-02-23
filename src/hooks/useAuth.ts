@@ -65,7 +65,7 @@ const useAuth = (): UseAuthReturn => {
   const [password, setPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const queryClient = useQueryClient();
-
+  console.log("메세지", message);
   const setUniqueMessage = (newMessage: string) => {
     if (message !== newMessage) {
       setMessage(newMessage);
@@ -92,6 +92,7 @@ const useAuth = (): UseAuthReturn => {
   const loginMutation = useMutation(
     ({email, password}: {email: string; password: string}) =>
       signInUser(email, password),
+
     {
       onSuccess: async data => {
         console.log('받은 데이터:', data);

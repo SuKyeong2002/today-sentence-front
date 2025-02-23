@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { View, FlatList, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, FlatList, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons"; 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { fetchStatistics } from "@/api/record";
 
 interface BookRecord {
   id: string;
@@ -16,12 +17,6 @@ type RootStackParamList = {
   RecordSearch: undefined;
 };
 
-const sampleRecords: BookRecord[] = [
-  { id: "1", title: "책 제목 A", author: "저자 A", date: "2025-01" },
-  { id: "2", title: "책 제목 B", author: "저자 B", date: "2025-01" },
-  { id: "3", title: "책 제목 C", author: "저자 C", date: "2025-02" },
-];
-
 const groupByMonth = (records: BookRecord[]) => {
   return records.reduce((acc, book) => {
     acc[book.date] = acc[book.date] ? [...acc[book.date], book] : [book];
@@ -31,13 +26,32 @@ const groupByMonth = (records: BookRecord[]) => {
 
 export default function RecordContent() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [records, setRecords] = useState<BookRecord[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleBookSelect = (book: BookRecord) => {
-    navigation.navigate("BookDetail", { book }); 
-  };
-  
-  const [records, setRecords] = useState(sampleRecords);
+  useEffect(() => {
+    const loadRecords = async () => {
+      try {
+        const data = await fetchStatistics();
+        setRecords(data);
+      } catch (error) {
+        console.error("Error fetching records:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadRecords();
+  }, []);
+
   const groupedRecords = groupByMonth(records);
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -51,7 +65,7 @@ export default function RecordContent() {
               <TouchableOpacity
                 key={book.id}
                 style={styles.bookItem}
-                onPress={() => handleBookSelect(book)}
+                onPress={() => navigation.navigate("BookDetail", { book })}
               >
                 <Text style={styles.bookTitle}>{book.title}</Text>
                 <Text style={styles.bookAuthor}>{book.author}</Text>
@@ -76,6 +90,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 16,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   monthHeader: {
     fontSize: 18,

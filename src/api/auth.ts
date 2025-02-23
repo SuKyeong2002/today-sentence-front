@@ -38,18 +38,27 @@ export const signInUser = async (
       return null;
     }
 
+
+    const requestUrl = `${API_URL}/api/member/sign-in`
+    console.log("requestUrl : ",requestUrl)
+    console.log("requestData", requestData)
+    console.log("요청 email : ", email);
+    console.log("요청 email : ", password);
+
+
     const response = await axios.post(
-      `${API_URL}/api/member/sign-in`, 
+      requestUrl,
       requestData,
       {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
           'Device-Id': deviceId,
-          ...(isRefreshLogin && { 'Authorization': `Bearer ${refreshToken}` }) 
+          ...(isRefreshLogin && { 'Authorization': `Bearer ${refreshToken}` })
         },
       },
     );
+    console.log("response",response)
 
     if (!response.headers['access-token'] || !response.headers['refresh-token']) {
       console.error("서버 응답에 토큰이 없습니다.");
@@ -57,7 +66,7 @@ export const signInUser = async (
     }
 
     // console.log('로그인 성공! 5분 후 액세스 토큰 자동 검증 시작...');
-    // startTokenRefreshTimer(); 
+    // startTokenRefreshTimer();
 
     console.log('ACCESS-TOKEN:', response.headers['access-token']);
     console.log('REFRESH-TOKEN:', response.headers['refresh-token']);

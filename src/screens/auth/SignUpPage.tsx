@@ -94,35 +94,50 @@ export default function SignUpSteps() {
     }
   };
 
+  // 이메일 인증 확인
   useEffect(() => {
-    if (nickname.trim() !== "") {
-      const verifyNickname = async () => {
+    if (isEmailSent) {
+      const verifyEmail = async () => {
         try {
-          await handleVerifiedNickName(nickname);
-          setNicknameValidationResult(true);
+          await handleVerifiedEmail(email);
+          setIsEmailSent(false);
         } catch (error) {
-          console.error("닉네임 검증 실패:", error);
-          setNicknameValidationResult(false);
+          console.error("이메일 인증 확인 중 오류 발생:", error);
         }
       };
-      verifyNickname();
+      verifyEmail();
     }
-  }, [nickname, handleVerifiedNickName]);
+  }, [isEmailSent, email, handleVerifiedEmail]);
 
-  useEffect(() => {
-    if (password.trim() !== "") {
-      const verifyPassword = async () => {
-        try {
-          await handleVerifiedPassword(password);
-          setPasswordValidationResult(true);
-        } catch (error) {
-          console.error("비밀번호 검증 실패:", error);
-          setPasswordValidationResult(false);
-        }
-      };
-      verifyPassword();
+  const handleNicknameVerification = async () => {
+    if (!nickname.trim()) {
+      Alert.alert("오류", "유효한 닉네임을 입력하세요.");
+      return;
     }
-  }, [password, handleVerifiedPassword]);
+  
+    try {
+      await handleVerifiedNickName(nickname);
+      setNicknameValidationResult(true);
+    } catch (error) {
+      console.error("닉네임 검증 실패:", error);
+      setNicknameValidationResult(false);
+    }
+  };
+  
+  const handlePasswordVerification = async () => {
+    if (!password.trim()) {
+      Alert.alert("오류", "유효한 비밀번호를 입력하세요.");
+      return;
+    }
+  
+    try {
+      await handleVerifiedPassword(password);
+      setPasswordValidationResult(true);
+    } catch (error) {
+      console.error("비밀번호 검증 실패:", error);
+      setPasswordValidationResult(false);
+    }
+  };  
 
   const handleBlur = () => {
     if (password.trim() !== "" && confirmPassword.trim() !== "") {
@@ -208,7 +223,7 @@ export default function SignUpSteps() {
             />
             <TouchableOpacity
               style={[styles.checkButton, nickname.length > 2 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
-              onPress={() => {}}
+              onPress={handleNicknameVerification}
               disabled={nickname.length <= 2}
             >
               <Text style={styles.checkButtonText}>중복확인</Text>
@@ -225,7 +240,7 @@ export default function SignUpSteps() {
             <TextInput
               style={styles.input}
               placeholder="비밀번호"
-              placeholderTextColor="#aaa"
+              placeholderTextColor="#BDBDBD"
               secureTextEntry
               autoCapitalize="none"
               value={password}
@@ -233,7 +248,7 @@ export default function SignUpSteps() {
             />
             <TouchableOpacity
               style={[styles.checkButton, password.length >= 8 ? styles.checkButtonEnabled : styles.checkButtonDisabled]}
-              onPress={() => {}}
+              onPress={handlePasswordVerification}
               disabled={password.length < 8}
             >
               <Text style={styles.checkButtonText}>확인</Text>

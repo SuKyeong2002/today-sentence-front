@@ -11,30 +11,37 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import { useSaveQuote } from '../../hooks/useSaveQuote';
 import SuccessModal from './SuccessModal';
+import { QuoteData } from '../../types/QuoteData'; // 필요시 추가
 
 export default function WriteScreen() {
   const [category, setCategory] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
   const [quote, setQuote] = useState<string>('');
+  const [bookTitle, setBookTitle] = useState<string>(''); // 책 제목
+  const [bookAuthor, setBookAuthor] = useState<string>(''); // 책 저자
+  const [bookPublisher, setBookPublisher] = useState<string>(''); // 책 출판사
+  const [bookPublishingYear, setBookPublishingYear] = useState<string>(''); // 책 출판 연도
+  const [bookCover, setBookCover] = useState<string>(''); // 책 표지 URL
+  const [isbn, setIsbn] = useState<string>(''); // ISBN
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const { isSaving, error, handleSaveQuote } = useSaveQuote();
 
   const handleSubmit = async () => {
-    const data = {
-      bookTitle: '열두발자국',
-      bookAuthor: '정재승',
-      bookPublisher: '창비',
-      bookPublishingYear: 2007,
-      bookCover: 'http://coverurl.com/bookurl',
-      isbn: '1234567890abc',
+    const data: QuoteData = {
+      bookTitle,
+      bookAuthor,
+      bookPublisher,
+      bookPublishingYear: parseInt(bookPublishingYear, 10), 
+      bookCover,
+      isbn, 
       category,
-      hashtags: hashtags.split(' '),
+      hashtags: hashtags.split(' '), 
       content: quote,
     };
 
     try {
-      await handleSaveQuote(data);
-      setModalVisible(true);
+      await handleSaveQuote(data); 
+      setModalVisible(true); 
     } catch (err) {
       Alert.alert('오류', '저장 중 문제가 발생했습니다.');
       console.error(err);
@@ -46,6 +53,56 @@ export default function WriteScreen() {
       <Text style={styles.header}>오늘의 문장은 무엇인가요?</Text>
 
       <View style={styles.formContainer}>
+        <Text style={styles.label}>책 제목</Text>
+        <TextInput
+          style={styles.input}
+          value={bookTitle}
+          onChangeText={setBookTitle}
+          placeholder="책 제목을 입력해주세요"
+        />
+
+        <Text style={styles.label}>책 저자</Text>
+        <TextInput
+          style={styles.input}
+          value={bookAuthor}
+          onChangeText={setBookAuthor}
+          placeholder="책 저자를 입력해주세요"
+        />
+
+        <Text style={styles.label}>책 출판사</Text>
+        <TextInput
+          style={styles.input}
+          value={bookPublisher}
+          onChangeText={setBookPublisher}
+          placeholder="책 출판사를 입력해주세요"
+        />
+
+        <Text style={styles.label}>책 출판 연도</Text>
+        <TextInput
+          style={styles.input}
+          value={bookPublishingYear}
+          onChangeText={setBookPublishingYear}
+          placeholder="책 출판 연도를 입력해주세요"
+          keyboardType="numeric"
+        />
+
+        <Text style={styles.label}>책 표지 URL</Text>
+        <TextInput
+          style={styles.input}
+          value={bookCover}
+          onChangeText={setBookCover}
+          placeholder="책 표지 URL을 입력해주세요"
+        />
+
+        <Text style={styles.label}>ISBN</Text>
+        <TextInput
+          style={styles.input}
+          value={isbn}
+          onChangeText={setIsbn}
+          placeholder="책 ISBN을 입력해주세요"
+          keyboardType="numeric"
+        />
+
         <Text style={styles.label}>카테고리</Text>
         <Picker
           selectedValue={category}
@@ -86,7 +143,7 @@ export default function WriteScreen() {
         </TouchableOpacity>
         <SuccessModal
           visible={modalVisible}
-          onClose={() => setModalVisible(false)}
+          onClose={() => setModalVisible(false)} 
         />
       </View>
     </SafeAreaView>
