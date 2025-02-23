@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import { useStatistics } from "@/hooks/useStatistics"; // hook 가져오기
+import { useStatistics } from "@/hooks/useStatistics";
 
 const COLORS = [
   "#FF6F61", "#FFD700", "#6A5ACD", "#1E90FF", "#32CD32",
