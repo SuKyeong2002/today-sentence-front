@@ -3,10 +3,12 @@ import styled from 'styled-components';
 import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function Title() {
   const { t } = useTranslation();
   const [todayDate, setTodayDate] = useState('');
+  const {isDarkMode} = useTheme();  
 
   // 오늘 날짜 함수 (년, 월, 일, 요일)
   const getTodayDate = (local: string) => {
@@ -27,8 +29,8 @@ export default function Title() {
 
   return (
     <TitleWrapper>
-      <TodayDate>{t(todayDate)}</TodayDate>
-      <TodayAlert>💌 {t('오늘의 명언이 도착했어요!')}</TodayAlert>
+      <TodayDate isDarkMode={isDarkMode}>{t(todayDate)}</TodayDate>
+      <TodayAlert isDarkMode={isDarkMode}>💌 {t('오늘의 명언이 도착했어요!')}</TodayAlert>
     </TitleWrapper>
   );
 }
@@ -42,14 +44,16 @@ const TitleWrapper = styled(View)`
   gap: 12px;
 `;
 
-const TodayDate = styled(Text)`
+const TodayDate = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({ theme }) => theme.fontSizes.xLarge}px;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const TodayAlert = styled(Text)`
+const TodayAlert = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({ theme }) => theme.fontSizes.small}px;
   font-weight: 500;
-  color: ${({ theme }) => theme.colors.darkGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.lightGray : theme.colors.darkGray};
 `;

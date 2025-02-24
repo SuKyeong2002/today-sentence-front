@@ -1,7 +1,9 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useTheme } from '@/context/ThemeContext'; 
+import styled from 'styled-components';
 
 type RootStackParamList = {
   Search: undefined;
@@ -21,58 +23,49 @@ export const ProfileBackHeader: React.FC<BackHeaderProps> = ({
   onNotificationPress,
 }) => {
   const navigation = useNavigation<NavigationProp>();
+  const { isDarkMode } = useTheme(); 
 
   return (
-    <View style={styles.headerContainer}>
-      <View style={styles.leftContainer}>
+    <HeaderContainer isDarkMode={isDarkMode}>
+      <LeftContainer>
         <TouchableOpacity onPress={() => navigation.navigate('Search')}>
           <Image
             source={require('../../assets/image/back2.png')}
-            style={styles.backIcon}
+            style={[styles.backIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' }]}
           />
         </TouchableOpacity>
-        <Text style={styles.searchText}>{searchKeyword}</Text>
-      </View>
-    </View>
+        <SearchText isDarkMode={isDarkMode}>{searchKeyword}</SearchText>
+      </LeftContainer>
+    </HeaderContainer>
   );
 };
 
+const HeaderContainer = styled(View)<{ isDarkMode: boolean }>`
+  width: 100%;
+  height: 60px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+`;
+
+const LeftContainer = styled(View)`
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+`;
+
+const SearchText = styled(Text)<{ isDarkMode: boolean }>`
+  font-size: 18px;
+  font-weight: 500;
+  color: ${({ isDarkMode, theme }) => 
+    isDarkMode ? theme.colors.white : theme.colors.text };
+`;
+
 const styles = StyleSheet.create({
-  headerContainer: {
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
-  leftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  coinContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  coinText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#262627',
-  },
   backIcon: {
     width: 24,
     height: 24,
-    resizeMode: 'contain',
-  },
-  searchText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#333',
-  },
-  icon: {
-    width: 20,
-    height: 20,
     resizeMode: 'contain',
   },
 });

@@ -1,3 +1,4 @@
+import { useTheme } from '@/context/ThemeContext';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +12,8 @@ import SearchScreen from '../../screens/search/SearchPage';
 const Tab = createBottomTabNavigator();
 
 export default function Footer() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const { isDarkMode } = useTheme(); 
 
   return (
     <Tab.Navigator
@@ -19,6 +21,10 @@ export default function Footer() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          backgroundColor: isDarkMode ? '#121212' : '#FFFFFF', 
+          borderTopWidth: 0,
+        },
         tabBarIcon: ({ focused }) => {
           let iconName;
 
@@ -50,7 +56,15 @@ export default function Footer() {
               break;
           }
 
-          return <Image source={iconName} style={styles.logoImage} />;
+          return (
+            <Image
+              source={iconName}
+              style={[
+                styles.logoImage,
+                { tintColor: isDarkMode ? '#FFFFFF' : '#8A715D' }, 
+              ]}
+            />
+          );
         },
         tabBarLabel: ({ focused }) => {
           let label;
@@ -73,7 +87,15 @@ export default function Footer() {
               break;
           }
 
-          return <Text style={styles.label}>{label}</Text>;
+          return (
+            <Text
+              style={[
+                styles.label,
+                { color: isDarkMode ? '#FFFFFF' : '#8A715D' },
+              ]}>
+              {label}
+            </Text>
+          );
         },
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -88,7 +110,6 @@ export default function Footer() {
 const styles = StyleSheet.create({
   label: {
     fontSize: 12,
-    color: 'gray',
     marginTop: 2,
   },
   logoImage: {

@@ -1,10 +1,11 @@
-import { useSearch } from '@/hooks/useSearch';
-import { useTagSearch } from '@/hooks/useTagSearch';
-import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTheme} from '@/context/ThemeContext';
+import {useSearch} from '@/hooks/useSearch';
+import {useTagSearch} from '@/hooks/useTagSearch';
+import {Picker} from '@react-native-picker/picker';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Alert,
   Image,
@@ -14,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import {ActivityIndicator} from 'react-native-paper';
 import styled from 'styled-components';
 
 const categoryMap: Record<string, string> = {
@@ -58,6 +59,7 @@ export default function Input({onSearchResultChange}: InputProps) {
   const [searchText, setSearchText] = useState<string>('');
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProps>();
+  const {isDarkMode} = useTheme();
 
   const searchHook =
     selectedOption === 'tag'
@@ -120,10 +122,13 @@ export default function Input({onSearchResultChange}: InputProps) {
     <>
       <ContentWrapper>
         <SelectWrapper>
-          <SelectContainer>
+          <SelectContainer isDarkMode={isDarkMode}>
             <Picker
               selectedValue={selectedOption}
-              onValueChange={itemValue => setSelectedOption(itemValue)}>
+              onValueChange={itemValue => setSelectedOption(itemValue)}
+              style={{color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}}
+              dropdownIconColor={isDarkMode ? '#FFFFFF' : '#2B2B2B'}
+              >
               <Picker.Item label={t('선택')} value="" />
               <Picker.Item label={t('제목')} value="title" />
               <Picker.Item label={t('저자')} value="author" />
@@ -131,11 +136,13 @@ export default function Input({onSearchResultChange}: InputProps) {
             </Picker>
           </SelectContainer>
 
-          <SearchContainer>
+          <SearchContainer isDarkMode={isDarkMode}>
             <StyledTextInput
               placeholder={t('입력해주세요')}
               value={searchText}
               onChangeText={setSearchText}
+              isDarkMode={isDarkMode}
+              placeholderTextColor={isDarkMode ? '#FFFFFF' : '#2B2B2B'}
             />
             <TouchableOpacity onPress={onSearchPress}>
               <SearchImage
@@ -160,8 +167,8 @@ export default function Input({onSearchResultChange}: InputProps) {
               isTagSearch={true}>
               <TouchableOpacity
                 onPress={() => navigation.navigate('BookSearch', {tag})}>
-                <BookWrapper>
-                  <BookTag>#{tag}</BookTag>
+                <BookWrapper isDarkMode={isDarkMode}>
+                  <BookTag isDarkMode={isDarkMode}>#{tag}</BookTag>
                 </BookWrapper>
               </TouchableOpacity>
             </ScrollContainer>
@@ -176,7 +183,7 @@ export default function Input({onSearchResultChange}: InputProps) {
             selectedOption === 'title' || selectedOption === 'author'
           }
           isTagSearch={false}>
-          <ResultContainer>
+          <ResultContainer isDarkMode={isDarkMode}>
             {searchResults.map(
               (
                 item: {
@@ -207,7 +214,7 @@ export default function Input({onSearchResultChange}: InputProps) {
                     })
                   }>
                   <BookItem key={index}>
-                    <BookWrapper>
+                    <BookWrapper isDarkMode={isDarkMode}>
                       {(selectedOption === 'title' ||
                         selectedOption === 'author') && (
                         <BookImage
@@ -221,13 +228,13 @@ export default function Input({onSearchResultChange}: InputProps) {
                       <BookInfo>
                         {(selectedOption === 'title' ||
                           selectedOption === 'author') && (
-                          <BookTitle>
+                          <BookTitle isDarkMode={isDarkMode}>
                             {highlightMatchedText(item.bookTitle, searchText)}
                           </BookTitle>
                         )}
                         {(selectedOption === 'title' ||
                           selectedOption === 'author') && (
-                          <BookAuthor>
+                          <BookAuthor isDarkMode={isDarkMode}>
                             {highlightMatchedText(
                               item.bookAuthor || '',
                               searchText,
@@ -237,7 +244,7 @@ export default function Input({onSearchResultChange}: InputProps) {
                         {(selectedOption === 'title' ||
                           selectedOption === 'author') && (
                           <BookPublisherContainer>
-                            <BookPublisher>
+                            <BookPublisher isDarkMode={isDarkMode}>
                               {highlightMatchedText(
                                 item.bookPublisher || '',
                                 searchText,
@@ -298,17 +305,21 @@ const SelectWrapper = styled(View)`
   gap: 6px;
 `;
 
-const SelectContainer = styled(View)`
+const SelectContainer = styled(View)<{isDarkMode: boolean}>`
   display: flex;
   width: 35%;
   height: 45px;
   justify-content: center;
   border-radius: 8px;
-  border: 1px solid #ededed;
-  background: ${({theme}) => theme.colors.white};
+  border: 1px solid
+    ${({isDarkMode, theme}) => (isDarkMode ? theme.colors.text : '#ededed')};
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const SearchContainer = styled(View)`
+const SearchContainer = styled(View)<{isDarkMode: boolean}>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -317,14 +328,17 @@ const SearchContainer = styled(View)`
   height: 45px;
   padding: 0 10px;
   border-radius: 8px;
-  border: 1px solid #ededed;
-  background: ${({theme}) => theme.colors.white};
+  border: 1px solid
+    ${({isDarkMode, theme}) => (isDarkMode ? theme.colors.text : '#ededed')};
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
 `;
 
-const StyledTextInput = styled(TextInput)`
+const StyledTextInput = styled(TextInput)<{isDarkMode: boolean}>`
   flex: 1;
   font-size: ${({theme}) => theme.fontSizes.medium}px;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
   height: 100%;
   padding: 0 10px;
 `;
@@ -334,8 +348,9 @@ const SearchImage = styled(Image)`
   height: 20px;
 `;
 
-const ResultContainer = styled(View)`
-  background: ${({theme}) => theme.colors.background};
+const ResultContainer = styled(View)<{isDarkMode: boolean}>`
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? '#000000' : theme.colors.background};
 `;
 
 // 책 관련
@@ -353,13 +368,14 @@ const BookInfo = styled(View)`
   gap: 5px;
 `;
 
-const BookWrapper = styled(View)`
+const BookWrapper = styled(View)<{isDarkMode: boolean}>`
   margin-top: 10px;
   border-radius: 10px;
   flex-direction: row;
   align-items: center;
   padding: 10px;
-  background: ${({theme}) => theme.colors.white};
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
 `;
 
 const BookTagsContainer = styled(View)`
@@ -367,19 +383,24 @@ const BookTagsContainer = styled(View)`
   justify-content: flex-start;
 `;
 
-const BookTag = styled(Text)`
+const BookTag = styled(Text)<{isDarkMode: boolean}>`
   font-size: 14px;
   margin-bottom: 5px;
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const BookTitle = styled(Text)`
+const BookTitle = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.medium}px;
   font-weight: 600;
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.darkGray};
 `;
 
-const BookAuthor = styled(Text)`
+const BookAuthor = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
   font-weight: 400;
 `;
 
@@ -388,9 +409,10 @@ const BookPublisherContainer = styled(View)`
   flex-direction: row;
 `;
 
-const BookPublisher = styled(Text)`
+const BookPublisher = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
-  color: ${({theme}) => theme.colors.darkGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.lightGray : theme.colors.darkGray};
   font-weight: 400;
 `;
 

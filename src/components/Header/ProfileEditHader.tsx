@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import {useQueryClient} from 'react-query';
 import CustomModal from '../Modal/CustomModal';
+import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Profile: undefined;
@@ -54,7 +55,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   isVerified,
   isDuplicateChecked,
   isError2,
-  isError3
+  isError3,
 }) => {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
@@ -75,6 +76,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   const [modalVisible2, setModalVisible2] = useState(false);
   const [modalVisible3, setModalVisible3] = useState(false);
   const [modalVisible4, setModalVisible4] = useState(false);
+  const {isDarkMode} = useTheme();
 
   useEffect(() => {
     const fetchStoredEmail = async () => {
@@ -199,8 +201,12 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
         setModalVisible2(true);
         return;
       }
-      
-      console.log('비교 값:', changePassword?.trim(), checkChangePassword.trim());
+
+      console.log(
+        '비교 값:',
+        changePassword?.trim(),
+        checkChangePassword.trim(),
+      );
       if (isError3) {
         setModalVisible4(true);
         return;
@@ -232,14 +238,17 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <Image
             source={require('../../assets/image/back2.png')}
-            style={styles.backIcon}
+            style={[
+              styles.backIcon,
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'}
+            ]}
           />
         </TouchableOpacity>
-        <Text style={styles.searchText}>{searchKeyword}</Text>
+        <Text style={[styles.searchText, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'},]}>{searchKeyword}</Text>
       </View>
       <View style={styles.rightContainer}>
         <TouchableOpacity onPress={handleConfirm}>
-          <Text style={styles.confirmButton}>확인</Text>
+          <Text style={[styles.confirmButton, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}]}>{t("확인")}</Text>
         </TouchableOpacity>
       </View>
 

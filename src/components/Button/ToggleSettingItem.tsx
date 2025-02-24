@@ -1,7 +1,7 @@
 import {View, Text, Alert, Switch} from 'react-native';
 import styled from 'styled-components';
 import React from 'react';
-
+import {useTheme} from '@/context/ThemeContext';
 
 export const ToggleSettingItem = ({
   title,
@@ -12,10 +12,12 @@ export const ToggleSettingItem = ({
   value: boolean;
   onToggle: () => void;
 }) => {
+  const {isDarkMode, setThemeMode} = useTheme();
+
   return (
-    <Container>
+    <Container isDarkMode={isDarkMode}>
       <Row>
-        <NewsText>{title}</NewsText>
+        <NewsText isDarkMode={isDarkMode}>{title}</NewsText>
         <ToggleSwitch
           trackColor={{false: '#A9A9A955', true: '#8A715D'}}
           thumbColor="#FFF"
@@ -28,8 +30,7 @@ export const ToggleSettingItem = ({
   );
 };
 
-
-const Container = styled(View)`
+const Container = styled(View)<{isDarkMode: boolean}>`
   display: flex;
   width: 90%;
   flex-direction: column;
@@ -37,7 +38,8 @@ const Container = styled(View)`
   margin: 0 20px 0 20px;
   padding: 16px;
   border-radius: 10px;
-  background: ${({theme}) => theme.colors.white};
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
 `;
 
 const Row = styled(View)`
@@ -47,11 +49,11 @@ const Row = styled(View)`
   width: 100%;
 `;
 
-const NewsText = styled(Text)`
+const NewsText = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const ToggleSwitch = styled(Switch)`
-`;
+const ToggleSwitch = styled(Switch)``;

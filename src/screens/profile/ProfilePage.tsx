@@ -10,6 +10,7 @@ import { ProfileTextEdit } from '@/components/Button/ProfileTextEdit';
 import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
 import { useUser } from '@/hooks/useUser';
 import { useQueryClient } from 'react-query';
+import { useTheme } from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -23,6 +24,7 @@ export default function ProfilePage() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Nickname'>>();
   const queryClient = useQueryClient();
   const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
+  const { isDarkMode, setThemeMode } = useTheme();
 
   // 언어 설정 및 폰트 설정 
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA' }}>
       <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}

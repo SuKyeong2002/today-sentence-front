@@ -8,9 +8,10 @@ import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
 import {useUser} from '@/hooks/useUser';
 import {useMutation} from 'react-query';
 import {VerifiedEmail} from '@/api/auth';
+import {useTheme} from '@/context/ThemeContext';
 
 export default function EmailPage() {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
   const [email, setEmail] = useState<string>('');
@@ -20,12 +21,13 @@ export default function EmailPage() {
   const [errorMessage2, setErrorMessage2] = useState<string>('');
   const [isDuplicateChecked, setIsDuplicateChecked] = useState<boolean>(false);
   const {data: user, isLoading, error} = useUser(); // 유저 정보 조회
+  const {isDarkMode} = useTheme();
 
   useEffect(() => {
     (async () => {
       const storedLang = await getStoredLanguage();
       setLanguage(storedLang);
-      i18n.changeLanguage(storedLang);
+      changeLanguage(storedLang);
     })();
   }, []);
 
@@ -49,7 +51,7 @@ export default function EmailPage() {
         setErrorMessage2('사용 가능한 이메일입니다.');
         setIsError2(false);
         setIsDuplicateChecked(true);
-        await AsyncStorage.setItem("verifiedEmail", email);
+        await AsyncStorage.setItem('verifiedEmail', email);
       },
       onError: (error: any) => {
         console.error('이메일 검증 실패:', error.message);
@@ -71,17 +73,19 @@ export default function EmailPage() {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <ProfileEditHader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         email={email}
         isDuplicateChecked={isDuplicateChecked}
       />
-      <ScreenContainer fontFamily={font}>
+      <ScreenContainer isDarkMode={isDarkMode}>
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
+              isDarkMode={isDarkMode}
               placeholder={user?.email || t('변경할 이메일을 입력해주세요.')}
               value={email}
               onChangeText={text => {
@@ -93,9 +97,10 @@ export default function EmailPage() {
             />
           </NicknameInputContainer>
           <DuplicateCheckButton
+            isDarkMode={isDarkMode}
             onPress={handleDuplicateCheck}
             isActive={email.length > 0}>
-            <ButtonText>중복확인</ButtonText>
+            <ButtonText>{t("중복확인")}</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
 
@@ -110,13 +115,12 @@ export default function EmailPage() {
   );
 }
 
-const ScreenContainer = styled(View)<{fontFamily: string}>`
+const ScreenContainer = styled(View)<{isDarkMode: boolean}>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
   padding: 0 16px;
-  font-family: ${props => props.fontFamily};
 `;
 
 const InputWrapper = styled(View)`
@@ -132,24 +136,32 @@ const NicknameInputContainer = styled(View)`
   flex: 1;
 `;
 
-const NicknameInput = styled(TextInput)`
+const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
   height: 48px;
-  background-color: ${({theme}) => theme.colors.white};
-  border: 1px solid ${({theme}) => theme.colors.lightGray};
+  border: 1px solid
+    ${({isDarkMode, theme}) =>
+      isDarkMode ? theme.colors.text : theme.colors.white};
   border-radius: 8px;
   padding: 0 50px 0 12px;
   font-size: 16px;
   text-align: left;
+  background-color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const DuplicateCheckButton = styled(TouchableOpacity)<{isActive: boolean}>`
+const DuplicateCheckButton = styled(TouchableOpacity)<{
+  isActive: boolean;
+  isDarkMode: boolean;
+}>`
   height: 48px;
   padding: 0 16px;
   border-radius: 8px;
   justify-content: center;
   align-items: center;
-  background-color: ${({isActive, theme}) =>
-    isActive ? theme.colors.primary || 'brown' : theme.colors.gray};
+  background-color: ${({isActive, isDarkMode, theme}) =>
+    isActive ? theme.colors.primary || theme.colors.text : isDarkMode ? theme.colors.text : theme.colors.gray};
 `;
 
 const ButtonText = styled(Text)`

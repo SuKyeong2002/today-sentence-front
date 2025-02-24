@@ -20,7 +20,8 @@ import {deleteAccount} from '@/api/deleteAccount';
 import {useDeleteAccount} from '@/hooks/useDeleteAccount';
 import {refetchUserData, useUser} from '@/hooks/useUser';
 import CustomModal from '@/components/Modal/CustomModal';
-import { useQueryClient } from 'react-query';
+import {useQueryClient} from 'react-query';
+import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -39,7 +40,7 @@ export default function AccountPage() {
   const navigation = useNavigation<NavigationProp>();
   const {mutate: deleteAccount} = useDeleteAccount();
   const {data: user, isLoading, error} = useUser();
-  
+
   if (isLoading) {
     return (
       <LoadingContainer>
@@ -84,10 +85,13 @@ export default function AccountPage() {
     setModalVisible(false);
   };
 
+  const {isDarkMode} = useTheme();
+
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
 
   return (
-    <View style={{flex: 1}}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}

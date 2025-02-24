@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
-  Search: undefined; 
+  Search: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Search'>;
@@ -15,28 +16,48 @@ interface BackHeaderProps {
   onNotificationPress?: () => void;
 }
 
-const BackHeader: React.FC<BackHeaderProps> = ({ searchKeyword, onBackPress, onNotificationPress }) => {
-  const navigation = useNavigation<NavigationProp>(); 
+const BackHeader: React.FC<BackHeaderProps> = ({
+  searchKeyword,
+  onBackPress,
+  onNotificationPress,
+}) => {
+  const navigation = useNavigation<NavigationProp>();
+  const {isDarkMode} = useTheme();
 
   return (
     <View style={styles.headerContainer}>
       <View style={styles.leftContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Search')}>
-          <Image source={require('../../assets/image/back2.png')} style={styles.backIcon} />
+          <Image
+            source={require('../../assets/image/back2.png')}
+            style={[
+              styles.backIcon,
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+            ]}
+          />
         </TouchableOpacity>
-        <Text style={styles.searchText}>{searchKeyword}</Text>
+        <Text style={[styles.searchText, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'},]}>{searchKeyword}</Text>
       </View>
-      
+
       <View style={styles.rightContainer}>
         <View style={styles.coinContainer}>
-          <Text style={styles.coinText}>0</Text>
+          <Text style={[styles.searchText, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'},]}>0</Text>
           <TouchableOpacity onPress={() => console.log('Coin icon clicked')}>
-            <Image source={require('../../assets/image/coin.png')} style={styles.icon} />
+            <Image
+              source={require('../../assets/image/coin.png')}
+              style={styles.icon}
+            />
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity onPress={onNotificationPress}>
-          <Image source={require('../../assets/image/notification.png')} style={styles.icon} />
+          <Image
+            source={require('../../assets/image/notification.png')}
+            style={[
+              styles.backIcon,
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+            ]}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -50,31 +71,31 @@ const styles = StyleSheet.create({
     height: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',  
+    justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
   leftContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10, 
+    gap: 10,
   },
   rightContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16, 
+    gap: 16,
   },
   coinContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6, 
+    gap: 6,
   },
   coinText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#262627'
+    color: '#262627',
   },
   backIcon: {
-    width: 24, 
+    width: 24,
     height: 24,
     resizeMode: 'contain',
   },

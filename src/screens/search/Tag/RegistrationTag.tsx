@@ -1,8 +1,9 @@
-import { useFamousTags } from '@/hooks/useFamousTags';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {useTheme} from '@/context/ThemeContext';
+import {useFamousTags} from '@/hooks/useFamousTags';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -25,6 +26,7 @@ export default function RegistrationTag() {
   const navigation = useNavigation<NavigationProp>();
   const {t} = useTranslation();
   const {data, isLoading, error} = useFamousTags();
+  const {isDarkMode} = useTheme();
 
   if (isLoading) return <Text>{t('로딩 중...')}</Text>;
   if (error) return <Text>{t('태그를 불러오지 못했습니다')}</Text>;
@@ -40,8 +42,10 @@ export default function RegistrationTag() {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{flexGrow: 1}}>
           <View style={{flex: 1, justifyContent: 'space-between'}}>
-            <RegistrationTagContainer>
-              <RegistrationText>🤎 {t('인기 등록 태그')}</RegistrationText>
+            <RegistrationTagContainer isDarkMode={isDarkMode}>
+              <RegistrationText isDarkMode={isDarkMode}>
+                🤎 {t('인기 등록 태그')}
+              </RegistrationText>
               <TagContainer>
                 <TagWrapper>
                   {recordTags.map((tag: string, index: number) => (
@@ -63,20 +67,22 @@ export default function RegistrationTag() {
   );
 }
 
-const RegistrationTagContainer = styled(View)`
+const RegistrationTagContainer = styled(View)<{isDarkMode: boolean}>`
   width: 90%;
   padding: 20px;
   border-radius: 10px;
   margin: 10px 20px;
   flex-direction: column;
-  background: ${({theme}) => theme.colors.white};
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
   gap: 20px;
 `;
 
-const RegistrationText = styled(Text)`
+const RegistrationText = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 700;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
 const TagContainer = styled(View)`
