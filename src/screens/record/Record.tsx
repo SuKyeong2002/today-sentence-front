@@ -8,9 +8,9 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 type RootStackParamList = {
   Home: undefined;
-  RecordContent: undefined;
+  RecordBookList: undefined;
   RecordSearch: undefined;
-  SavedContent: undefined;
+  BookmarkBookList: undefined;
   StatusContent: undefined;
 };
 
@@ -28,13 +28,13 @@ export default function CategrySearchPage() {
         title={'기록'}
         subtitle={'오늘의 한 줄을 남겨보세요.'}
         imageSource={require('@/assets/image/record_writing.png')}
-        onPress={() => navigation.navigate('RecordSearch')}
+        onPress={() => navigation.navigate('RecordBookList')}
       />
       <ListItem
         title={'저장'}
         subtitle={'마음에 남은 문장을 간직하세요.'}
         imageSource={require('@/assets/image/record_bookmark.png')}
-        onPress={() => navigation.navigate('SavedContent')}
+        onPress={() => navigation.navigate('BookmarkBookList')}
       />
       <ListItem
         title={'통계'}
