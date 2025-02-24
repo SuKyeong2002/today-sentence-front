@@ -15,7 +15,7 @@ export const FontProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const loadFont = async () => {
       const storedFont = await AsyncStorage.getItem('selectedFont');
       if (storedFont) {
-        console.log(`📌 Loaded Font from Storage: ${storedFont}`);
+        console.log(`Loaded Font from Storage: ${storedFont}`);
         setSelectedFontState(storedFont);
       }
     };
@@ -23,7 +23,7 @@ export const FontProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const setSelectedFont = async (font: string) => {
-    console.log(`🔥 Setting Font: ${font}`);
+    console.log(`Setting Font: ${font}`);
     await AsyncStorage.setItem('selectedFont', font);
     setSelectedFontState(font);
   };

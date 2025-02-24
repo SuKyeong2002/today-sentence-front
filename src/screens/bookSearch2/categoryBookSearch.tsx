@@ -42,7 +42,11 @@ export default function CategoryBookSearch({route}: Props) {
   const size = 4;
   const sortBy = sortByLatest ? 'create_at' : 'like_count';
 
-  const { data, isLoading, fetchNextPage, hasNextPage } = useCategorySearch(category, size, sortBy);
+  const {data, isLoading, fetchNextPage, hasNextPage} = useCategorySearch(
+    category,
+    size,
+    sortBy,
+  );
 
   const handleSwitchToggle = () => {
     if (isSwitchDisabled) {
@@ -56,15 +60,18 @@ export default function CategoryBookSearch({route}: Props) {
   };
 
   const combinedPosts = useMemo(() => {
-     if (!data?.pages) return [];
+    if (!data?.pages) return [];
 
-     return data.pages.flatMap((page) =>
-        (page.posts || []).map((post, index) => ({
+    return data.pages.flatMap(page =>
+      (page.posts || []).map((post, index) => ({
         ...post,
-         interaction: (page.interaction || [])[index] || { isLiked: false, isSaved: false },
-              }))
-            );
-        }, [data]);
+        interaction: (page.interaction || [])[index] || {
+          isLiked: false,
+          isSaved: false,
+        },
+      })),
+    );
+  }, [data]);
 
   return (
     <Container
@@ -75,17 +82,21 @@ export default function CategoryBookSearch({route}: Props) {
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
       <ToggleContainer>
-        <View style={{ flexDirection: "row", alignItems: "center", opacity: isSwitchDisabled ? 0.5 : 1 }}>
-        <Switch
-              value={sortByLatest}
-              onValueChange={handleSwitchToggle}
-              disabled={isSwitchDisabled}
-              trackColor={{ false: "#D3D3D3", true: "#8A715D" }}
-              thumbColor={isDarkMode ? "#FFFFFF" : "#FFFFFF"}
-            />
-        <ToggleText isDarkMode={isDarkMode}>{t('최신순')}</ToggleText>
-          </View>
-
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            opacity: isSwitchDisabled ? 0.5 : 1,
+          }}>
+          <Switch
+            value={sortByLatest}
+            onValueChange={handleSwitchToggle}
+            disabled={isSwitchDisabled}
+            trackColor={{false: '#D3D3D3', true: '#8A715D'}}
+            thumbColor={isDarkMode ? '#FFFFFF' : '#FFFFFF'}
+          />
+          <ToggleText isDarkMode={isDarkMode}>{t('최신순')}</ToggleText>
+        </View>
       </ToggleContainer>
 
       {isLoading ? (
@@ -99,16 +110,21 @@ export default function CategoryBookSearch({route}: Props) {
               <SearchContent2
                 post={item}
                 interaction={item.interaction}
+                sortByLatest={false}
               />
             </BooklistWrapper>
           )}
-        onEndReached={() => {
+          onEndReached={() => {
             if (hasNextPage) {
               fetchNextPage();
             }
           }}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+          ListFooterComponent={
+            isLoading ? (
+              <ActivityIndicator size="large" color="#0000ff" />
+            ) : null
+          }
         />
       ) : (
         <NoDataText>검색 결과가 없습니다.</NoDataText>
