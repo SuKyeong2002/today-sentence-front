@@ -85,6 +85,7 @@ export default function NicknamePage() {
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
+              isDarkMode={isDarkMode}
               placeholder={user?.nickname || t('닉네임을 입력해주세요.')}
               value={nickname}
               onChangeText={text => {
@@ -98,6 +99,7 @@ export default function NicknamePage() {
             <CharacterCount>{`${nickname.length}/8`}</CharacterCount>
           </NicknameInputContainer>
           <DuplicateCheckButton
+          isDarkMode={isDarkMode}
             onPress={handleDuplicateCheck}
             isActive={nickname.length > 0}>
             <ButtonText>중복확인</ButtonText>
@@ -137,10 +139,15 @@ const NicknameInputContainer = styled(View)`
   flex: 1;
 `;
 
-const NicknameInput = styled(TextInput)`
+const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
   height: 48px;
-  background-color: ${({theme}) => theme.colors.white};
-  border: 1px solid ${({theme}) => theme.colors.lightGray};
+  background-color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
+  border: 1px solid
+    ${({isDarkMode, theme}) =>
+      isDarkMode ? theme.colors.text : theme.colors.lightGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
   border-radius: 8px;
   padding: 0 50px 0 12px;
   font-size: 16px;
@@ -156,14 +163,17 @@ const CharacterCount = styled(Text)`
   color: ${({theme}) => theme.colors.text};
 `;
 
-const DuplicateCheckButton = styled(TouchableOpacity)<{isActive: boolean}>`
+const DuplicateCheckButton = styled(TouchableOpacity)<{
+  isActive: boolean;
+  isDarkMode: boolean;
+}>`
   height: 48px;
   padding: 0 16px;
   border-radius: 8px;
   justify-content: center;
   align-items: center;
-  background-color: ${({isActive, theme}) =>
-    isActive ? theme.colors.primary || 'brown' : theme.colors.gray};
+  background-color: ${({isActive, isDarkMode, theme}) =>
+    isActive ? theme.colors.primary || theme.colors.text : isDarkMode ? theme.colors.text : theme.colors.gray};
 `;
 
 const ButtonText = styled(Text)`

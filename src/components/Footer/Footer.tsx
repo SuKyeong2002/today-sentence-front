@@ -61,7 +61,7 @@ export default function Footer() {
               source={iconName}
               style={[
                 styles.logoImage,
-                { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' }, 
+                { tintColor: isDarkMode ? '#FFFFFF' : '#8A715D' }, 
               ]}
             />
           );
@@ -91,7 +91,7 @@ export default function Footer() {
             <Text
               style={[
                 styles.label,
-                { color: isDarkMode ? '#FFFFFF' : '#2B2B2B' },
+                { color: isDarkMode ? '#FFFFFF' : '#8A715D' },
               ]}>
               {label}
             </Text>

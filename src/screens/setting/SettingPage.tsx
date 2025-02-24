@@ -1,15 +1,15 @@
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
-import { SettingItem } from '@/components/Button/SettingItem';
-import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
+import {SettingItem} from '@/components/Button/SettingItem';
+import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
 import CustomModal from '@/components/Modal/CustomModal';
-import { useTheme } from '@/context/ThemeContext';
-import { useLogout } from '@/hooks/useLogout';
+import {useTheme} from '@/context/ThemeContext';
+import {useLogout} from '@/hooks/useLogout';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Alert, Linking, View } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Alert, Linking, View} from 'react-native';
 import styled from 'styled-components';
 
 type RootStackParamList = {
@@ -28,7 +28,8 @@ export default function SettingPage() {
   const [font, setFont] = useState<string>('PretendardRegular');
   const {mutate: logout} = useLogout();
   const [modalVisible, setModalVisible] = useState(false);
-  const { isDarkMode, setThemeMode } = useTheme();
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const {isDarkMode, setThemeMode} = useTheme();
 
   useEffect(() => {
     (async () => {
@@ -40,8 +41,9 @@ export default function SettingPage() {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA' }}>
-      <ProfileBackHeader 
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
+      <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
@@ -84,12 +86,16 @@ export default function SettingPage() {
         />
         <ProfileEditItem
           title={t('버전')}
-          onPress={() =>
-            Alert.alert(t('버전 확인'), t('현재 버전은 1.0.0입니다.'), [
-              {text: t('확인'), style: 'default'},
-            ])
+          onPress={() => setModalVisible2(true)
           }
           font={font}
+        />
+        <CustomModal
+          visible={modalVisible2}
+          title={t('버전 확인')}
+          message={t('현재 버전은 1.0.0입니다.')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible2(false)}
         />
         <ProfileEditItem
           title={t('로그아웃')}

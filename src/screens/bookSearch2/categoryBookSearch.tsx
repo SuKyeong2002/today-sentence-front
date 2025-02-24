@@ -6,6 +6,7 @@ import SearchContent2 from './content/SearchContent2';
 import {RouteProp} from '@react-navigation/native';
 import {useCategorySearch} from '@/hooks/useCategorySearch';
 import {useTheme} from '@/context/ThemeContext';
+import {useTranslation} from 'react-i18next';
 
 interface Post {
   postId: number;
@@ -35,6 +36,7 @@ export default function categoryBookSearch({route}: Props) {
   const {data, isLoading} = useCategorySearch(category);
   const [sortByLatest, setSortByLatest] = useState(false);
   const {isDarkMode} = useTheme();
+  const {t} = useTranslation();
 
   const posts = data?.posts;
   const interaction = data?.interaction;
@@ -68,7 +70,7 @@ export default function categoryBookSearch({route}: Props) {
     <Container
       style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <BackHeader
-        searchKeyword="검색"
+        searchKeyword={t('검색')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
@@ -77,12 +79,12 @@ export default function categoryBookSearch({route}: Props) {
           value={sortByLatest}
           onValueChange={() => setSortByLatest(prev => !prev)}
           trackColor={{
-            false: '#D3D3D3', 
-            true: isDarkMode ? '#8A715D' : '#D3D3D3', 
+            false: '#D3D3D3',
+            true: isDarkMode ? '#8A715D' : '#8A715D',
           }}
-          thumbColor={isDarkMode ? '#FFFFFF' : '#D3D3D3'}
+          thumbColor={isDarkMode ? '#FFFFFF' : '#FFFFFF'}
         />
-        <ToggleText isDarkMode={isDarkMode}>최신순</ToggleText>
+        <ToggleText isDarkMode={isDarkMode}>{t('최신순')}</ToggleText>
       </ToggleContainer>
 
       {isLoading ? (

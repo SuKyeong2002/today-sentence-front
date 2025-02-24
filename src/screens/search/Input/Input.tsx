@@ -126,7 +126,9 @@ export default function Input({onSearchResultChange}: InputProps) {
             <Picker
               selectedValue={selectedOption}
               onValueChange={itemValue => setSelectedOption(itemValue)}
-              style={{color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}}>
+              style={{color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}}
+              dropdownIconColor={isDarkMode ? '#FFFFFF' : '#2B2B2B'}
+              >
               <Picker.Item label={t('선택')} value="" />
               <Picker.Item label={t('제목')} value="title" />
               <Picker.Item label={t('저자')} value="author" />
@@ -384,7 +386,7 @@ const BookTagsContainer = styled(View)`
 const BookTag = styled(Text)<{isDarkMode: boolean}>`
   font-size: 14px;
   margin-bottom: 5px;
-    color: ${({isDarkMode, theme}) =>
+  color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 

@@ -11,7 +11,7 @@ import {VerifiedEmail} from '@/api/auth';
 import {useTheme} from '@/context/ThemeContext';
 
 export default function EmailPage() {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
   const [email, setEmail] = useState<string>('');
@@ -27,7 +27,7 @@ export default function EmailPage() {
     (async () => {
       const storedLang = await getStoredLanguage();
       setLanguage(storedLang);
-      i18n.changeLanguage(storedLang);
+      changeLanguage(storedLang);
     })();
   }, []);
 
@@ -100,7 +100,7 @@ export default function EmailPage() {
             isDarkMode={isDarkMode}
             onPress={handleDuplicateCheck}
             isActive={email.length > 0}>
-            <ButtonText>중복확인</ButtonText>
+            <ButtonText>{t("중복확인")}</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
 
@@ -161,7 +161,7 @@ const DuplicateCheckButton = styled(TouchableOpacity)<{
   justify-content: center;
   align-items: center;
   background-color: ${({isActive, isDarkMode, theme}) =>
-    isActive ? theme.colors.primary || theme.colors.text : isDarkMode ? theme.colors.text : theme.colors.white};
+    isActive ? theme.colors.primary || theme.colors.text : isDarkMode ? theme.colors.text : theme.colors.gray};
 `;
 
 const ButtonText = styled(Text)`

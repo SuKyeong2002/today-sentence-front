@@ -115,7 +115,7 @@ const BookCategory = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
-    isDarkMode ? theme.colors.text : theme.colors.white};
+    isDarkMode ? theme.colors.text : theme.colors.gray};
   border-radius: 8px;
   background: #f5f4f5;
   padding: 4px 10px;

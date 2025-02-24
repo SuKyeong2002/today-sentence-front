@@ -248,7 +248,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
       </View>
       <View style={styles.rightContainer}>
         <TouchableOpacity onPress={handleConfirm}>
-          <Text style={[styles.confirmButton, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}]}>확인</Text>
+          <Text style={[styles.confirmButton, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}]}>{t("확인")}</Text>
         </TouchableOpacity>
       </View>
 

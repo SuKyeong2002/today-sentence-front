@@ -15,6 +15,7 @@ import Footer from './components/Footer/Footer';
 import SettingScreen from './screens/setting/SettingPage';
 import AlertScreen from './screens/alert/AlertPage';
 import ScreenScreen from './screens/screen/ScreenPage';
+import NewsScreen from './screens/news/NewsPage';
 import FontScreen from './screens/font/FontPage';
 import ProfileScreen from './screens/profile/ProfilePage';
 import NicknameScreen from './screens/nickname/NicknamePage';
@@ -51,8 +52,8 @@ const theme = {
     title: 24,
   },
   colors: {
-    white: '#FFF',
-    text: '#262627',
+    white: '#FFFFF',
+    text: '#2B2B2B',
     darkGray: '#828183',
     gray: '#50505055',
     lightGray: '#A9A9A9',
@@ -78,39 +79,39 @@ const MyNavigationTheme = {
 
 const queryClient = new QueryClient();
 
-  type RootStackParamList = {
-    Landing: undefined;
-    EmailFind: undefined;
-    PasswordFind: undefined;
-    SearchFooter: undefined;
-    NotFound: undefined;
-    Login: undefined;
-    SignUp: undefined;
-    Home: undefined;
-    Record: undefined;
-    Search: undefined;
-    BookSearch: undefined;
+type RootStackParamList = {
+  Landing: undefined;
+  EmailFind: undefined;
+  PasswordFind: undefined;
+  SearchFooter: undefined;
+  NotFound: undefined;
+  Login: undefined;
+  SignUp: undefined;
+  Home: undefined;
+  Record: undefined;
+  Search: undefined;
+  BookSearch: undefined;
     categoryBookSearch: { category: string };
-    BookSearch3: undefined;
-    BookSearch4: undefined;
-    Category: undefined;
-    RecordFooter: undefined;
-    CategorySearch: undefined;
-    My: undefined;
-    Setting: undefined;
-    News: undefined;
-    Alert: undefined;
-    Screen: undefined;
-    Font: undefined;
-    Profile: undefined;
-    Nickname: undefined;
-    Introduction: undefined;
-    Account: undefined;
-    Email: undefined;
-    Password: undefined;
-    Authentication: undefined;
-  };
-  
+  BookSearch3: undefined;
+  BookSearch4: undefined;
+  Category: undefined;
+  RecordFooter: undefined;
+  CategorySearch: undefined;
+  My: undefined;
+  Setting: undefined;
+  News: undefined;
+  Alert: undefined;
+  Screen: undefined;
+  Font: undefined;
+  Profile: undefined;
+  Nickname: undefined;
+  Introduction: undefined;
+  Account: undefined;
+  Email: undefined;
+  Password: undefined;
+  Authentication: undefined;
+};
+
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
@@ -174,6 +175,7 @@ export default function App() {
                     name="Introduction"
                     component={IntroductionScreen}
                   />
+                  <Stack.Screen name="News" component={NewsScreen} />
                   <Stack.Screen name="Account" component={AccountScreen} />
                   <Stack.Screen name="Email" component={EmailScreen} />
                   <Stack.Screen name="Password" component={PasswordScreen} />

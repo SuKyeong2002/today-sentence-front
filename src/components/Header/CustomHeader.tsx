@@ -23,7 +23,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             source={require('../../assets/image/LOGO2.png')}
             style={[
               styles.LogoIcon,
-              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+              {tintColor: isDarkMode ? '#FFFFFF' : '#8A715D'},
             ]}
           />
         )}

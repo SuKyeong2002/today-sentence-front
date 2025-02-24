@@ -8,8 +8,9 @@ import {useTranslation} from 'react-i18next';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useMutation} from 'react-query';
 import styled from 'styled-components';
+
 export default function PasswordPage() {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
   const [password, setPassword] = useState<string>('');
@@ -27,7 +28,7 @@ export default function PasswordPage() {
     (async () => {
       const storedLang = await getStoredLanguage();
       setLanguage(storedLang);
-      i18n.changeLanguage(storedLang);
+      changeLanguage(storedLang);
     })();
   }, []);
 
@@ -101,7 +102,8 @@ export default function PasswordPage() {
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
-              placeholder="현재 비밀번호"
+              isDarkMode={isDarkMode}
+              placeholder={t("현재 비밀번호")}
               value={password}
               onChangeText={text => {
                 setPassword(text);
@@ -112,9 +114,10 @@ export default function PasswordPage() {
             />
           </NicknameInputContainer>
           <DuplicateCheckButton
+            isDarkMode={isDarkMode}
             onPress={handleDuplicateCheck}
             isActive={password.length > 0}>
-            <ButtonText>확인</ButtonText>
+            <ButtonText>{t("확인")}</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
         {errorMessage !== '' && (
@@ -127,7 +130,8 @@ export default function PasswordPage() {
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
-              placeholder="비밀번호 변경"
+              isDarkMode={isDarkMode}
+              placeholder={t("비밀번호 변경")}
               value={changePassword}
               onChangeText={text => {
                 setChangePassword(text);
@@ -141,7 +145,8 @@ export default function PasswordPage() {
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
-              placeholder="비밀번호 재확인"
+              isDarkMode={isDarkMode}
+              placeholder={t("비밀번호 재확인")}
               value={checkChangePassword}
               onChangeText={text => {
                 setCheckChangePassword(text);
@@ -188,24 +193,36 @@ const NicknameInputContainer = styled(View)`
   flex: 1;
 `;
 
-const NicknameInput = styled(TextInput)`
+const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
   height: 48px;
-  background-color: ${({theme}) => theme.colors.white};
-  border: 1px solid ${({theme}) => theme.colors.lightGray};
+  background-color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
+  border: 1px solid
+    ${({isDarkMode, theme}) =>
+      isDarkMode ? theme.colors.text : theme.colors.lightGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
   border-radius: 8px;
   padding: 0 50px 0 12px;
   font-size: 16px;
   text-align: left;
 `;
 
-const DuplicateCheckButton = styled(TouchableOpacity)<{isActive: boolean}>`
+const DuplicateCheckButton = styled(TouchableOpacity)<{
+  isActive: boolean;
+  isDarkMode: boolean;
+}>`
   height: 48px;
   padding: 0 16px;
   border-radius: 8px;
   justify-content: center;
   align-items: center;
-  background-color: ${({isActive, theme}) =>
-    isActive ? theme.colors.primary || 'brown' : theme.colors.gray};
+  background-color: ${({isActive, isDarkMode, theme}) =>
+    isActive
+      ? theme.colors.primary || theme.colors.text
+      : isDarkMode
+        ? theme.colors.text
+        : theme.colors.gray};
 `;
 
 const ButtonText = styled(Text)`

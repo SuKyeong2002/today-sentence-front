@@ -64,6 +64,7 @@ export default function IntroductionaPage() {
         <InputWrapper>
           <NicknameInputContainer>
             <NicknameInput
+              isDarkMode={isDarkMode}
               placeholder={
                 user?.statusMessage || t('상태메시지를 입력해주세요.')
               }
@@ -109,10 +110,15 @@ const NicknameInputContainer = styled(View)`
   flex: 1;
 `;
 
-const NicknameInput = styled(TextInput)`
+const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
   height: 48px;
-  background-color: ${({theme}) => theme.colors.white};
-  border: 1px solid ${({theme}) => theme.colors.lightGray};
+  background-color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
+  border: 1px solid
+    ${({isDarkMode, theme}) =>
+      isDarkMode ? theme.colors.text : theme.colors.lightGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
   border-radius: 8px;
   padding: 0 50px 0 12px;
   font-size: 16px;

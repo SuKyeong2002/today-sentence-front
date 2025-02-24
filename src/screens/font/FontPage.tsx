@@ -4,23 +4,25 @@ import React, {useState} from 'react';
 import BackHeader from '@/components/Header/BackHeader';
 import {useTranslation} from 'react-i18next';
 import {RadioButton} from 'react-native-paper';
-import { useFont } from '@/context/FontContext'; 
+import {useFont} from '@/context/FontContext';
+import {useTheme} from '@/context/ThemeContext';
 
 export default function FontPage() {
   const {t} = useTranslation();
-
   const {selectedFont, setSelectedFont} = useFont();
+  const {isDarkMode} = useTheme();
 
   return (
-    <View style={{flex: 1}}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <BackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
       <Container>
-        <FontWrapper>
-          <FontText>기본</FontText>
+        <FontWrapper isDarkMode={isDarkMode}>
+          <FontText isDarkMode={isDarkMode}>기본</FontText>
           <RadioButton
             value="default"
             status={selectedFont === 'default' ? 'checked' : 'unchecked'}
@@ -28,8 +30,10 @@ export default function FontPage() {
             color="#8A715D"
           />
         </FontWrapper>
-        <FontWrapper>
-          <FontText style={{fontFamily: 'BookendBataanRegular'}}>
+        <FontWrapper isDarkMode={isDarkMode}>
+          <FontText
+            style={{fontFamily: 'BookendBataanRegular'}}
+            isDarkMode={isDarkMode}>
             북엔드 바탕
           </FontText>
           <RadioButton
@@ -39,8 +43,10 @@ export default function FontPage() {
             color="#8A715D"
           />
         </FontWrapper>
-        <FontWrapper>
-          <FontText style={{fontFamily: 'OnggeulipKimkonghae'}}>
+        <FontWrapper isDarkMode={isDarkMode}>
+          <FontText
+            style={{fontFamily: 'OnggeulipKimkonghae'}}
+            isDarkMode={isDarkMode}>
             온글잎 김콩해
           </FontText>
           <RadioButton
@@ -50,8 +56,10 @@ export default function FontPage() {
             color="#8A715D"
           />
         </FontWrapper>
-        <FontWrapper>
-          <FontText style={{fontFamily: 'HakgyoansimGeurimilgiTTFR'}}>
+        <FontWrapper isDarkMode={isDarkMode}>
+          <FontText
+            style={{fontFamily: 'HakgyoansimGeurimilgiTTFR'}}
+            isDarkMode={isDarkMode}>
             학교안심 그림일기
           </FontText>
           <RadioButton
@@ -61,8 +69,10 @@ export default function FontPage() {
             color="#8A715D"
           />
         </FontWrapper>
-        <FontWrapper>
-          <FontText style={{fontFamily: 'OnggeulipWicelist'}}>
+        <FontWrapper isDarkMode={isDarkMode}>
+          <FontText
+            style={{fontFamily: 'OnggeulipWicelist'}}
+            isDarkMode={isDarkMode}>
             온글잎 위씨리스트
           </FontText>
           <RadioButton
@@ -72,8 +82,10 @@ export default function FontPage() {
             color="#8A715D"
           />
         </FontWrapper>
-        <FontWrapper>
-          <FontText style={{fontFamily: 'KyoboHandwriting2020pdy'}}>
+        <FontWrapper isDarkMode={isDarkMode}>
+          <FontText
+            style={{fontFamily: 'KyoboHandwriting2020pdy'}}
+            isDarkMode={isDarkMode}>
             교보 손글씨 2020 박도연 서체
           </FontText>
           <RadioButton
@@ -95,7 +107,7 @@ const Container = styled(View)`
   gap: 12px;
 `;
 
-const FontWrapper = styled(View)`
+const FontWrapper = styled(View)<{isDarkMode: boolean}>`
   display: flex;
   flex-direction: row;
   padding: 10px;
@@ -103,12 +115,14 @@ const FontWrapper = styled(View)`
   justify-content: space-between;
   border-radius: 10px;
   margin: 0 20px;
-  background: ${({theme}) => theme.colors.white};
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
 `;
 
-const FontText = styled(Text)<{ font?: string }>`
-  font-size: ${({ theme }) => theme.fontSizes.regular}px;
+const FontText = styled(Text)<{isDarkMode: boolean}>`
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-  color: ${({ theme }) => theme.colors.text};
-  font-family: ${({ theme }) => theme.fontFamily || 'PretendardRegular'};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily || 'PretendardRegular'};
 `;

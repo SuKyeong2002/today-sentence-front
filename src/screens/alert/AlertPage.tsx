@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {ToggleSettingItem} from '@/components/Button/ToggleSettingItem';
 import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import {useTheme} from '@/context/ThemeContext';
 
 export default function SettingPage() {
   const {t} = useTranslation();
@@ -11,9 +12,11 @@ export default function SettingPage() {
   const [isNewsEnabled, setIsNewsEnabled] = useState(false);
   const [isNotificationEnabled, setIsNotificationEnabled] = useState(false);
   const [isRandomQuoteEnabled, setIsRandomQuoteEnabled] = useState(false);
+  const {isDarkMode, setThemeMode} = useTheme();
 
   return (
-    <View style={{flex: 1}}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log(t('뒤로 가기 버튼 클릭됨!'))}

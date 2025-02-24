@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useTranslation } from 'react-i18next';
+import React, {useEffect, useState} from 'react';
+import {View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useTranslation} from 'react-i18next';
 import ProfileEditItem from '@/components/Button/ProfileEditItem';
-import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
+import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
 import CustomModal from '@/components/Modal/CustomModal';
-import { changeLanguage, getStoredLanguage } from '@/utils/language';
+import {changeLanguage, getStoredLanguage} from '@/utils/language';
 import styled from 'styled-components';
-import { useTheme } from '@/context/ThemeContext'; 
+import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Font: undefined;
@@ -17,9 +17,9 @@ type RootStackParamList = {
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Font'>;
 
 export default function ScreenPage() {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const navigation = useNavigation<NavigationProp>();
-  const { isDarkMode, setThemeMode } = useTheme();
+  const {isDarkMode, setThemeMode} = useTheme();
 
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
@@ -35,7 +35,8 @@ export default function ScreenPage() {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA' }}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <ScreenContainer fontFamily={font}>
         <ProfileBackHeader
           searchKeyword={t('설정')}
@@ -53,8 +54,16 @@ export default function ScreenPage() {
           message={t('원하는 테마를 선택하세요')}
           leftButton={t('라이트')}
           rightButton={t('다크')}
-          onCancel={() => { console.log("라이트 모드 적용됨"); setThemeMode(false);  setModalVisible2(false)}}
-          onConfirm={() => { console.log("다크 모드 적용됨"); setThemeMode(true);  setModalVisible2(false)}}
+          onCancel={() => {
+            console.log('라이트 모드 적용됨');
+            setThemeMode(false);
+            setModalVisible2(false);
+          }}
+          onConfirm={() => {
+            console.log('다크 모드 적용됨');
+            setThemeMode(true);
+            setModalVisible2(false);
+          }}
         />
         <ProfileEditItem
           title={t('폰트')}
@@ -72,18 +81,24 @@ export default function ScreenPage() {
           message={t('사용할 언어를 선택해주세요')}
           leftButton={t('한국어')}
           rightButton={t('영어')}
-          onCancel={() => changeLanguage('ko')}
-          onConfirm={() => changeLanguage('en')}
+          onCancel={() => {
+            changeLanguage('ko');
+            setModalVisible(false);
+          }}
+          onConfirm={() => {
+            changeLanguage('en');
+            setModalVisible(false);
+          }}
         />
       </ScreenContainer>
     </View>
   );
 }
 
-const ScreenContainer = styled(View)<{ fontFamily: string }>`
+const ScreenContainer = styled(View)<{fontFamily: string}>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
-  font-family: ${(props) => props.fontFamily};
+  font-family: ${props => props.fontFamily};
 `;
