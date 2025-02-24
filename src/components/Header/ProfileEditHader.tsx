@@ -76,7 +76,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   const [modalVisible2, setModalVisible2] = useState(false);
   const [modalVisible3, setModalVisible3] = useState(false);
   const [modalVisible4, setModalVisible4] = useState(false);
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   useEffect(() => {
     const fetchStoredEmail = async () => {
@@ -240,26 +240,50 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
             source={require('../../assets/image/back2.png')}
             style={[
               styles.backIcon,
-              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'}
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
             ]}
           />
         </TouchableOpacity>
-        <Text style={[styles.searchText, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'},]}>{searchKeyword}</Text>
+        <Text
+          style={[
+            styles.searchText,
+            {
+              color: isDarkMode ? '#FFFFFF' : '#2B2B2B',
+              fontFamily: theme.fontFamily,
+            },
+          ]}>
+          {searchKeyword}
+        </Text>
       </View>
       <View style={styles.rightContainer}>
         <TouchableOpacity onPress={handleConfirm}>
-          <Text style={[styles.confirmButton, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}]}>{t("확인")}</Text>
+          <Text
+            style={[
+              styles.confirmButton,
+              {
+                color: isDarkMode ? '#FFFFFF' : '#2B2B2B',
+                fontFamily: theme.fontFamily,
+              },
+            ]}>
+            {t('확인')}
+          </Text>
         </TouchableOpacity>
       </View>
 
       {loading && (
         <View style={styles.overlay}>
           <ActivityIndicator size="large" color="#262627" />
-          <Text style={styles.loadingText}>변경 중...</Text>
+          <Text style={[styles.loadingText, {fontFamily: theme.fontFamily}]}>
+            변경 중...
+          </Text>
         </View>
       )}
 
-      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+      {errorMessage && (
+        <Text style={[styles.errorText, {fontFamily: theme.fontFamily}]}>
+          {errorMessage}
+        </Text>
+      )}
 
       {modalVisible && (
         <CustomModal

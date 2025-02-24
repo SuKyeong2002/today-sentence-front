@@ -8,7 +8,7 @@ import {useTheme} from '@/context/ThemeContext';
 export default function Profile() {
   const {t} = useTranslation();
   const {data: user, isLoading, error} = useUser();
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   if (isLoading) {
     return (
@@ -75,18 +75,20 @@ const ProfileImageContainer = styled(View)`
   border-radius: 50px;
 `;
 
-const ProfileNickname = styled(Text)<{isDarkMode: boolean}>`
+const ProfileNickname = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.xLarge}px;
   font-weight: 600;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const ProfileState = styled(Text)<{isDarkMode: boolean}>`
+const ProfileState = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 // 이미지
@@ -102,9 +104,10 @@ const LoadingContainer = styled(View)`
   align-items: center;
 `;
 
-const ErrorText = styled(Text)`
+const ErrorText = styled(Text)<{theme: any}>`
   font-size: 16px;
   color: red;
   text-align: center;
   margin-top: 20px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;

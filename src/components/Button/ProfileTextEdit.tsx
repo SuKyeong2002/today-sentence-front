@@ -16,7 +16,7 @@ export const ProfileTextEdit: React.FC<ProfileTextEditProps> = ({
   onPress,
   font,
 }) => {
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -26,7 +26,11 @@ export const ProfileTextEdit: React.FC<ProfileTextEditProps> = ({
           <ProfileEditText2 isDarkMode={isDarkMode}>{title2}</ProfileEditText2>
           <Image
             source={require('@/assets/image/rightArrow.png')}
-            style={[styles.ArrowIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' }]} />
+            style={[
+              styles.ArrowIcon,
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+            ]}
+          />
         </LeftContainer>
       </ProfileEditContainer>
     </TouchableOpacity>
@@ -56,18 +60,20 @@ const LeftContainer = styled(View)`
   gap: 10px;
 `;
 
-const ProfileEditText = styled(Text)<{isDarkMode: boolean}>`
+const ProfileEditText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const ProfileEditText2 = styled(Text)<{isDarkMode: boolean}>`
+const ProfileEditText2 = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 600;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const styles = StyleSheet.create({

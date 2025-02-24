@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {ThemeProvider} from 'styled-components';
@@ -7,7 +7,7 @@ import LoginScreen from './screens/auth/LoginPage';
 import SignUpScreen from './screens/auth/SignUpPage';
 import RecordScreen from './screens/record/Record';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
-import categoryBookSearchScreen2 from './screens/bookSearch2/categoryBookSearch';
+import CategoryBookSearchScreen2 from './screens/bookSearch2/CategoryBookSearch';
 import EmailFindPage from './screens/auth/EmailFind';
 import PasswordFindPage from './screens/auth/PasswordFind';
 import NotFoundPage from './screens/NotFound';
@@ -29,7 +29,7 @@ import {I18nextProvider} from 'react-i18next';
 import {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ThemeProviderWrapper} from '@/context/ThemeContext';
-import {FontProvider} from './context/FontContext';
+import {FontProvider, useFont} from './context/FontContext';
 import {lightTheme} from '@/styles/theme';
 import {QueryClient, QueryClientProvider} from 'react-query';
 
@@ -91,7 +91,7 @@ type RootStackParamList = {
   Record: undefined;
   Search: undefined;
   BookSearch: undefined;
-    categoryBookSearch: { category: string };
+  CategoryBookSearch: {category: string};
   BookSearch3: undefined;
   BookSearch4: undefined;
   Category: undefined;
@@ -115,80 +115,70 @@ type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
-  const [language, setLanguage] = useState(i18n.language);
-  const [font, setFont] = useState(lightTheme.fontFamily);
-
-  useEffect(() => {
-    const loadLanguage = async () => {
-      const storedLang = await AsyncStorage.getItem('appLanguage');
-      if (storedLang) {
-        await i18n.changeLanguage(storedLang);
-        setLanguage(storedLang);
-      }
-    };
-    loadLanguage();
-  }, []);
-
-  const appTheme = {
-    ...lightTheme,
-    fontFamily: font,
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <I18nextProvider i18n={i18n}>
-        <ThemeProviderWrapper>
-          <ThemeProvider theme={appTheme}>
-            <FontProvider>
-              <NavigationContainer theme={MyNavigationTheme}>
-                <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Login'>
-                  <Stack.Screen name="Landing" component={LandingScreen} />
-                  <Stack.Screen name="EmailFind" component={EmailFindPage} />
-                  <Stack.Screen
-                    name="PasswordFind"
-                    component={PasswordFindPage}
-                  />
-                  <Stack.Screen name="NotFound" component={NotFoundPage} />
-                  <Stack.Screen name="Login" component={LoginScreen} />
-                  <Stack.Screen name="SignUp" component={SignUpScreen} />
-                  <Stack.Screen name="Home" component={Footer} />
-                  <Stack.Screen name="RecordFooter" component={Footer} />
-                  <Stack.Screen name="Search" component={Footer} />
-                  <Stack.Screen
-                    name="BookSearch"
-                    component={BookSearchScreen}
-                  />
-                  <Stack.Screen
-                    name="categoryBookSearch"
-                    component={categoryBookSearchScreen2}
-                  />
-                  <Stack.Screen name="Category" component={Footer} />
-                  <Stack.Screen name="My" component={Footer} />
-                  <Stack.Screen name="Setting" component={SettingScreen} />
-                  <Stack.Screen name="Alert" component={AlertScreen} />
-                  <Stack.Screen name="Screen" component={ScreenScreen} />
-                  <Stack.Screen name="Record" component={RecordScreen}/>
-                  <Stack.Screen name="Font" component={FontScreen} />
-                  <Stack.Screen name="Profile" component={ProfileScreen} />
-                  <Stack.Screen name="Nickname" component={NicknameScreen} />
-                  <Stack.Screen
-                    name="Introduction"
-                    component={IntroductionScreen}
-                  />
-                  <Stack.Screen name="News" component={NewsScreen} />
-                  <Stack.Screen name="Account" component={AccountScreen} />
-                  <Stack.Screen name="Email" component={EmailScreen} />
-                  <Stack.Screen name="Password" component={PasswordScreen} />
-                  <Stack.Screen
-                    name="Authentication"
-                    component={AuthenticationScreen}
-                  />
-                </Stack.Navigator>
-              </NavigationContainer>
-            </FontProvider>
-          </ThemeProvider>
-        </ThemeProviderWrapper>
+        <FontProvider>
+          <ThemeProviderWrapper>
+            <ThemedApp />
+          </ThemeProviderWrapper>
+        </FontProvider>
       </I18nextProvider>
     </QueryClientProvider>
+  );
+}
+
+function ThemedApp() {
+  const [language, setLanguage] = useState(i18n.language);
+  const {selectedFont} = useFont();
+  const [theme, setTheme] = useState({...lightTheme, fontFamily: selectedFont});
+
+  useEffect(() => {
+    console.log(`🟡 Updating Theme with Font: ${selectedFont}`);
+    setTheme(prevTheme => ({
+      ...prevTheme,
+      fontFamily: selectedFont,
+    }));
+  }, [selectedFont]);
+
+  return (
+    <ThemeProvider theme={theme} key={selectedFont}>
+      <NavigationContainer theme={MyNavigationTheme}>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Landing" component={LandingScreen} />
+          <Stack.Screen name="EmailFind" component={EmailFindPage} />
+          <Stack.Screen name="PasswordFind" component={PasswordFindPage} />
+          <Stack.Screen name="NotFound" component={NotFoundPage} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Home" component={Footer} />
+          <Stack.Screen name="RecordFooter" component={Footer} />
+          <Stack.Screen name="Search" component={Footer} />
+          <Stack.Screen name="BookSearch" component={BookSearchScreen} />
+          <Stack.Screen
+            name="CategoryBookSearch"
+            component={CategoryBookSearchScreen2}
+          />
+          <Stack.Screen name="Category" component={Footer} />
+          <Stack.Screen name="My" component={Footer} />
+          <Stack.Screen name="Setting" component={SettingScreen} />
+          <Stack.Screen name="Alert" component={AlertScreen} />
+          <Stack.Screen name="Screen" component={ScreenScreen} />
+          <Stack.Screen name="Record" component={RecordScreen} />
+          <Stack.Screen name="Font" component={FontScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Nickname" component={NicknameScreen} />
+          <Stack.Screen name="Introduction" component={IntroductionScreen} />
+          <Stack.Screen name="News" component={NewsScreen} />
+          <Stack.Screen name="Account" component={AccountScreen} />
+          <Stack.Screen name="Email" component={EmailScreen} />
+          <Stack.Screen name="Password" component={PasswordScreen} />
+          <Stack.Screen
+            name="Authentication"
+            component={AuthenticationScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }

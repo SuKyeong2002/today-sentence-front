@@ -13,7 +13,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   showLogo,
   onNotificationPress,
 }) => {
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <View style={styles.headerContainer}>
@@ -33,7 +33,16 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
 
       <View style={styles.rightContainer}>
         <View style={styles.coinContainer}>
-          <Text style={[styles.coinText, {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}]}>0</Text>
+          <Text
+            style={[
+              styles.coinText,
+              {
+                color: isDarkMode ? '#FFFFFF' : '#2B2B2B',
+                fontFamily: theme.fontFamily,
+              },
+            ]}>
+            0
+          </Text>
           <TouchableOpacity onPress={() => console.log('Coin icon clicked')}>
             <Image
               source={require('../../assets/image/coin.png')}

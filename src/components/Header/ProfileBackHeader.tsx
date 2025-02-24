@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useTheme } from '@/context/ThemeContext'; 
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useTheme} from '@/context/ThemeContext';
 import styled from 'styled-components';
 
 type RootStackParamList = {
@@ -23,7 +23,7 @@ export const ProfileBackHeader: React.FC<BackHeaderProps> = ({
   onNotificationPress,
 }) => {
   const navigation = useNavigation<NavigationProp>();
-  const { isDarkMode } = useTheme(); 
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <HeaderContainer isDarkMode={isDarkMode}>
@@ -31,7 +31,10 @@ export const ProfileBackHeader: React.FC<BackHeaderProps> = ({
         <TouchableOpacity onPress={() => navigation.navigate('Search')}>
           <Image
             source={require('../../assets/image/back2.png')}
-            style={[styles.backIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' }]}
+            style={[
+              styles.backIcon,
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+            ]}
           />
         </TouchableOpacity>
         <SearchText isDarkMode={isDarkMode}>{searchKeyword}</SearchText>
@@ -40,7 +43,7 @@ export const ProfileBackHeader: React.FC<BackHeaderProps> = ({
   );
 };
 
-const HeaderContainer = styled(View)<{ isDarkMode: boolean }>`
+const HeaderContainer = styled(View)<{isDarkMode: boolean}>`
   width: 100%;
   height: 60px;
   flex-direction: row;
@@ -55,11 +58,12 @@ const LeftContainer = styled(View)`
   gap: 10px;
 `;
 
-const SearchText = styled(Text)<{ isDarkMode: boolean }>`
+const SearchText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: 18px;
   font-weight: 500;
-  color: ${({ isDarkMode, theme }) => 
-    isDarkMode ? theme.colors.white : theme.colors.text };
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const styles = StyleSheet.create({

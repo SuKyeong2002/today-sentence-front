@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
-import { View, Text } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import {View, Text} from 'react-native';
+import {useTranslation} from 'react-i18next';
 import i18n from '@/i18n';
-import { useTheme } from '@/context/ThemeContext';
+import {useTheme} from '@/context/ThemeContext';
 
 export default function Title() {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [todayDate, setTodayDate] = useState('');
-  const {isDarkMode} = useTheme();  
+  const {isDarkMode, theme} = useTheme();
 
   // 오늘 날짜 함수 (년, 월, 일, 요일)
   const getTodayDate = (local: string) => {
@@ -29,13 +29,15 @@ export default function Title() {
 
   return (
     <TitleWrapper>
-      <TodayDate isDarkMode={isDarkMode}>{t(todayDate)}</TodayDate>
-      <TodayAlert isDarkMode={isDarkMode}>💌 {t('오늘의 명언이 도착했어요!')}</TodayAlert>
+      <TodayDate isDarkMode={isDarkMode} style={{ fontFamily: theme.fontFamily }}>{t(todayDate)}</TodayDate>
+      <TodayAlert isDarkMode={isDarkMode}>
+        💌 {t('오늘의 명언이 도착했어요!')}
+      </TodayAlert>
     </TitleWrapper>
   );
 }
 
-// 스타일 
+// 스타일
 const TitleWrapper = styled(View)`
   flex-direction: column;
   align-items: flex-start;
@@ -44,15 +46,17 @@ const TitleWrapper = styled(View)`
   gap: 12px;
 `;
 
-const TodayDate = styled(Text)<{isDarkMode: boolean}>`
-  font-size: ${({ theme }) => theme.fontSizes.xLarge}px;
+const TodayDate = styled(Text)<{isDarkMode: boolean; theme: any}>`
+  font-family: ${({theme}) => theme.fontFamily};
+  font-size: ${({theme}) => theme.fontSizes.xLarge}px;
   font-weight: 700;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const TodayAlert = styled(Text)<{isDarkMode: boolean}>`
-  font-size: ${({ theme }) => theme.fontSizes.small}px;
+const TodayAlert = styled(Text)<{isDarkMode: boolean; theme: any}>`
+  font-family: ${({theme}) => theme.fontFamily};
+  font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.lightGray : theme.colors.darkGray};

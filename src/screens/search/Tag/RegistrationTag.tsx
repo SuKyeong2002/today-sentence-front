@@ -26,7 +26,7 @@ export default function RegistrationTag() {
   const navigation = useNavigation<NavigationProp>();
   const {t} = useTranslation();
   const {data, isLoading, error} = useFamousTags();
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   if (isLoading) return <Text>{t('로딩 중...')}</Text>;
   if (error) return <Text>{t('태그를 불러오지 못했습니다')}</Text>;
@@ -43,7 +43,9 @@ export default function RegistrationTag() {
           contentContainerStyle={{flexGrow: 1}}>
           <View style={{flex: 1, justifyContent: 'space-between'}}>
             <RegistrationTagContainer isDarkMode={isDarkMode}>
-              <RegistrationText isDarkMode={isDarkMode}>
+              <RegistrationText
+                isDarkMode={isDarkMode}
+                style={{fontFamily: theme.fontFamily}}>
                 🤎 {t('인기 등록 태그')}
               </RegistrationText>
               <TagContainer>
@@ -67,6 +69,22 @@ export default function RegistrationTag() {
   );
 }
 
+// 스타일
+const getFontWeight = (fontFamily: string) => {
+  switch (fontFamily) {
+    case 'Pretendard-Regular':
+      return '700'; 
+    case 'BookendBataanRegular':
+    case 'OnggeulipKimkonghae':
+    case 'HakgyoansimGeurimilgiTTFR':
+    case 'OnggeulipWicelist':
+    case 'KyoboHandwriting2020pdy':
+      return '600'; 
+    default:
+      return '700';
+  }
+};
+
 const RegistrationTagContainer = styled(View)<{isDarkMode: boolean}>`
   width: 90%;
   padding: 20px;
@@ -78,11 +96,12 @@ const RegistrationTagContainer = styled(View)<{isDarkMode: boolean}>`
   gap: 20px;
 `;
 
-const RegistrationText = styled(Text)<{isDarkMode: boolean}>`
+const RegistrationText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
-  font-weight: 700;
+  font-weight: ${({ theme }) => getFontWeight(theme.fontFamily)};
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const TagContainer = styled(View)`
@@ -107,8 +126,9 @@ const TagText = styled(TouchableOpacity)`
   background: ${({theme}) => theme.colors.background};
 `;
 
-const TagTextLabel = styled(Text)`
+const TagTextLabel = styled(Text)<{theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
   color: ${({theme}) => theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
