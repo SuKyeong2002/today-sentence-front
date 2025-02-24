@@ -1,19 +1,29 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import styled from 'styled-components';
+import {useTheme} from '@/context/ThemeContext';
 
 interface ProfileEditItemProps {
   title: string;
   onPress: () => void;
-  font: string;  
+  font: string;
 }
 
-const ProfileEditItem: React.FC<ProfileEditItemProps> = ({ title, onPress, font }) => {
+const ProfileEditItem: React.FC<ProfileEditItemProps> = ({
+  title,
+  onPress,
+  font,
+}) => {
+  const {isDarkMode} = useTheme();
+
   return (
     <TouchableOpacity onPress={onPress}>
-      <ProfileEditContainer>
-        <ProfileEditText fontFamily={font}>{title}</ProfileEditText> 
-        <SettingImage source={require('@/assets/image/rightArrow.png')} resizeMode="contain" />
+      <ProfileEditContainer isDarkMode={isDarkMode}>
+        <ProfileEditText isDarkMode={isDarkMode}>{title}</ProfileEditText>
+        <Image
+          source={require('@/assets/image/rightArrow.png')}
+          style={[styles.backIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' }]}
+        />
       </ProfileEditContainer>
     </TouchableOpacity>
   );
@@ -22,7 +32,7 @@ const ProfileEditItem: React.FC<ProfileEditItemProps> = ({ title, onPress, font 
 export default ProfileEditItem;
 
 // 스타일
-const ProfileEditContainer = styled(View)`
+const ProfileEditContainer = styled(View)<{ isDarkMode: boolean }>`
   width: 90%;
   display: flex;
   padding: 16px;
@@ -30,17 +40,22 @@ const ProfileEditContainer = styled(View)`
   flex-direction: row;
   margin: 0 20px;
   border-radius: 10px;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({ isDarkMode, theme }) => 
+    isDarkMode ? theme.colors.text : theme.colors.white };
 `;
 
-const ProfileEditText = styled(Text)<{ fontFamily: string }>`
+const ProfileEditText = styled(Text)<{ isDarkMode: boolean }>`
   flex: 1;
-  font-size: ${({ theme }) => theme.fontSizes.regular}px;
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ isDarkMode, theme }) => 
+    isDarkMode ? theme.colors.white : theme.colors.text };
 `;
 
-const SettingImage = styled(Image)`
-  width: 24px;
-  height: 24px;
-`;
+const styles = StyleSheet.create({
+  backIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
+});

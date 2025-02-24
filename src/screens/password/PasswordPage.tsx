@@ -1,11 +1,12 @@
-import { CheckedPassword } from '@/api/auth';
-import { ProfileEditHader } from '@/components/Header/ProfileEditHader';
-import { getStoredLanguage } from '@/utils/language';
+import {CheckedPassword} from '@/api/auth';
+import {ProfileEditHader} from '@/components/Header/ProfileEditHader';
+import {useTheme} from '@/context/ThemeContext';
+import {getStoredLanguage} from '@/utils/language';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useMutation } from 'react-query';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {useMutation} from 'react-query';
 import styled from 'styled-components';
 export default function PasswordPage() {
   const {t, i18n} = useTranslation();
@@ -83,8 +84,11 @@ export default function PasswordPage() {
     passwordCheckMutation.mutate(password);
   };
 
+  const {isDarkMode} = useTheme();
+
   return (
-    <View style={{flex: 1}}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <ProfileEditHader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
@@ -113,8 +117,12 @@ export default function PasswordPage() {
             <ButtonText>확인</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
-        {errorMessage !== '' && <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>}
-        {errorMessage2 !== '' && <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>}
+        {errorMessage !== '' && (
+          <ErrorMessage isError={isError}>{errorMessage}</ErrorMessage>
+        )}
+        {errorMessage2 !== '' && (
+          <ErrorMessage2 isError2={isError2}>{errorMessage2}</ErrorMessage2>
+        )}
 
         <InputWrapper>
           <NicknameInputContainer>
@@ -144,7 +152,9 @@ export default function PasswordPage() {
           </NicknameInputContainer>
         </InputWrapper>
 
-        {errorMessage3 !== '' && <ErrorMessage3 isError3={isError3}>{errorMessage3}</ErrorMessage3>}
+        {errorMessage3 !== '' && (
+          <ErrorMessage3 isError3={isError3}>{errorMessage3}</ErrorMessage3>
+        )}
 
         {/* {changePassword &&
           changePassword !== checkChangePassword && (

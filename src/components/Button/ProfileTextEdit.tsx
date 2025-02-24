@@ -1,5 +1,6 @@
+import {useTheme} from '@/context/ThemeContext';
 import React from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import styled from 'styled-components';
 
 interface ProfileTextEditProps {
@@ -15,16 +16,17 @@ export const ProfileTextEdit: React.FC<ProfileTextEditProps> = ({
   onPress,
   font,
 }) => {
+  const {isDarkMode} = useTheme();
+
   return (
     <TouchableOpacity onPress={onPress}>
-      <ProfileEditContainer>
-        <ProfileEditText fontFamily={font}>{title}</ProfileEditText>
+      <ProfileEditContainer isDarkMode={isDarkMode}>
+        <ProfileEditText isDarkMode={isDarkMode}>{title}</ProfileEditText>
         <LeftContainer>
-          <ProfileEditText2 fontFamily={font}>{title2}</ProfileEditText2>
-          <ArrowImage
+          <ProfileEditText2 isDarkMode={isDarkMode}>{title2}</ProfileEditText2>
+          <Image
             source={require('@/assets/image/rightArrow.png')}
-            resizeMode="contain"
-          />
+            style={[styles.ArrowIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' }]} />
         </LeftContainer>
       </ProfileEditContainer>
     </TouchableOpacity>
@@ -32,7 +34,7 @@ export const ProfileTextEdit: React.FC<ProfileTextEditProps> = ({
 };
 
 // 스타일
-const ProfileEditContainer = styled(View)`
+const ProfileEditContainer = styled(View)<{isDarkMode: boolean}>`
   width: 90%;
   display: flex;
   padding: 16px;
@@ -42,7 +44,8 @@ const ProfileEditContainer = styled(View)`
   flex-direction: row;
   margin: 0 20px;
   border-radius: 10px;
-  background: ${({theme}) => theme.colors.white};
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
 `;
 
 const LeftContainer = styled(View)`
@@ -53,19 +56,25 @@ const LeftContainer = styled(View)`
   gap: 10px;
 `;
 
-const ProfileEditText = styled(Text)<{fontFamily: string}>`
+const ProfileEditText = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const ProfileEditText2 = styled(Text)<{fontFamily: string}>`
+const ProfileEditText2 = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 600;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const ArrowImage = styled(Image)`
-  width: 24px;
-  height: 24px;
-`;
+const styles = StyleSheet.create({
+  ArrowIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 12,
+    resizeMode: 'contain',
+  },
+});

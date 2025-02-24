@@ -4,12 +4,13 @@ import {View, Image, Text, Alert, TouchableOpacity, Share} from 'react-native';
 import {useLikeToggle} from '@/hooks/useLikeToggle';
 import {useBookmarkToggle} from '@/hooks/useBookmarkToggle';
 import CommentModal from './CommentModal';
+import {useTheme} from '@/context/ThemeContext';
 
 interface InteractionProps {
   postId: number;
   likesCount: number;
   bookmarkCount: number;
-  commentCount:number;
+  commentCount: number;
   // bookCover: string;
   bookTitle: string;
   postContent: string;
@@ -25,7 +26,7 @@ export default function Interaction({
   bookTitle,
   bookAuthor,
   postContent,
-  interaction
+  interaction,
 }: InteractionProps) {
   const likeMutation = useLikeToggle();
   const bookmarkMutation = useBookmarkToggle();
@@ -35,6 +36,7 @@ export default function Interaction({
   const [currentBookmarks, setCurrentBookmarks] = useState(bookmarkCount);
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
   const [currentCommentCount, setCurrentCommentCount] = useState(commentCount);
+  const {isDarkMode} = useTheme();
 
   // postId 변경될 때 상태 업데이트
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function Interaction({
     setCurrentCommentCount(commentCount);
     setIsLiked(interaction.isLiked);
     setIsBookmarked(interaction.isSaved);
-  }, [likesCount, bookmarkCount, postId,interaction]);
+  }, [likesCount, bookmarkCount, postId, interaction]);
 
   // 공감 toggle
   const handleHeartClick = () => {
@@ -62,7 +64,6 @@ export default function Interaction({
   const handleCommentAdded = () => {
     setCurrentCommentCount(prev => prev + 1);
   };
-
 
   // 저장 toggle
   const handleBookmarkClick = () => {
@@ -113,7 +114,7 @@ export default function Interaction({
                 resizeMode="contain"
               />
             </HeartWrapper>
-            <HeartNumber>{currentLikes}</HeartNumber>
+            <HeartNumber isDarkMode={isDarkMode}>{currentLikes}</HeartNumber>
           </HeartContainer>
         </TouchableOpacity>
 
@@ -125,7 +126,7 @@ export default function Interaction({
                 resizeMode="contain"
               />
             </ChatWrapper>
-            <ChatNumber>{commentCount}</ChatNumber>
+            <ChatNumber isDarkMode={isDarkMode}>{commentCount}</ChatNumber>
           </BookmarkContainer>
         </TouchableOpacity>
         <CommentModal
@@ -147,7 +148,9 @@ export default function Interaction({
                 resizeMode="contain"
               />
             </BookmarkWrapper>
-            <BookmarkNumber>{currentBookmarks}</BookmarkNumber>
+            <BookmarkNumber isDarkMode={isDarkMode}>
+              {currentBookmarks}
+            </BookmarkNumber>
           </BookmarkContainer>
         </TouchableOpacity>
 
@@ -159,7 +162,7 @@ export default function Interaction({
                 resizeMode="contain"
               />
             </ShareWrapper>
-            <ShareNumber>0</ShareNumber>
+            <ShareNumber isDarkMode={isDarkMode}>0</ShareNumber>
           </ShareContainer>
         </TouchableOpacity>
       </InteractionContainer>
@@ -196,10 +199,11 @@ const HeartWrapper = styled(View)`
   position: relative;
 `;
 
-const HeartNumber = styled(Text)`
+const HeartNumber = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
-  color: ${({theme}) => theme.colors.darkGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.darkGray};
 `;
 
 // 댓글
@@ -214,10 +218,11 @@ const ChatWrapper = styled(View)`
   border: 1px solid #a9a9a955;
 `;
 
-const ChatNumber = styled(Text)`
+const ChatNumber = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
-  color: ${({theme}) => theme.colors.darkGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.darkGray};
 `;
 
 // 북마크
@@ -240,10 +245,11 @@ const BookmarkWrapper = styled(View)`
   border: 1px solid #a9a9a955;
 `;
 
-const BookmarkNumber = styled(Text)`
+const BookmarkNumber = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
-  color: ${({theme}) => theme.colors.darkGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.darkGray};
 `;
 
 // 공유
@@ -266,10 +272,11 @@ const ShareWrapper = styled(View)`
   border: 1px solid #a9a9a955;
 `;
 
-const ShareNumber = styled(Text)`
+const ShareNumber = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
-  color: ${({theme}) => theme.colors.darkGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.darkGray};
 `;
 
 // 이미지

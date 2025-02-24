@@ -1,10 +1,11 @@
-import React, { useState, useMemo,useEffect } from 'react';
-import { View, FlatList, ActivityIndicator, Text, Switch } from 'react-native';
+import React, {useState, useMemo, useEffect} from 'react';
+import {View, FlatList, ActivityIndicator, Text, Switch} from 'react-native';
 import styled from 'styled-components';
 import BackHeader from '@/components/Header/BackHeader';
 import SearchContent2 from './content/SearchContent2';
-import { RouteProp } from '@react-navigation/native';
-import { useCategorySearch } from '@/hooks/useCategorySearch';
+import {RouteProp} from '@react-navigation/native';
+import {useCategorySearch} from '@/hooks/useCategorySearch';
+import {useTheme} from '@/context/ThemeContext';
 
 interface Post {
   postId: number;
@@ -22,75 +23,87 @@ interface Post {
 }
 
 type RootStackParamList = {
-  categoryBookSearch: { category: string };
+  categoryBookSearch: {category: string};
 };
 
 interface Props {
   route: RouteProp<RootStackParamList, 'categoryBookSearch'>;
 }
 
-export default function categoryBookSearch({ route }: Props) {
-  const { category } = route.params;
-  const { data, isLoading } = useCategorySearch(category);
+export default function categoryBookSearch({route}: Props) {
+  const {category} = route.params;
+  const {data, isLoading} = useCategorySearch(category);
   const [sortByLatest, setSortByLatest] = useState(false);
-
+  const {isDarkMode} = useTheme();
 
   const posts = data?.posts;
   const interaction = data?.interaction;
 
   const combinedPosts = useMemo(() => {
-      if (!posts || !interaction) {
-        return [];
+    if (!posts || !interaction) {
+      return [];
+    }
+
+    return posts.map((post, index) => ({
+      ...post,
+      interaction: interaction[index] || {isLiked: false, isSaved: false},
+    }));
+  }, [posts, interaction]);
+
+  const sortedPosts = useMemo(() => {
+    if (!combinedPosts.length) {
+      return [];
+    }
+
+    return [...combinedPosts].sort((a, b) => {
+      if (sortByLatest) {
+        return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
+      } else {
+        return b.likesCount - a.likesCount;
       }
-
-      return posts.map((post, index) => ({
-        ...post,
-        interaction: interaction[index] || { isLiked: false, isSaved: false },
-      }));
-    }, [posts, interaction]);
-
-
-   const sortedPosts = useMemo(() => {
-       if (!combinedPosts.length) {
-         return [];
-       }
-
-       return [...combinedPosts].sort((a, b) => {
-         if (sortByLatest) {
-           return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
-         } else {
-           return b.likesCount - a.likesCount;
-         }
-       });
-     }, [combinedPosts, sortByLatest]);
+    });
+  }, [combinedPosts, sortByLatest]);
 
   return (
-    <Container>
+    <Container
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <BackHeader
         searchKeyword="검색"
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
       <ToggleContainer>
-        <Switch value={sortByLatest} onValueChange={() => setSortByLatest((prev) => !prev)} />
-        <ToggleText>최신순</ToggleText>
+        <Switch
+          value={sortByLatest}
+          onValueChange={() => setSortByLatest(prev => !prev)}
+          trackColor={{
+            false: '#D3D3D3', 
+            true: isDarkMode ? '#8A715D' : '#D3D3D3', 
+          }}
+          thumbColor={isDarkMode ? '#FFFFFF' : '#D3D3D3'}
+        />
+        <ToggleText isDarkMode={isDarkMode}>최신순</ToggleText>
       </ToggleContainer>
 
       {isLoading ? (
-              <ActivityIndicator size="large" color="#0000ff" />
-            ) : sortedPosts.length > 0 ? (
-              <FlatList
-                data={sortedPosts}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <BooklistWrapper>
-                    <SearchContent2 post={item} interaction={item.interaction} sortByLatest={false} />
-                  </BooklistWrapper>
-                )}
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : sortedPosts.length > 0 ? (
+        <FlatList
+          data={sortedPosts}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => (
+            <BooklistWrapper>
+              <SearchContent2
+                post={item}
+                interaction={item.interaction}
+                sortByLatest={false}
               />
-            ) : (
-              <NoDataText>검색 결과가 없습니다.</NoDataText>
-            )}
+            </BooklistWrapper>
+          )}
+        />
+      ) : (
+        <NoDataText>검색 결과가 없습니다.</NoDataText>
+      )}
     </Container>
   );
 }
@@ -107,9 +120,11 @@ const ToggleContainer = styled(View)`
   margin: 10px 20px;
 `;
 
-const ToggleText = styled(Text)`
+const ToggleText = styled(Text)<{isDarkMode: boolean}>`
   font-size: 16px;
   margin-left: 10px;
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
 const BooklistWrapper = styled(View)`

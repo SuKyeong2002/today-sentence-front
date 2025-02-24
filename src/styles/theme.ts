@@ -20,7 +20,7 @@ export const lightTheme: DefaultTheme = {
   },
   colors: {
     white: '#FFFFFF',
-    text: '#000000',
+    text: '#2B2B2B',
     darkGray: '#828183',
     gray: '#50505055',
     lightGray: '#D3D3D3',
@@ -54,7 +54,7 @@ export const darkTheme: DefaultTheme = {
     title: 24,
   },
   colors: {
-    white: '#FFFFFF',
+    white: '#2B2B2B',
     text: '#FFFFFF',
     darkGray: '#828183',
     gray: '#50505055',

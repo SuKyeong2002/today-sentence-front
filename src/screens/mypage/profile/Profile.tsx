@@ -3,10 +3,12 @@ import {View, Text, Image, ActivityIndicator} from 'react-native';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {useUser} from '@/hooks/useUser';
+import {useTheme} from '@/context/ThemeContext';
 
 export default function Profile() {
   const {t} = useTranslation();
   const {data: user, isLoading, error} = useUser();
+  const {isDarkMode} = useTheme();
 
   if (isLoading) {
     return (
@@ -30,10 +32,10 @@ export default function Profile() {
           />
         </ProfileImageContainer>
         <ProfileTextContainer>
-          <ProfileNickname>
+          <ProfileNickname isDarkMode={isDarkMode}>
             {user?.nickname || t('존재하지 않는 닉네임입니다.')}
           </ProfileNickname>
-          <ProfileState>
+          <ProfileState isDarkMode={isDarkMode}>
             {user?.statusMessage || t('존재하지 않는 상태 메시지입니다.')}
           </ProfileState>
         </ProfileTextContainer>
@@ -73,16 +75,18 @@ const ProfileImageContainer = styled(View)`
   border-radius: 50px;
 `;
 
-const ProfileNickname = styled(Text)`
+const ProfileNickname = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.xLarge}px;
   font-weight: 600;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const ProfileState = styled(Text)`
+const ProfileState = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
 // 이미지

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {View, Text, Image} from 'react-native';
 import Interaction from '@/screens/home/Interaction/Interaction';
+import {useTheme} from '@/context/ThemeContext';
 
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
@@ -16,62 +17,60 @@ const categoryMap: Record<string, string> = {
 };
 
 interface Post {
-    postId: number;
-    postWriter: string;
-    category: string;
-    bookTitle: string;
-    bookAuthor: string;
-    bookCover: string;
-    postContent: string;
-    hashtags: string | string[];
-    likesCount: number;
-    commentCount: number;
-    bookmarkCount: number;
-    createAt: string;
+  postId: number;
+  postWriter: string;
+  category: string;
+  bookTitle: string;
+  bookAuthor: string;
+  bookCover: string;
+  postContent: string;
+  hashtags: string | string[];
+  likesCount: number;
+  commentCount: number;
+  bookmarkCount: number;
+  createAt: string;
 }
 
-interface Interaction{
-    isLiked:boolean,
-    isSaved:boolean
+interface Interaction {
+  isLiked: boolean;
+  isSaved: boolean;
 }
-
 
 interface SentenceProps {
-  post : Post,
-  interaction : Interaction
-
+  post: Post;
+  interaction: Interaction;
 }
 
-export default function Sentence({
-  post,interaction
-}: SentenceProps) {
+export default function Sentence({post, interaction}: SentenceProps) {
   const formattedDate = new Date(post.createAt).toLocaleString();
+  const {isDarkMode} = useTheme();
 
-  console.log("📌 전달된 commentCount:", post.commentCount);
-
+  console.log('📌 전달된 commentCount:', post.commentCount);
 
   return (
-    <ContentWrapper>
+    <ContentWrapper isDarkMode={isDarkMode}>
       <BookContainer>
         <BookImage source={{uri: post.bookCover}} resizeMode="contain" />
         <BookWrapper>
-          <BookCategory>{categoryMap[post.category] || '기타'}</BookCategory>
-          <BookTitle>{post.bookTitle}</BookTitle>
-          <BookWriter>{post.bookAuthor}</BookWriter>
+          <BookCategory isDarkMode={isDarkMode}>
+            {categoryMap[post.category] || '기타'}
+          </BookCategory>
+          <BookTitle isDarkMode={isDarkMode}>{post.bookTitle}</BookTitle>
+          <BookWriter isDarkMode={isDarkMode}>{post.bookAuthor}</BookWriter>
           <PostProfileContainer>
             <ChatImage
               source={require('@/assets/image/other_user.png')}
               resizeMode="contain"
             />
-            <PostWriter>{post.postWriter}</PostWriter>
+            <PostWriter isDarkMode={isDarkMode}>{post.postWriter}</PostWriter>
           </PostProfileContainer>
         </BookWrapper>
       </BookContainer>
       <BookRecord>
-        <BookSentence>{post.postContent}</BookSentence>
-        <BookTag>{post.hashtags}</BookTag>
+        <BookSentence isDarkMode={isDarkMode}>{post.postContent}</BookSentence>
+        <BookTag isDarkMode={isDarkMode}>{post.hashtags}</BookTag>
 
-        <BookDate>{post.formattedDate}</BookDate>
+        <BookDate isDarkMode={isDarkMode}>{formattedDate}</BookDate>
         <InteractionContainer>
           <Interaction
             postId={post.postId}
@@ -82,7 +81,7 @@ export default function Sentence({
             bookTitle={post.bookTitle}
             postContent={post.postContent}
             bookAuthor={post.bookAuthor}
-            interaction = {interaction}
+            interaction={interaction}
           />
         </InteractionContainer>
       </BookRecord>
@@ -90,11 +89,12 @@ export default function Sentence({
   );
 }
 
-const ContentWrapper = styled(View)`
+const ContentWrapper = styled(View)<{isDarkMode: boolean}>`
   padding: 20px;
   gap: 20px;
   border-radius: 15px;
-  background: ${({theme}) => theme.colors.white};
+  background: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
 `;
 
 const BookContainer = styled(View)`
@@ -110,24 +110,29 @@ const BookWrapper = styled(View)`
   gap: 5px;
 `;
 
-const BookCategory = styled(Text)`
+const BookCategory = styled(Text)<{isDarkMode: boolean}>`
   align-self: flex-start;
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
-  color: rgba(80, 80, 80, 0.33);
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.text : theme.colors.white};
   border-radius: 8px;
   background: #f5f4f5;
   padding: 4px 10px;
 `;
 
-const BookTitle = styled(Text)`
+const BookTitle = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.title}px;
   font-weight: 600;
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const BookWriter = styled(Text)`
+const BookWriter = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 500;
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
 const BookRecord = styled(View)`
@@ -138,23 +143,28 @@ const BookRecord = styled(View)`
   gap: 5px;
 `;
 
-const BookSentence = styled(Text)`
+const BookSentence = styled(Text)<{isDarkMode: boolean}>`
+  margin: 10px 0;
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
+    color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
 
-const BookTag = styled(Text)`
-  margin: 4px 0;
+const BookTag = styled(Text)<{isDarkMode: boolean}>`
+  margin: 5px 0;
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.darkGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.darkGray};
 `;
 
-const BookDate = styled(Text)`
-  margin: 8px 0;
+const BookDate = styled(Text)<{isDarkMode: boolean}>`
+  margin: 10px 0;
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.darkGray};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.lightGray : theme.colors.darkGray};
 `;
 
 const BookImage = styled(Image)`
@@ -170,10 +180,11 @@ const PostProfileContainer = styled(View)`
   gap: 10px;
 `;
 
-const PostWriter = styled(Text)`
+const PostWriter = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
-  color: ${({theme}) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.lightGray : theme.colors.text};
 `;
 
 // 상호작용

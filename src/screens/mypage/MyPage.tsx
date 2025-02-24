@@ -1,4 +1,4 @@
-import {View, Text, Image, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, Image, TouchableOpacity, Alert, StyleSheet} from 'react-native';
 import styled from 'styled-components';
 import Profile from './profile/Profile';
 import React, {useEffect, useState} from 'react';
@@ -8,6 +8,7 @@ import ProfileEditItem from '@/components/Button/ProfileEditItem';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomModal from '@/components/Modal/CustomModal';
+import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Setting: undefined;
@@ -21,6 +22,7 @@ export default function MyPage() {
   const {t} = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
   const [font, setFont] = useState<string>('PretendardRegular');
+  const {isDarkMode, setThemeMode} = useTheme();
 
   useEffect(() => {
     (async () => {
@@ -32,12 +34,16 @@ export default function MyPage() {
   }, []);
 
   return (
-    <View style={{flex: 1}}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <SettingContainer>
         <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
-          <SettingImage
+          <Image
             source={require('@/assets/image/setting.png')}
-            resizeMode="contain"
+            style={[
+              styles.ArrowIcon,
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+            ]}
           />
         </TouchableOpacity>
       </SettingContainer>
@@ -89,7 +95,11 @@ const ListContainer = styled(View)`
 `;
 
 // 이미지
-const SettingImage = styled(Image)`
-  width: 24px;
-  height: 24px;
-`;
+const styles = StyleSheet.create({
+  ArrowIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 12,
+    resizeMode: 'contain',
+  },
+});

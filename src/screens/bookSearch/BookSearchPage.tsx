@@ -3,10 +3,14 @@ import styled from 'styled-components';
 import {View, FlatList} from 'react-native';
 import React from 'react';
 import SearchContent from './content/SearchContent';
+import {useTheme} from '@/context/ThemeContext';
 
 export default function BookSearchPage() {
+  const {isDarkMode} = useTheme();
+
   return (
-    <Container>
+    <Container
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <BackHeader
         searchKeyword="검색"
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}

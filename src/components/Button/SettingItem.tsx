@@ -1,26 +1,40 @@
+import { useTheme } from '@/context/ThemeContext';
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, ImageSourcePropType } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ImageSourcePropType,
+  StyleSheet,
+} from 'react-native';
 import styled from 'styled-components';
 
 interface SettingItemProps {
   title: string;
   onPress: () => void;
-  iconSource?: ImageSourcePropType; 
+  iconSource?: ImageSourcePropType;
 }
 
-export const SettingItem: React.FC<SettingItemProps> = ({ title, onPress, iconSource }) => {
+export const SettingItem: React.FC<SettingItemProps> = ({
+  title,
+  onPress,
+  iconSource,
+}) => {
+  const {isDarkMode} = useTheme();
+
   return (
     <TouchableOpacity onPress={onPress}>
-      <ProfileEditContainer>
-        {iconSource && <SettingIcon source={iconSource} resizeMode="contain" />}
-        <ProfileEditText>{title}</ProfileEditText>
+      <ProfileEditContainer isDarkMode={isDarkMode}>
+        {iconSource && <Image source={iconSource} style={[styles.settingIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' }]} />}
+        <ProfileEditText isDarkMode={isDarkMode}>{title}</ProfileEditText>
       </ProfileEditContainer>
     </TouchableOpacity>
   );
 };
 
 // 스타일
-const ProfileEditContainer = styled(View)`
+const ProfileEditContainer = styled(View)<{isDarkMode: boolean}>`
   width: 90%;
   display: flex;
   padding: 16px;
@@ -28,18 +42,23 @@ const ProfileEditContainer = styled(View)`
   flex-direction: row;
   margin: 0 20px;
   border-radius: 10px;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({ isDarkMode, theme }) => 
+    isDarkMode ? theme.colors.text : theme.colors.white };
 `;
 
-const SettingIcon = styled(Image)`
-  width: 24px;
-  height: 24px;
-  margin-right: 12px; 
-`;
+const styles = StyleSheet.create({
+  settingIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 12,
+    resizeMode: 'contain',
+  },
+});
 
-const ProfileEditText = styled(Text)`
+const ProfileEditText = styled(Text)<{isDarkMode: boolean}>`
   flex: 1;
-  font-size: ${({ theme }) => theme.fontSizes.regular}px;
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({isDarkMode, theme}) =>
+    isDarkMode ? theme.colors.white : theme.colors.text};
 `;
