@@ -13,42 +13,11 @@ const Tab = createMaterialTopTabNavigator();
 // 탭 네비게이션만 담당하는 컴포넌트
 function TabNavigator() {
   return (
-<<<<<<< HEAD
-    <>
-      <Header/>
-      <Tab.Navigator
-        initialRouteName="기록"
-        screenOptions={{
-          tabBarActiveTintColor: '#050953',
-          tabBarLabelStyle: { fontSize: 14, color: '#050953' },
-          tabBarStyle: { backgroundColor: 'white' },
-        }}
-      >
-        <Tab.Screen
-          name="기록"
-          component={RecordContent}
-          options={{ tabBarLabel: '기록' }}
-        />
-        <Tab.Screen
-          name="저장"
-          component={SavedContent}
-          options={{ tabBarLabel: '저장' }}
-        />
-        <Tab.Screen
-          name="통계"
-          component={StatsContent}
-          options={{ tabBarLabel: '통계' }}
-        />
-      </Tab.Navigator>
-      {/* <Footer /> */}
-    </>
-=======
     <Tab.Navigator>
       <Tab.Screen name="기록" component={RecordContent} options={{ tabBarLabel: "기록" }} />
       <Tab.Screen name="저장" component={SavedContent} options={{ tabBarLabel: "저장" }} />
       <Tab.Screen name="통계" component={StatsContent} options={{ tabBarLabel: "통계" }} />
     </Tab.Navigator>
->>>>>>> 3c4bb9993f6a8b7382b2750995fe0d7eae101f6d
   );
 }
 
