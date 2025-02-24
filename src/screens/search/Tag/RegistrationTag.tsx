@@ -51,7 +51,7 @@ export default function RegistrationTag() {
                   {recordTags.map((tag: string, index: number) => (
                     <TagText
                       key={index}
-                      onPress={() => navigation.navigate('BookSearch')}>
+                      onPress={() => navigation.navigate('BookSearch',{tag})}>
                       <TagTextLabel>
                         {tag.length > 3 ? `${tag.substring(0, 3)}...` : tag}
                       </TagTextLabel>
