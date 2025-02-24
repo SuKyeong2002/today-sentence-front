@@ -43,7 +43,7 @@ interface SentenceProps {
 
 export default function Sentence({post, interaction}: SentenceProps) {
   const formattedDate = new Date(post.createAt).toLocaleString();
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   console.log('📌 전달된 commentCount:', post.commentCount);
 
@@ -115,24 +115,27 @@ const BookCategory = styled(Text)<{isDarkMode: boolean}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
-    isDarkMode ? theme.colors.text : theme.colors.gray};
+    isDarkMode ? theme.colors.text : theme.colors.darkGray};
   border-radius: 8px;
   background: #f5f4f5;
   padding: 4px 10px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const BookTitle = styled(Text)<{isDarkMode: boolean}>`
+const BookTitle = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.title}px;
   font-weight: 600;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const BookWriter = styled(Text)<{isDarkMode: boolean}>`
+const BookWriter = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const BookRecord = styled(View)`
@@ -143,28 +146,31 @@ const BookRecord = styled(View)`
   gap: 5px;
 `;
 
-const BookSentence = styled(Text)<{isDarkMode: boolean}>`
+const BookSentence = styled(Text)<{isDarkMode: boolean; theme: any}>`
   margin: 10px 0;
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
-    color: ${({isDarkMode, theme}) =>
+  color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const BookTag = styled(Text)<{isDarkMode: boolean}>`
+const BookTag = styled(Text)<{isDarkMode: boolean; theme: any}>`
   margin: 5px 0;
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.darkGray};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const BookDate = styled(Text)<{isDarkMode: boolean}>`
+const BookDate = styled(Text)<{isDarkMode: boolean; theme: any}>`
   margin: 10px 0;
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.lightGray : theme.colors.darkGray};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const BookImage = styled(Image)`
@@ -180,11 +186,12 @@ const PostProfileContainer = styled(View)`
   gap: 10px;
 `;
 
-const PostWriter = styled(Text)<{isDarkMode: boolean}>`
+const PostWriter = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.lightGray : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 // 상호작용

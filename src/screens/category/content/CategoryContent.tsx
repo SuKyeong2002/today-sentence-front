@@ -4,13 +4,16 @@ import styled from 'styled-components';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useTheme} from '@/context/ThemeContext';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 type RootStackParamList = {
-  categoryBookSearch: {category: string; page: number};
+  CategoryBookSearch: {category: string; page: number};
 };
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'categoryBookSearch'>;
+type NavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'CategoryBookSearch'
+>;
 
 interface Category {
   category: string;
@@ -21,7 +24,7 @@ const CategoryContent: React.FC<{
   subtitle: string;
   onPress: () => void;
 }> = ({title, subtitle, onPress}) => {
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -45,7 +48,7 @@ const CategoryContent: React.FC<{
 
 export default function CategoryList() {
   const navigation = useNavigation<NavigationProp>();
-  const { t } = useTranslation(); // 🔹 번역 훅 사용
+  const {t} = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -90,7 +93,7 @@ export default function CategoryList() {
 
   const navigateToPage = (category: string) => {
     const pageNumber = 1;
-    navigation.navigate('categoryBookSearch', {category, page: pageNumber});
+    navigation.navigate('CategoryBookSearch', {category, page: pageNumber});
   };
 
   return (
@@ -107,7 +110,22 @@ export default function CategoryList() {
   );
 }
 
-// 🔹 스타일 정의
+// 스타일
+const getFontWeight = (fontFamily: string) => {
+  switch (fontFamily) {
+    case 'Pretendard-Regular':
+      return '700';
+    case 'BookendBataanRegular':
+    case 'OnggeulipKimkonghae':
+    case 'HakgyoansimGeurimilgiTTFR':
+    case 'OnggeulipWicelist':
+    case 'KyoboHandwriting2020pdy':
+      return '600';
+    default:
+      return 'normal';
+  }
+};
+
 const RegistrationTagContainer = styled(View)<{isDarkMode: boolean}>`
   width: 90%;
   height: auto;
@@ -137,16 +155,18 @@ const TitleWrapper = styled(View)`
   flex: 1 0 0;
 `;
 
-const TitleText = styled(Text)<{isDarkMode: boolean}>`
+const TitleText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.medium}px;
-  font-weight: 700;
+  font-weight: ${({theme}) => getFontWeight(theme.fontFamily)};
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const SubTitleText = styled(Text)<{isDarkMode: boolean}>`
+const SubTitleText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
-    isDarkMode ? theme.colors.white : theme.colors.lightGray};
+    isDarkMode ? theme.colors.white : theme.colors.dark};
+  font-family: ${({theme}) => theme.fontFamily};
 `;

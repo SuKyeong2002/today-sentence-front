@@ -1,6 +1,7 @@
 import {DefaultTheme} from 'styled-components';
 
 export const lightTheme: DefaultTheme = {
+  fontFamily: 'Pretendard-Regular',
   fonts: {
     light: 'Pretendard-Light',
     medium: 'Pretendard-Medium',
@@ -36,6 +37,7 @@ export const lightTheme: DefaultTheme = {
 };
 
 export const darkTheme: DefaultTheme = {
+  fontFamily: 'Pretendard-Regular',
   fonts: {
     light: 'Pretendard-Light',
     medium: 'Pretendard-Medium',

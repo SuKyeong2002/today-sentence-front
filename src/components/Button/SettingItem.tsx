@@ -21,13 +21,13 @@ export const SettingItem: React.FC<SettingItemProps> = ({
   onPress,
   iconSource,
 }) => {
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <TouchableOpacity onPress={onPress}>
       <ProfileEditContainer isDarkMode={isDarkMode}>
         {iconSource && <Image source={iconSource} style={[styles.settingIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' }]} />}
-        <ProfileEditText isDarkMode={isDarkMode}>{title}</ProfileEditText>
+        <ProfileEditText isDarkMode={isDarkMode} style={{ fontFamily: theme.fontFamily }}>{title}</ProfileEditText>
       </ProfileEditContainer>
     </TouchableOpacity>
   );

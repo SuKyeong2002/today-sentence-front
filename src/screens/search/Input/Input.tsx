@@ -59,7 +59,7 @@ export default function Input({onSearchResultChange}: InputProps) {
   const [searchText, setSearchText] = useState<string>('');
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProps>();
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   const searchHook =
     selectedOption === 'tag'
@@ -126,13 +126,30 @@ export default function Input({onSearchResultChange}: InputProps) {
             <Picker
               selectedValue={selectedOption}
               onValueChange={itemValue => setSelectedOption(itemValue)}
-              style={{color: isDarkMode ? '#FFFFFF' : '#2B2B2B'}}
-              dropdownIconColor={isDarkMode ? '#FFFFFF' : '#2B2B2B'}
-              >
-              <Picker.Item label={t('선택')} value="" />
-              <Picker.Item label={t('제목')} value="title" />
-              <Picker.Item label={t('저자')} value="author" />
-              <Picker.Item label={t('태그')} value="tag" />
+              style={{
+                color: isDarkMode ? '#FFFFFF' : '#2B2B2B',
+              }}
+              dropdownIconColor={isDarkMode ? '#FFFFFF' : '#2B2B2B'}>
+              <Picker.Item
+                style={{fontFamily: theme.fontFamily}}
+                label={t('선택')}
+                value=""
+              />
+              <Picker.Item
+                style={{fontFamily: theme.fontFamily}}
+                label={t('제목')}
+                value="title"
+              />
+              <Picker.Item
+                style={{fontFamily: theme.fontFamily}}
+                label={t('저자')}
+                value="author"
+              />
+              <Picker.Item
+                style={{fontFamily: theme.fontFamily}}
+                label={t('태그')}
+                value="tag"
+              />
             </Picker>
           </SelectContainer>
 
@@ -334,13 +351,14 @@ const SearchContainer = styled(View)<{isDarkMode: boolean}>`
     isDarkMode ? theme.colors.text : theme.colors.white};
 `;
 
-const StyledTextInput = styled(TextInput)<{isDarkMode: boolean}>`
+const StyledTextInput = styled(TextInput)<{isDarkMode: boolean; theme: any}>`
   flex: 1;
   font-size: ${({theme}) => theme.fontSizes.medium}px;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
   height: 100%;
   padding: 0 10px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const SearchImage = styled(Image)`
@@ -348,7 +366,7 @@ const SearchImage = styled(Image)`
   height: 20px;
 `;
 
-const ResultContainer = styled(View)<{isDarkMode: boolean}>`
+const ResultContainer = styled(View)<{isDarkMode: boolean; theme: any}>`
   background: ${({isDarkMode, theme}) =>
     isDarkMode ? '#000000' : theme.colors.background};
 `;
@@ -383,25 +401,28 @@ const BookTagsContainer = styled(View)`
   justify-content: flex-start;
 `;
 
-const BookTag = styled(Text)<{isDarkMode: boolean}>`
+const BookTag = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: 14px;
   margin-bottom: 5px;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const BookTitle = styled(Text)<{isDarkMode: boolean}>`
+const BookTitle = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.medium}px;
   font-weight: 600;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.darkGray};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const BookAuthor = styled(Text)<{isDarkMode: boolean}>`
+const BookAuthor = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
   font-weight: 400;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const BookPublisherContainer = styled(View)`
@@ -409,30 +430,36 @@ const BookPublisherContainer = styled(View)`
   flex-direction: row;
 `;
 
-const BookPublisher = styled(Text)<{isDarkMode: boolean}>`
+const BookPublisher = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.lightGray : theme.colors.darkGray};
   font-weight: 400;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 // 검색 결과 관련
-const NoResultText = styled(Text)`
+const NoResultText = styled(Text)<{theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   text-align: center;
   margin: 10px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const ErrorText = styled(Text)`
+const ErrorText = styled(Text)<{theme: any}>`
   font-size: 14px;
   color: red;
   text-align: center;
   margin-top: 10px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const HighlightedText = styled(Text)`
+const HighlightedText = styled(Text)<{theme: any}>`
   color: ${({theme}) => theme.colors.green};
   font-weight: bold;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const NormalText = styled(Text)``;
+const NormalText = styled(Text)<{theme: any}>`
+  font-family: ${({theme}) => theme.fontFamily};
+`;

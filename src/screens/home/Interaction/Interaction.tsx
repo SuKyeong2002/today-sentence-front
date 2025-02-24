@@ -36,7 +36,7 @@ export default function Interaction({
   const [currentBookmarks, setCurrentBookmarks] = useState(bookmarkCount);
   const [isCommentModalVisible, setCommentModalVisible] = useState(false);
   const [currentCommentCount, setCurrentCommentCount] = useState(commentCount);
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   // postId 변경될 때 상태 업데이트
   useEffect(() => {
@@ -199,11 +199,12 @@ const HeartWrapper = styled(View)`
   position: relative;
 `;
 
-const HeartNumber = styled(Text)<{isDarkMode: boolean}>`
+const HeartNumber = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.darkGray};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 // 댓글
@@ -218,11 +219,12 @@ const ChatWrapper = styled(View)`
   border: 1px solid #a9a9a955;
 `;
 
-const ChatNumber = styled(Text)<{isDarkMode: boolean}>`
+const ChatNumber = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.darkGray};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 // 북마크
@@ -245,11 +247,12 @@ const BookmarkWrapper = styled(View)`
   border: 1px solid #a9a9a955;
 `;
 
-const BookmarkNumber = styled(Text)<{isDarkMode: boolean}>`
+const BookmarkNumber = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.darkGray};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 // 공유
@@ -272,11 +275,12 @@ const ShareWrapper = styled(View)`
   border: 1px solid #a9a9a955;
 `;
 
-const ShareNumber = styled(Text)<{isDarkMode: boolean}>`
+const ShareNumber = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 500;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.darkGray};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 // 이미지

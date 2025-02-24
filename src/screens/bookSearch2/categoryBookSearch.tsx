@@ -24,14 +24,14 @@ interface Post {
 }
 
 type RootStackParamList = {
-  categoryBookSearch: {category: string};
+  CategoryBookSearch: {category: string};
 };
 
 interface Props {
-  route: RouteProp<RootStackParamList, 'categoryBookSearch'>;
+  route: RouteProp<RootStackParamList, 'CategoryBookSearch'>;
 }
 
-export default function categoryBookSearch({route}: Props) {
+export default function CategoryBookSearch({route}: Props) {
   const {category} = route.params;
   const {data, isLoading} = useCategorySearch(category);
   const [sortByLatest, setSortByLatest] = useState(false);
@@ -122,11 +122,12 @@ const ToggleContainer = styled(View)`
   margin: 10px 20px;
 `;
 
-const ToggleText = styled(Text)<{isDarkMode: boolean}>`
+const ToggleText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: 16px;
   margin-left: 10px;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const BooklistWrapper = styled(View)`

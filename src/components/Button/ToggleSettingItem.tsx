@@ -12,7 +12,7 @@ export const ToggleSettingItem = ({
   value: boolean;
   onToggle: () => void;
 }) => {
-  const {isDarkMode, setThemeMode} = useTheme();
+  const {isDarkMode, setThemeMode, theme} = useTheme();
 
   return (
     <Container isDarkMode={isDarkMode}>
@@ -49,11 +49,12 @@ const Row = styled(View)`
   width: 100%;
 `;
 
-const NewsText = styled(Text)<{isDarkMode: boolean}>`
+const NewsText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const ToggleSwitch = styled(Switch)``;

@@ -1,7 +1,8 @@
 import React from 'react';
-import {Modal, View, Text, TouchableOpacity} from 'react-native';
-import {useTranslation} from 'react-i18next';
+import { Modal, View, Text, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { useTheme } from '@/context/ThemeContext'; 
 
 interface ModalProps {
   visible: boolean;
@@ -17,28 +18,29 @@ const CustomModal: React.FC<ModalProps> = ({
   visible,
   title,
   message,
-  leftButton='',
-  rightButton='',
+  leftButton = '',
+  rightButton = '',
   onConfirm,
   onCancel,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const { theme } = useTheme();
 
   return (
     <Modal transparent={true} visible={visible} animationType="fade">
       <ModalContainer>
         <ModalContent>
-          <ModalText>{title}</ModalText>
-          <SubModalText>{message}</SubModalText>
+          <ModalText style={{ fontFamily: theme.fontFamily }}>{title}</ModalText> 
+          <SubModalText style={{ fontFamily: theme.fontFamily }}>{message}</SubModalText> 
           <ModalButtons singleButton={!onCancel || !onConfirm}>
             {onCancel && (
               <CancelButton onPress={onCancel}>
-                <ModalButtonText>{leftButton}</ModalButtonText>
+                <ModalButtonText style={{ fontFamily: theme.fontFamily }}>{leftButton}</ModalButtonText>
               </CancelButton>
             )}
             {onConfirm && (
               <ConfirmButton onPress={onConfirm}>
-                <ModalButtonText>{rightButton}</ModalButtonText>
+                <ModalButtonText style={{ fontFamily: theme.fontFamily }}>{rightButton}</ModalButtonText>
               </ConfirmButton>
             )}
           </ModalButtons>
@@ -68,41 +70,42 @@ const ModalContent = styled(View)`
 
 const ModalButtonText = styled(Text)`
   font-size: 18px;
-  color: ${({theme}) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.white};
 `;
 
 const ModalText = styled(Text)`
   font-size: 18px;
   margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const SubModalText = styled(Text)`
   font-size: 14px;
-  color: ${({theme}) => theme.colors.darkGray};
+  color: ${({ theme }) => theme.colors.darkGray};
   margin-bottom: 20px;
 `;
 
-const ModalButtons = styled(View)<{singleButton?: boolean}>`
+const ModalButtons = styled(View)<{ singleButton?: boolean }>`
   flex-direction: row;
   gap: 12px;
-  ${({singleButton}) => singleButton && 'justify-content: center;'}
+  ${({ singleButton }) => singleButton && 'justify-content: center;'}
 `;
 
-const CancelButton = styled(TouchableOpacity)<{singleButton?: boolean}>`
+const CancelButton = styled(TouchableOpacity)<{ singleButton?: boolean }>`
   width: 45%;
-  background-color: ${({theme}) => theme.colors.lightGray};
+  background-color: ${({ theme }) => theme.colors.lightGray};
   padding: 10px 20px;
   border-radius: 8px;
   justify-content: center;
   align-items: center;
-  width: ${({singleButton}) => (singleButton ? '100%' : '45%')};
+  width: ${({ singleButton }) => (singleButton ? '100%' : '45%')};
 `;
 
-const ConfirmButton = styled(TouchableOpacity)<{singleButton?: boolean}>`
+const ConfirmButton = styled(TouchableOpacity)<{ singleButton?: boolean }>`
   padding: 10px 20px;
   border-radius: 8px;
   justify-content: center;
   align-items: center;
-  background-color: ${({theme}) => theme.colors.primary};
-  width: ${({singleButton}) => (singleButton ? '100%' : '45%')};
+  background-color: ${({ theme }) => theme.colors.primary};
+  width: ${({ singleButton }) => (singleButton ? '100%' : '45%')};
 `;
