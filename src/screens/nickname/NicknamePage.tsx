@@ -70,7 +70,7 @@ export default function NicknamePage() {
     nicknameValidationMutation.mutate(nickname);
   };
 
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <View
@@ -99,7 +99,7 @@ export default function NicknamePage() {
             <CharacterCount>{`${nickname.length}/8`}</CharacterCount>
           </NicknameInputContainer>
           <DuplicateCheckButton
-          isDarkMode={isDarkMode}
+            isDarkMode={isDarkMode}
             onPress={handleDuplicateCheck}
             isActive={nickname.length > 0}>
             <ButtonText>중복확인</ButtonText>
@@ -139,7 +139,7 @@ const NicknameInputContainer = styled(View)`
   flex: 1;
 `;
 
-const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
+const NicknameInput = styled(TextInput)<{isDarkMode: boolean; theme: any}>`
   height: 48px;
   background-color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.text : theme.colors.white};
@@ -152,15 +152,17 @@ const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
   padding: 0 50px 0 12px;
   font-size: 16px;
   text-align: left;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const CharacterCount = styled(Text)`
+const CharacterCount = styled(Text)<{theme: any}>`
   position: absolute;
   right: 12px;
   top: 50%;
   margin-top: -8px;
   font-size: 14px;
   color: ${({theme}) => theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const DuplicateCheckButton = styled(TouchableOpacity)<{
@@ -173,21 +175,28 @@ const DuplicateCheckButton = styled(TouchableOpacity)<{
   justify-content: center;
   align-items: center;
   background-color: ${({isActive, isDarkMode, theme}) =>
-    isActive ? theme.colors.primary || theme.colors.text : isDarkMode ? theme.colors.text : theme.colors.gray};
+    isActive
+      ? theme.colors.primary || theme.colors.text
+      : isDarkMode
+        ? theme.colors.text
+        : theme.colors.gray};
 `;
 
-const ButtonText = styled(Text)`
+const ButtonText = styled(Text)<{theme: any}>`
   color: ${({theme}) => theme.colors.white};
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 600;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const ErrorMessage = styled(Text)<{isError: boolean}>`
+const ErrorMessage = styled(Text)<{isError: boolean; theme: any}>`
   color: ${({isError}) => (isError ? 'red' : 'green')};
   font-size: 14px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const ErrorMessage2 = styled(Text)<{isError2: boolean}>`
+const ErrorMessage2 = styled(Text)<{isError2: boolean; theme: any}>`
   color: ${({isError2}) => (isError2 ? 'red' : 'green')};
   font-size: 14px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;

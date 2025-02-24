@@ -1,16 +1,16 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { changeLanguage, getStoredLanguage } from '@/utils/language';
+import {View, Text, StyleSheet, Image, ActivityIndicator} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
+import {changeLanguage, getStoredLanguage} from '@/utils/language';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { ProfileTextEdit } from '@/components/Button/ProfileTextEdit';
-import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
-import { useUser } from '@/hooks/useUser';
-import { useQueryClient } from 'react-query';
-import { useTheme } from '@/context/ThemeContext';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {ProfileTextEdit} from '@/components/Button/ProfileTextEdit';
+import {ProfileBackHeader} from '@/components/Header/ProfileBackHeader';
+import {useUser} from '@/hooks/useUser';
+import {useQueryClient} from 'react-query';
+import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Nickname: undefined;
@@ -18,15 +18,16 @@ type RootStackParamList = {
 };
 
 export default function ProfilePage() {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Nickname'>>();
+  const navigation =
+    useNavigation<StackNavigationProp<RootStackParamList, 'Nickname'>>();
   const queryClient = useQueryClient();
-  const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
-  const { isDarkMode, setThemeMode } = useTheme();
+  const {data: user, isLoading, error} = useUser(); // 유저 정보 조회
+  const {isDarkMode, setThemeMode, theme} = useTheme();
 
-  // 언어 설정 및 폰트 설정 
+  // 언어 설정 및 폰트 설정
   useEffect(() => {
     (async () => {
       const storedLang = await getStoredLanguage();
@@ -47,7 +48,7 @@ export default function ProfilePage() {
   // 닉네임 변경 후 데이터 다시 불러오기
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      queryClient.invalidateQueries('user'); 
+      queryClient.invalidateQueries('user');
     });
 
     return unsubscribe;
@@ -66,7 +67,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA' }}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
@@ -75,7 +77,10 @@ export default function ProfilePage() {
 
       <ProfileWrapper>
         <ProfileImageContainer>
-          <ProfileImage source={require('@/assets/image/profileUser.png')} resizeMode="contain" />
+          <ProfileImage
+            source={require('@/assets/image/profileUser.png')}
+            resizeMode="contain"
+          />
         </ProfileImageContainer>
         <ProfileImgText fontFamily={font}>{t('프로필 이미지')}</ProfileImgText>
       </ProfileWrapper>
@@ -98,14 +103,14 @@ export default function ProfilePage() {
   );
 }
 
-// 스타일 
-const ScreenContainer = styled(View)<{ fontFamily: string }>`
+// 스타일
+const ScreenContainer = styled(View)<{fontFamily: string}>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
   margin-top: 24px;
-  font-family: ${(props) => props.fontFamily};
+  font-family: ${props => props.fontFamily};
 `;
 
 const ProfileImageContainer = styled(View)`
@@ -132,10 +137,11 @@ const ProfileWrapper = styled(View)`
   margin-top: 20px;
 `;
 
-const ProfileImgText = styled(Text)<{ fontFamily: string }>`
-  font-size: ${({ theme }) => theme.fontSizes.small}px;
+const ProfileImgText = styled(Text)<{fontFamily: string}>`
+  font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
-  color: ${({ theme }) => theme.colors.blue};
+  color: ${({theme}) => theme.colors.blue};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const ProfileImage = styled(Image)`

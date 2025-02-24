@@ -50,7 +50,7 @@ export default function IntroductionaPage() {
     }
   };
 
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <View
@@ -110,7 +110,7 @@ const NicknameInputContainer = styled(View)`
   flex: 1;
 `;
 
-const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
+const NicknameInput = styled(TextInput)<{isDarkMode: boolean; theme: any}>`
   height: 48px;
   background-color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.text : theme.colors.white};
@@ -131,18 +131,21 @@ const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
   justify-content: flex-end;
   align-items: flex-end;
   gap: 90px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const CharacterCount = styled(Text)`
+const CharacterCount = styled(Text)<{theme: any}>`
   position: absolute;
   right: 12px;
   bottom: 12px;
   margin-top: 30%;
   font-size: 14px;
   color: ${({theme}) => theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const ErrorMessage = styled(Text)<{isError: boolean}>`
+const ErrorMessage = styled(Text)<{isError: boolean; theme: any}>`
   color: ${({theme}) => theme.colors.text};
   font-size: 14px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;

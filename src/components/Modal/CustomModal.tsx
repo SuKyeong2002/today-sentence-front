@@ -71,17 +71,20 @@ const ModalContent = styled(View)`
 const ModalButtonText = styled(Text)`
   font-size: 18px;
   color: ${({ theme }) => theme.colors.white};
+    font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const ModalText = styled(Text)`
   font-size: 18px;
   margin-bottom: 8px;
   color: ${({ theme }) => theme.colors.text};
+    font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const SubModalText = styled(Text)`
   font-size: 14px;
   color: ${({ theme }) => theme.colors.darkGray};
+    font-family: ${({theme}) => theme.fontFamily};
   margin-bottom: 20px;
 `;
 
