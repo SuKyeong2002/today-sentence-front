@@ -31,9 +31,10 @@ import ScreenScreen from './screens/screen/ScreenPage';
 import SettingScreen from './screens/setting/SettingPage';
 import RecordContentScreen from './components/Record/RecordContent';
 import RecordSearchScreen from './components/Record/RecordSearch';
+import RecordBookListScreen from './screens/recordBookList/RecordBookListPage';
+import BookmarkBookListScreen from './screens/bookmarkBookList/BookmarkBookListPage';
 import SavedContentScreen from './components/Record/SavedContent';
 import StatusContentScreen from './components/Record/StatusContent';
-
 
 const theme = {
   fonts: {
@@ -113,9 +114,11 @@ type RootStackParamList = {
   Password: undefined;
   Authentication: undefined;
   RecordContent: undefined;
+  RecordBookList: undefined;
   RecordSearch: undefined;
   SavedContent: undefined;
   StatusContent: undefined;
+  BookmarkBookList: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -173,6 +176,14 @@ function ThemedApp() {
           <Stack.Screen name="Record" component={Footer} />
           <Stack.Screen name="RecordContent" component={RecordContentScreen} />
           <Stack.Screen name="RecordSearch" component={RecordSearchScreen} />
+          <Stack.Screen
+            name="RecordBookList"
+            component={RecordBookListScreen}
+          />
+          <Stack.Screen
+            name="BookmarkBookList"
+            component={BookmarkBookListScreen}
+          />
           <Stack.Screen name="SavedContent" component={SavedContentScreen} />
           <Stack.Screen name="StatusContent" component={StatusContentScreen} />
           <Stack.Screen name="Font" component={FontScreen} />

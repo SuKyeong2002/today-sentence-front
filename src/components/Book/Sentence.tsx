@@ -45,7 +45,7 @@ export default function Sentence({post, interaction}: SentenceProps) {
   const formattedDate = new Date(post.createAt).toLocaleString();
   const {isDarkMode, theme} = useTheme();
 
-  console.log('📌 전달된 commentCount:', post.commentCount);
+  console.log('전달된 commentCount:', post.commentCount);
 
   return (
     <ContentWrapper isDarkMode={isDarkMode}>
