@@ -21,7 +21,7 @@ export default function EmailPage() {
   const [errorMessage2, setErrorMessage2] = useState<string>('');
   const [isDuplicateChecked, setIsDuplicateChecked] = useState<boolean>(false);
   const {data: user, isLoading, error} = useUser(); // 유저 정보 조회
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   useEffect(() => {
     (async () => {
@@ -100,7 +100,7 @@ export default function EmailPage() {
             isDarkMode={isDarkMode}
             onPress={handleDuplicateCheck}
             isActive={email.length > 0}>
-            <ButtonText>{t("중복확인")}</ButtonText>
+            <ButtonText>{t('중복확인')}</ButtonText>
           </DuplicateCheckButton>
         </InputWrapper>
 
@@ -136,7 +136,7 @@ const NicknameInputContainer = styled(View)`
   flex: 1;
 `;
 
-const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
+const NicknameInput = styled(TextInput)<{isDarkMode: boolean; theme: any}>`
   height: 48px;
   border: 1px solid
     ${({isDarkMode, theme}) =>
@@ -149,6 +149,7 @@ const NicknameInput = styled(TextInput)<{isDarkMode: boolean}>`
     isDarkMode ? theme.colors.text : theme.colors.white};
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
 const DuplicateCheckButton = styled(TouchableOpacity)<{
@@ -161,21 +162,28 @@ const DuplicateCheckButton = styled(TouchableOpacity)<{
   justify-content: center;
   align-items: center;
   background-color: ${({isActive, isDarkMode, theme}) =>
-    isActive ? theme.colors.primary || theme.colors.text : isDarkMode ? theme.colors.text : theme.colors.gray};
+    isActive
+      ? theme.colors.primary || theme.colors.text
+      : isDarkMode
+        ? theme.colors.text
+        : theme.colors.gray};
 `;
 
-const ButtonText = styled(Text)`
+const ButtonText = styled(Text)<{theme: any}>`
   color: ${({theme}) => theme.colors.white};
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 600;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const ErrorMessage = styled(Text)<{isError: boolean}>`
+const ErrorMessage = styled(Text)<{isError: boolean; theme: any}>`
   color: ${({isError}) => (isError ? 'red' : 'green')};
   font-size: 14px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const ErrorMessage2 = styled(Text)<{isError2: boolean}>`
+const ErrorMessage2 = styled(Text)<{isError2: boolean; theme: any}>`
   color: ${({isError2}) => (isError2 ? 'red' : 'green')};
   font-size: 14px;
+  font-family: ${({theme}) => theme.fontFamily};
 `;

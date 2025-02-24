@@ -7,7 +7,7 @@ import {useTheme} from '@/context/ThemeContext';
 
 export default function NewsPage() {
   const {t} = useTranslation();
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <View
@@ -43,16 +43,18 @@ const Container = styled(View)<{isDarkMode: boolean}>`
   margin-top: 20px;
 `;
 
-const NewsText = styled(Text)<{isDarkMode: boolean}>`
+const NewsText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
   font-weight: 400;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
+  font-family: ${({theme}) => theme.fontFamily};
 `;
 
-const DateText = styled(Text)<{isDarkMode: boolean}>`
+const DateText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.small}px;
   font-weight: 400;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.lightGray : theme.colors.darkGray};
+  font-family: ${({theme}) => theme.fontFamily};
 `;

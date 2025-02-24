@@ -53,6 +53,7 @@ const Container = styled(View)`
 
 const FontWrapper = styled(View)<{ isDarkMode: boolean }>`
   flex-direction: row;
+  align-items: center;
   padding: 10px;
   justify-content: space-between;
   border-radius: 10px;

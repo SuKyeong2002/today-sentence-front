@@ -19,7 +19,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'Font'>;
 export default function ScreenPage() {
   const {t, i18n} = useTranslation();
   const navigation = useNavigation<NavigationProp>();
-  const {isDarkMode, setThemeMode} = useTheme();
+  const {isDarkMode, setThemeMode, theme} = useTheme();
 
   const [language, setLanguage] = useState<string>('ko');
   const [font, setFont] = useState<string>('OnggeulipKimkonghae');

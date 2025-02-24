@@ -24,7 +24,7 @@ export default function ProfilePage() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Nickname'>>();
   const queryClient = useQueryClient();
   const { data: user, isLoading, error } = useUser(); // 유저 정보 조회
-  const { isDarkMode, setThemeMode } = useTheme();
+  const { isDarkMode, setThemeMode, theme } = useTheme();
 
   // 언어 설정 및 폰트 설정 
   useEffect(() => {

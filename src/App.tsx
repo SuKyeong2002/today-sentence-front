@@ -1,37 +1,39 @@
-import React, {useMemo} from 'react';
+import {ThemeProviderWrapper} from '@/context/ThemeContext';
+import {lightTheme} from '@/styles/theme';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
+import {I18nextProvider} from 'react-i18next';
+import {QueryClient, QueryClientProvider} from 'react-query';
 import {ThemeProvider} from 'styled-components';
-import LandingScreen from './screens/LandingPage';
+import Footer from './components/Footer/Footer';
+import {FontProvider, useFont} from './context/FontContext';
+import i18n from './i18n';
+import AccountScreen from './screens/account/AccountPage';
+import AlertScreen from './screens/alert/AlertPage';
+import EmailFindPage from './screens/auth/EmailFind';
 import LoginScreen from './screens/auth/LoginPage';
+import PasswordFindPage from './screens/auth/PasswordFind';
 import SignUpScreen from './screens/auth/SignUpPage';
-import RecordScreen from './screens/record/Record';
+import AuthenticationScreen from './screens/authentication/AuthenticationPage';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
 import CategoryBookSearchScreen2 from './screens/bookSearch2/CategoryBookSearch';
-import EmailFindPage from './screens/auth/EmailFind';
-import PasswordFindPage from './screens/auth/PasswordFind';
-import NotFoundPage from './screens/NotFound';
-import Footer from './components/Footer/Footer';
-import SettingScreen from './screens/setting/SettingPage';
-import AlertScreen from './screens/alert/AlertPage';
-import ScreenScreen from './screens/screen/ScreenPage';
-import NewsScreen from './screens/news/NewsPage';
-import FontScreen from './screens/font/FontPage';
-import ProfileScreen from './screens/profile/ProfilePage';
-import NicknameScreen from './screens/nickname/NicknamePage';
-import IntroductionScreen from './screens/introduction/IntroductionPage';
-import AccountScreen from './screens/account/AccountPage';
 import EmailScreen from './screens/email/EmailPage';
+import FontScreen from './screens/font/FontPage';
+import IntroductionScreen from './screens/introduction/IntroductionPage';
+import LandingScreen from './screens/LandingPage';
+import NewsScreen from './screens/news/NewsPage';
+import NicknameScreen from './screens/nickname/NicknamePage';
+import NotFoundPage from './screens/NotFound';
 import PasswordScreen from './screens/password/PasswordPage';
-import AuthenticationScreen from './screens/authentication/AuthenticationPage';
-import i18n from './i18n';
-import {I18nextProvider} from 'react-i18next';
-import {useState, useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ThemeProviderWrapper} from '@/context/ThemeContext';
-import {FontProvider, useFont} from './context/FontContext';
-import {lightTheme} from '@/styles/theme';
-import {QueryClient, QueryClientProvider} from 'react-query';
+import ProfileScreen from './screens/profile/ProfilePage';
+import ScreenScreen from './screens/screen/ScreenPage';
+import SettingScreen from './screens/setting/SettingPage';
+import RecordContentScreen from './components/Record/RecordContent';
+import RecordSearchScreen from './components/Record/RecordSearch';
+import SavedContentScreen from './components/Record/SavedContent';
+import StatusContentScreen from './components/Record/StatusContent';
+
 
 const theme = {
   fonts: {
@@ -110,6 +112,10 @@ type RootStackParamList = {
   Email: undefined;
   Password: undefined;
   Authentication: undefined;
+  RecordContent: undefined;
+  RecordSearch: undefined;
+  SavedContent: undefined;
+  StatusContent: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -164,7 +170,11 @@ function ThemedApp() {
           <Stack.Screen name="Setting" component={SettingScreen} />
           <Stack.Screen name="Alert" component={AlertScreen} />
           <Stack.Screen name="Screen" component={ScreenScreen} />
-          <Stack.Screen name="Record" component={RecordScreen} />
+          <Stack.Screen name="Record" component={Footer} />
+          <Stack.Screen name="RecordContent" component={RecordContentScreen} />
+          <Stack.Screen name="RecordSearch" component={RecordSearchScreen} />
+          <Stack.Screen name="SavedContent" component={SavedContentScreen} />
+          <Stack.Screen name="StatusContent" component={StatusContentScreen} />
           <Stack.Screen name="Font" component={FontScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Nickname" component={NicknameScreen} />
