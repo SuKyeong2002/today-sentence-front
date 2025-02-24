@@ -33,38 +33,38 @@ interface Props {
 
 export default function CategoryBookSearch({route}: Props) {
   const {category} = route.params;
-  const {data, isLoading} = useCategorySearch(category);
-  const [sortByLatest, setSortByLatest] = useState(false);
   const {isDarkMode} = useTheme();
   const {t} = useTranslation();
 
-  const posts = data?.posts;
-  const interaction = data?.interaction;
+  const [sortByLatest, setSortByLatest] = useState(false);
+  const [isSwitchDisabled, setIsSwitchDisabled] = useState(false);
+
+  const size = 4;
+  const sortBy = sortByLatest ? 'create_at' : 'like_count';
+
+  const { data, isLoading, fetchNextPage, hasNextPage } = useCategorySearch(category, size, sortBy);
+
+  const handleSwitchToggle = () => {
+    if (isSwitchDisabled) {
+      return;
+    }
+
+    setIsSwitchDisabled(true);
+    setSortByLatest(prev => !prev);
+
+    setTimeout(() => setIsSwitchDisabled(false), 1300);
+  };
 
   const combinedPosts = useMemo(() => {
-    if (!posts || !interaction) {
-      return [];
-    }
+     if (!data?.pages) return [];
 
-    return posts.map((post, index) => ({
-      ...post,
-      interaction: interaction[index] || {isLiked: false, isSaved: false},
-    }));
-  }, [posts, interaction]);
-
-  const sortedPosts = useMemo(() => {
-    if (!combinedPosts.length) {
-      return [];
-    }
-
-    return [...combinedPosts].sort((a, b) => {
-      if (sortByLatest) {
-        return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
-      } else {
-        return b.likesCount - a.likesCount;
-      }
-    });
-  }, [combinedPosts, sortByLatest]);
+     return data.pages.flatMap((page) =>
+        (page.posts || []).map((post, index) => ({
+        ...post,
+         interaction: (page.interaction || [])[index] || { isLiked: false, isSaved: false },
+              }))
+            );
+        }, [data]);
 
   return (
     <Container
@@ -75,33 +75,40 @@ export default function CategoryBookSearch({route}: Props) {
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
       <ToggleContainer>
+        <View style={{ flexDirection: "row", alignItems: "center", opacity: isSwitchDisabled ? 0.5 : 1 }}>
         <Switch
-          value={sortByLatest}
-          onValueChange={() => setSortByLatest(prev => !prev)}
-          trackColor={{
-            false: '#D3D3D3',
-            true: isDarkMode ? '#8A715D' : '#8A715D',
-          }}
-          thumbColor={isDarkMode ? '#FFFFFF' : '#FFFFFF'}
-        />
+              value={sortByLatest}
+              onValueChange={handleSwitchToggle}
+              disabled={isSwitchDisabled}
+              trackColor={{ false: "#D3D3D3", true: "#8A715D" }}
+              thumbColor={isDarkMode ? "#FFFFFF" : "#FFFFFF"}
+            />
         <ToggleText isDarkMode={isDarkMode}>{t('최신순')}</ToggleText>
+          </View>
+
       </ToggleContainer>
 
       {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
-      ) : sortedPosts.length > 0 ? (
+      ) : combinedPosts.length > 0 ? (
         <FlatList
-          data={sortedPosts}
+          data={combinedPosts}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => (
             <BooklistWrapper>
               <SearchContent2
                 post={item}
                 interaction={item.interaction}
-                sortByLatest={false}
               />
             </BooklistWrapper>
           )}
+        onEndReached={() => {
+            if (hasNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={isLoading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
         />
       ) : (
         <NoDataText>검색 결과가 없습니다.</NoDataText>

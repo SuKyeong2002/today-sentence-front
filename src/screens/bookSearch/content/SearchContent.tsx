@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import React,{useMemo} from 'react';
+import {View, Text, ScrollView,FlatList,ActivityIndicator} from 'react-native';
 import styled from 'styled-components';
 import {useRoute} from '@react-navigation/native';
 import {useBookSearch} from '@/hooks/useBookSearch';
@@ -25,57 +25,82 @@ export default function SearchContent() {
   const route = useRoute();
   const {bookTitle, tag} = route.params as {bookTitle?: string; tag?: string};
 
-  const {
-    data: bookQuotes = [],
-    isLoading: bookLoading,
-    error: bookError,
-  } = useBookSearch(bookTitle || '');
+  const size =4;
+
 
   const {
-    data: tagQuotes = [],
+    data: bookData,
+    isLoading: bookLoading,
+    isError: bookError,
+    fetchNextPage: bookFetchNextPage,
+    hasNextPage: bookHasNextPage
+  } = useBookSearch(bookTitle || '', size);
+
+  const {
+    data: tagData,
     isLoading: tagLoading,
-    error: tagError,
-  } = useTagQuoteSearch(tag || '');
+    isError: tagError,
+    fetchNextPage: tagFetchNextPage,
+    hasNextPage: tagHasNextPage
+  } = useTagQuoteSearch(tag || '', size);
 
   const isLoading = bookLoading || tagLoading;
   const isError = bookError || tagError;
 
-  const rawQuotes = bookTitle ? bookQuotes : tag ? tagQuotes : [];
-//   console.log('rawQuotes', rawQuotes);
-//   console.log('typeof rawQuotes', typeof rawQuotes);
+  const combinedData = useMemo(() => {
+    if (!bookData?.pages && !tagData?.pages) return [];
 
+    const bookPosts = bookData?.pages?.flatMap((page) =>
+      (page.posts || []).map((post, index) => ({
+        ...post,
+        interaction: (page.interaction || [])[index] || { isLiked: false, isSaved: false },
+      }))
+    ) || [];
 
+    const tagPosts = tagData?.pages?.flatMap((page) =>
+      (page.posts || []).map((post, index) => ({
+        ...post,
+        interaction: (page.interaction || [])[index] || { isLiked: false, isSaved: false },
+      }))
+    ) || [];
 
-  const posts = rawQuotes?.posts || [];
-  const interaction = rawQuotes?.interaction || [];
-
-  const combinedData = posts.map((post, index) => ({
-      post,
-      interaction: interaction[index],
-  }));
+    return [...bookPosts, ...tagPosts];
+  }, [bookData, tagData]);
 
 
   return (
-    <ScrollContainer>
-      {isLoading ? (
-        <LoadingText>로딩 중...</LoadingText>
-      ) : isError ? (
-        <ErrorText>오류 발생</ErrorText>
-      ) : combinedData.length > 0 ? (
-        combinedData.map((combinedData, index) => (
-          <SentenceContainer key={index}>
-            <Sentence
-                post ={ combinedData.post}
-                interaction = {combinedData.interaction}
-                        />
-          </SentenceContainer>
-        ))
-      ) : (
-        <NoResultText>검색 결과가 없습니다.</NoResultText>
-      )}
-    </ScrollContainer>
-  );
-}
+      <>
+        {isLoading ? (
+          <LoadingText>로딩 중...</LoadingText>
+        ) : isError ? (
+          <ErrorText>오류 발생</ErrorText>
+        ) : combinedData.length > 0 ? (
+          <FlatList
+            data={combinedData}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <SentenceContainer key={item.id}>
+                <Sentence post={item} interaction={item.interaction} />
+              </SentenceContainer>
+            )}
+            onEndReached={() => {
+              if (!isLoading && (bookHasNextPage || tagHasNextPage)) {
+                if (bookHasNextPage) {
+                  bookFetchNextPage();
+                } else if (tagHasNextPage) {
+                  tagFetchNextPage();
+                }
+              }
+            }}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={isLoading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+          />
+        ) : (
+          <NoResultText>검색 결과가 없습니다.</NoResultText>
+        )}
+      </>
+    );
+  }
 
 // 스타일 정의
 const ScrollContainer = styled(ScrollView)`

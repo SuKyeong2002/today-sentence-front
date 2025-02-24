@@ -38,6 +38,9 @@ export default function Interaction({
   const [currentCommentCount, setCurrentCommentCount] = useState(commentCount);
   const {isDarkMode, theme} = useTheme();
 
+  const [isLikesDisabled, setIsLikesDisabled] = useState(false);
+  const [isBookmarkDisabled, setIsBookmarkDisabled] = useState(false);
+
   // postId 변경될 때 상태 업데이트
   useEffect(() => {
     setCurrentLikes(likesCount);
@@ -49,8 +52,15 @@ export default function Interaction({
 
   // 공감 toggle
   const handleHeartClick = () => {
+
+    if (isLikesDisabled) return;
+
+    setIsLikesDisabled(true);
+    setTimeout(() => setIsLikesDisabled(false), 1000);
+
     setIsLiked(!isLiked);
     setCurrentLikes(prev => (isLiked ? prev - 1 : prev + 1));
+
 
     likeMutation.mutate(postId, {
       onError: () => {
@@ -67,6 +77,12 @@ export default function Interaction({
 
   // 저장 toggle
   const handleBookmarkClick = () => {
+
+    if (isBookmarkDisabled) return;
+
+    setIsBookmarkDisabled(true);
+    setTimeout(() => setIsBookmarkDisabled(false), 1000);
+
     setIsBookmarked(!isBookmarked);
     setCurrentBookmarks(prev2 => (isBookmarked ? prev2 - 1 : prev2 + 1));
 
