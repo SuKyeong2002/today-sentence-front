@@ -1,8 +1,16 @@
-import React, { useState } from "react";
-import { View, FlatList, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, {useState} from 'react';
+import {
+  View,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {Ionicons} from '@expo/vector-icons';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useTheme} from 'styled-components';
 
 interface BookRecord {
   id: string;
@@ -37,11 +45,12 @@ export default function SavedContent() {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleBookSelect = (book: BookRecord) => {
-    navigation.navigate("BookDetail", { book });
+    navigation.navigate('BookDetail', {book});
   };
 
   const [records] = useState(sampleRecords);
   const groupedRecords = groupByMonth(records);
+  const {isDarkMode, theme} = useTheme();
 
   return (
     <View style={styles.container}>
@@ -64,8 +73,16 @@ export default function SavedContent() {
         )}
       />
 
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("RecordSearch") }>
-        <Ionicons name="add" size={30} color="#fff" />
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate('RecordSearch')}>
+        <Image
+          source={require('../../assets/image/back2.png')}
+          style={[
+            styles.backIcon,
+            {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+          ]}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -109,5 +126,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 5,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
 });
