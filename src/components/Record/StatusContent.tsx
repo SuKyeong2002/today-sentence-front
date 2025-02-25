@@ -111,6 +111,7 @@ const PieChart: React.FC<PieChartProps> = ({data, colors}) => {
 
 // 범례 컴포넌트
 const Legend: React.FC<LegendProps> = ({data, colors}) => {
+  const {isDarkMode} = useTheme();
   const total: number = Object.values(data).reduce(
     (sum, value) => sum + Number(value),
     0,
@@ -128,7 +129,13 @@ const Legend: React.FC<LegendProps> = ({data, colors}) => {
                 {backgroundColor: colors[index % colors.length]},
               ]}
             />
-            <Text style={styles.legendText}>
+            <Text
+              style={[
+                styles.legendText,
+                {
+                  color: isDarkMode ? 'white' : 'text',
+                },
+              ]}>
               {categoryMap[category] || '기타'} : {count}
               {/* {categoryMap[category] || '기타'}: {percentage}% ({count}) */}
             </Text>
@@ -144,15 +151,15 @@ const StatsContent: React.FC = () => {
   const {t} = useTranslation();
   const {data, isLoading, error} = useStatistics();
   const colors: string[] = [
-    '#FF5454',
-    '#FCCD8C',
-    '#FFE200',
-    '#88C688',
-    '#7BBCF3',
-    '#7986C8',
-    '#C893F1',
-    '#FFBBEB',
-    '#50505055',
+    '#FF0000',
+    '#F48F03',
+    '#E8CE00',
+    '#3AA031',
+    '#006FD1',
+    '#001FBC',
+    '#9000FF',
+    '#FF00B2',
+    '#8A715D',
   ];
 
   if (isLoading) {
@@ -187,8 +194,22 @@ const StatsContent: React.FC = () => {
         contentContainerStyle={styles.container}>
         <View style={styles.statsContainer}>
           {/* 기록 통계 */}
-          <View style={styles.categorySection}>
-            <Text style={styles.sectionTitle}>{t('기록한 카테고리')}</Text>
+          <View
+            style={[
+              styles.categorySection,
+              {
+                backgroundColor: isDarkMode ? '#2B2B2B' : 'white',
+              },
+            ]}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {
+                  color: isDarkMode ? 'white' : 'text',
+                },
+              ]}>
+              {t('기록한 카테고리')}
+            </Text>
             <View style={styles.chartContainer}>
               <View style={styles.chartSection}>
                 <PieChart data={data.records} colors={colors} />
@@ -200,8 +221,22 @@ const StatsContent: React.FC = () => {
           </View>
 
           {/* 북마크 통계 */}
-          <View style={styles.categorySection}>
-            <Text style={styles.sectionTitle}>{t('저장한 카테고리')}</Text>
+          <View
+            style={[
+              styles.categorySection,
+              {
+                backgroundColor: isDarkMode ? '#2B2B2B' : 'white',
+              },
+            ]}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {
+                  color: isDarkMode ? 'white' : 'text',
+                },
+              ]}>
+              {t('저장한 카테고리')}
+            </Text>
             <View style={styles.chartSection}>
               <PieChart data={data.bookmarks} colors={colors} />
               <View style={styles.chartSection2}>
