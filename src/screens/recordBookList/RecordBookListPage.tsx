@@ -74,11 +74,7 @@ export default function RecordBookListPage() {
 
   return (
     <>
-      <BackHeader
-        searchKeyword={t('기록')}
-        onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
-      />
+      <BackHeader searchKeyword={t('기록')} />
       <View
         style={[
           styles.container,
