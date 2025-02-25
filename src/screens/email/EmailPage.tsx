@@ -89,7 +89,7 @@ export default function EmailPage() {
               placeholder={user?.email || t('변경할 이메일을 입력해주세요.')}
               value={email}
               onChangeText={text => {
-                setEmail(text);
+                setEmail(text.trimEnd());
                 setErrorMessage('');
                 setErrorMessage2('');
               }}

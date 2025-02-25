@@ -81,7 +81,7 @@ const getFontWeight = (fontFamily: string) => {
     case 'KyoboHandwriting2020pdy':
       return '600'; 
     default:
-      return '700';
+      return 'normal';
   }
 };
 
