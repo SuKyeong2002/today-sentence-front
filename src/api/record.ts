@@ -141,25 +141,26 @@ export const SearchBookRecord = async (
   }
 
   export async function fetchBookDetail(postId: number): Promise<Book> {
-    const token = AsyncStorage.getItem('authToken');
-    
-    if (!token) {
-      throw new Error('No authentication token found');
-    }
-  
     try {
-      const response = await axios.get<{ data: Book }>(`${API_URL}/api/posts/${postId}`, {
+      const token = await AsyncStorage.getItem('accessToken');
+      
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+    
+      const response = await axios.get<{ data: Book }>(`${API_URL}/api/posts/test/${postId}`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          "ACCESS-TOKEN": token,
+        },
       });
-  
+    
       if (response.status !== 200) {
         throw new Error('Failed to fetch book detail');
       }
-  
+    
       return response.data.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to fetch book detail');
     }
   }
+  

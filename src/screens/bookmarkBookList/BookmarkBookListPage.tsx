@@ -68,7 +68,6 @@ export default function BookmarkBookListPage() {
 
   return (
     <>
-      <BackHeader searchKeyword={t('기록')} />
       <View
         style={[
           styles.container,
