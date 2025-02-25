@@ -111,7 +111,7 @@ const PieChart: React.FC<PieChartProps> = ({data, colors}) => {
 
 // 범례 컴포넌트
 const Legend: React.FC<LegendProps> = ({data, colors}) => {
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
   const total: number = Object.values(data).reduce(
     (sum, value) => sum + Number(value),
     0,
@@ -134,6 +134,7 @@ const Legend: React.FC<LegendProps> = ({data, colors}) => {
                 styles.legendText,
                 {
                   color: isDarkMode ? 'white' : 'text',
+                  fontFamily: theme.fontFamily,
                 },
               ]}>
               {categoryMap[category] || '기타'} : {count}
@@ -147,7 +148,7 @@ const Legend: React.FC<LegendProps> = ({data, colors}) => {
 };
 
 const StatsContent: React.FC = () => {
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
   const {t} = useTranslation();
   const {data, isLoading, error} = useStatistics();
   const colors: string[] = [
@@ -206,6 +207,7 @@ const StatsContent: React.FC = () => {
                 styles.sectionTitle,
                 {
                   color: isDarkMode ? 'white' : 'text',
+                  fontFamily: theme.fontFamily,
                 },
               ]}>
               {t('기록한 카테고리')}
