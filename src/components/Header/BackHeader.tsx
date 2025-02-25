@@ -28,7 +28,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({
     <View
       style={[
         styles.headerContainer,
-        {backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
+        {backgroundColor: isDarkMode ? '#000000' : '#F5F4F5'},
       ]}>
       <View style={styles.leftContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Search')}>
