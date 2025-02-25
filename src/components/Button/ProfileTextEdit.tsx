@@ -58,6 +58,7 @@ const LeftContainer = styled(View)`
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
+    width: 60%;
 `;
 
 const ProfileEditText = styled(Text)<{isDarkMode: boolean; theme: any}>`
