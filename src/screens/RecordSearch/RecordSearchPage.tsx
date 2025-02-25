@@ -1,9 +1,8 @@
 import BackHeader from '@/components/Header/BackHeader';
 import {useTheme} from '@/context/ThemeContext';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {KAKAO_API_KEY} from '@env';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {KAKAO_API_KEY} from '@env';
 import {
   ActivityIndicator,
   FlatList,
@@ -11,7 +10,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -22,11 +20,8 @@ interface Book {
   thumbnail: string;
 }
 
-// 📌 카카오 API에서 책 데이터 가져오는 함수
+// 카오 API에서 책 데이터 가져오는 함수
 const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
-  console.log('📢 KAKAO_API_KEY:', KAKAO_API_KEY);
-  console.log(`📢 검색어: ${query}`); 
-
   try {
     const response = await fetch(
       `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(query)}`,
@@ -39,24 +34,17 @@ const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
       },
     );
 
-    console.log(`API 응답 상태: ${response.status}`); 
-
     if (!response.ok) {
-      console.error(`API 요청 실패: ${response.status}`);
       return [];
     }
-
     const data = await response.json();
-    console.log(`API 응답 데이터:`, JSON.stringify(data, null, 2));
-
     return data.documents.map((book: any) => ({
       title: book.title,
       authors: book.authors || [],
       publisher: book.publisher || '정보 없음',
-      thumbnail: book.thumbnail || '', 
+      thumbnail: book.thumbnail || '',
     }));
   } catch (error) {
-    console.error('카카오 API 요청 오류:', error);
     return [];
   }
 };
@@ -72,7 +60,6 @@ export default function RecordSearchPage() {
   const handleSearch = async (query: string) => {
     setSearchTerm(query);
     if (query.length > 0) {
-      console.log('검색 시작');
       setIsLoading(true);
       const results = await fetchBooksFromKakao(query);
       setBooks(results);
@@ -130,7 +117,7 @@ export default function RecordSearchPage() {
   );
 }
 
-// 스타일 
+// 스타일
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -152,14 +139,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bookCover: {
-    width: 50,
-    height: 70,
+    width: 110,
+    height: 150,
     marginRight: 10,
     borderRadius: 5,
   },
-  textContainer: {
-    flex: 1,
-  },
+  textContainer: {},
   bookTitle: {
     fontSize: 16,
     fontWeight: 'bold',

@@ -33,7 +33,7 @@ import ScreenScreen from './screens/screen/ScreenPage';
 import SettingScreen from './screens/setting/SettingPage';
 import RecordContentScreen from './components/Record/RecordContent';
 import RecordWriterScreen from './screens/RecordWriter/RecordWriterPage';
-import RecordSearchScreen from './screens/RecordSeatch/RecordSearchPage';
+import RecordSearchScreen from './screens/RecordSearch/RecordSearchPage';
 import RecordBookListScreen from './screens/recordBookList/RecordBookListPage';
 import BookmarkBookListScreen from './screens/bookmarkBookList/BookmarkBookListPage';
 import SavedContentScreen from './components/Record/SavedContent';
