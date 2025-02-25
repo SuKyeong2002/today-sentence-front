@@ -89,7 +89,7 @@ export default function NicknamePage() {
               placeholder={user?.nickname || t('닉네임을 입력해주세요.')}
               value={nickname}
               onChangeText={text => {
-                setNickname(text);
+                setNickname(text.trimEnd());
                 setErrorMessage('');
                 setErrorMessage2('');
               }}
