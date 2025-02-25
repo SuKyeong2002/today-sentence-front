@@ -11,7 +11,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import { useSaveQuote } from '../../hooks/useSaveQuote';
 import SuccessModal from './SuccessModal';
-import { QuoteData } from '../../types/QuoteData'; // 필요시 추가
+import { QuoteData } from '../../types/QuoteData'; 
 
 export default function WriteScreen() {
   const [category, setCategory] = useState<string>('');

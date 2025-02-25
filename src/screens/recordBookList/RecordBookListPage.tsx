@@ -46,12 +46,10 @@ export default function RecordBookListPage() {
     );
   });
 
-  // useNavigation의 타입을 RootStackParamList로 설정
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // 책 클릭 시 BookWrite 페이지로 해당 책 정보 전달
   const handleBookClick = (book: Book) => {
-    navigation.navigate('BookWrite', {book}); // book 정보를 BookWrite로 전달
+    navigation.navigate('BookWrite', {book}); 
   };
 
   if (isLoading) {

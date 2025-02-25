@@ -12,6 +12,7 @@ type RootStackParamList = {
   RecordSearch: undefined;
   BookmarkBookList: undefined;
   StatusContent: undefined;
+  BookDetail: { postId: string };
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;

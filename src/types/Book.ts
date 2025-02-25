@@ -9,7 +9,7 @@ export interface Book {
     hashtags: string[];
   }
   
-  type RootStackParamList = {
-    BookWrite: { book: Book };
-    RecordSearch: undefined;
+  export type RootStackParamList = {
+    BookmarkBookList: undefined;  
+    BookDetail: { postId: string };  
   };

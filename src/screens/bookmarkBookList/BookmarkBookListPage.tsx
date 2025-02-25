@@ -1,6 +1,7 @@
 import CustomHeader from '@/components/Header/CustomHeader';
 import { useTheme } from '@/context/ThemeContext';
 import { useBookmarkBookList } from '@/hooks/useBookmarkBookList';
+import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,10 +13,15 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/Book';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookDetail'>;
 
 export default function BookmarkBookListPage() {
   const { isDarkMode } = useTheme();
   const { t } = useTranslation();
+  const navigation = useNavigation<NavigationProp>();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const [year, setYear] = useState(currentYear);
@@ -71,11 +77,12 @@ export default function BookmarkBookListPage() {
 
         <FlatList
           data={records}
-          keyExtractor={(item, index) =>
-            `${year}-${month}-${item.postId}-${index}`
-          }
+          keyExtractor={(item, index) => `${year}-${month}-${item.postId}-${index}`}
           renderItem={({ item }) => (
-            <View style={styles.card}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('BookDetail', { postId: item.postId })}
+              style={styles.card}
+            >
               <Image source={{ uri: item.bookCover }} style={styles.bookCover} />
               <View style={styles.textContainer}>
                 <Text style={styles.title}>{item.bookTitle}</Text>
@@ -83,7 +90,7 @@ export default function BookmarkBookListPage() {
                   {`${item.bookAuthor} · ${item.bookPublisher} (${item.bookPublishingYear})`}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>
