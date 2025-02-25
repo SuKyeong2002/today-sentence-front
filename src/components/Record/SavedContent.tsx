@@ -8,7 +8,6 @@ import {
   Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Ionicons} from '@expo/vector-icons';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useTheme} from 'styled-components';
 
