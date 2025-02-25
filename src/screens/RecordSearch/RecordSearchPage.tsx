@@ -68,7 +68,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordWriter'>;
 
 export default function RecordSearchPage() {
   const {t} = useTranslation();
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -106,7 +106,8 @@ export default function RecordSearchPage() {
             {
               backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
               borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-              color: isDarkMode ? 'white' : '#2B2B2B'
+              color: isDarkMode ? 'white' : '#2B2B2B',
+              fontFamily: theme.fontFamily 
             },
           ]}
           placeholder={t('책 제목을 입력해주세요.')}
@@ -145,6 +146,7 @@ export default function RecordSearchPage() {
                       styles.bookTitle,
                       {
                         color: isDarkMode ? 'white' : '#2B2B2B',
+                        fontFamily: theme.fontFamily 
                       },
                     ]}>
                     {item.title}
@@ -154,6 +156,7 @@ export default function RecordSearchPage() {
                       styles.bookAuthor,
                       {
                         color: isDarkMode ? 'white' : '#2B2B2B',
+                        fontFamily: theme.fontFamily 
                       },
                     ]}>
                     {item.authors.join(', ')}
@@ -163,6 +166,7 @@ export default function RecordSearchPage() {
                       styles.bookPublisher,
                       {
                         color: isDarkMode ? '#D3D3D3' : '#2B2B2B',
+                        fontFamily: theme.fontFamily 
                       },
                     ]}>
                     {item.publisher}

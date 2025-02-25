@@ -38,7 +38,7 @@ export default function RecordWriter() {
   const route = useRoute();
   const {bookData} = route.params as {bookData: Book};
   const navigation = useNavigation<NavigationProp>();
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
   const {t} = useTranslation();
   const {mutate: saveQuote, isLoading} = usePostQuote();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -93,7 +93,13 @@ export default function RecordWriter() {
             contentContainerStyle={styles.scrollContainer}
             keyboardShouldPersistTaps="handled">
             <Text
-              style={[styles.header, {color: isDarkMode ? '#FFF' : '#2B2B2B'}]}>
+              style={[
+                styles.header,
+                {
+                  color: isDarkMode ? '#FFF' : '#2B2B2B',
+                  fontFamily: theme.fontFamily,
+                },
+              ]}>
               {t('오늘의 문장은 무엇인가요?')}
             </Text>
 
@@ -101,7 +107,10 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.label,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
                 {t('책 제목')}
               </Text>
@@ -111,6 +120,7 @@ export default function RecordWriter() {
                   {
                     backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
                     color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
                   },
                 ]}
                 value={bookTitle}
@@ -120,7 +130,10 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.label,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
                 {t('책 저자')}
               </Text>
@@ -131,6 +144,7 @@ export default function RecordWriter() {
                   {
                     backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
                     color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
                   },
                 ]}
                 value={bookAuthor}
@@ -140,7 +154,10 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.label,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
                 {t('출판사')}
               </Text>
@@ -151,6 +168,7 @@ export default function RecordWriter() {
                   {
                     backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
                     color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
                   },
                 ]}
                 value={bookPublisher}
@@ -160,9 +178,12 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.label,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
-                {t('출판 연도')}
+                {t('출판년도')}
               </Text>
               <TextInput
                 style={[
@@ -171,6 +192,7 @@ export default function RecordWriter() {
                   {
                     backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
                     color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
                   },
                 ]}
                 value={bookPublishingYear.toString()}
@@ -181,9 +203,12 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.label,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
-                {t('ISBN')}
+                {'ISBN'}
               </Text>
               <TextInput
                 style={[
@@ -192,6 +217,7 @@ export default function RecordWriter() {
                   {
                     backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
                     color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
                   },
                 ]}
                 value={isbn}
@@ -201,7 +227,10 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.label,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
                 {t('카테고리')}
               </Text>
@@ -216,52 +245,82 @@ export default function RecordWriter() {
                   <Picker.Item
                     label={t('명언의 종류를 선택해주세요.')}
                     value="select"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('시/소설/에세이')}
                     value="POEM_NOVEL_ESSAY"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('경제/경영')}
                     value="ECONOMY_MANAGEMENT"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('역사/사회')}
                     value="HISTORY_SOCIETY"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('철학/심리학')}
                     value="PHILOSOPHY_PSYCHOLOGY"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('자기계발')}
                     value="SELF_DEVELOPMENT"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('예체능')}
                     value="ARTS_PHYSICAL"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('아동/청소년')}
                     value="KID_YOUTH"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('여행/문화')}
                     value="TRAVEL_CULTURE"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                   <Picker.Item
                     label={t('기타')}
                     value="ETC"
-                    style={{color: isDarkMode ? 'gray' : '#2B2B2B'}}
+                    style={{
+                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
+                    }}
                   />
                 </Picker>
               </View>
@@ -269,7 +328,10 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.label,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
                 {t('해시태그')}
               </Text>
@@ -280,6 +342,7 @@ export default function RecordWriter() {
                   {
                     backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
                     color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
                   },
                 ]}
                 value={hashtags}
@@ -291,7 +354,10 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.charCount,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
                 {hashtags.length} / 20
               </Text>
@@ -299,7 +365,10 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.label,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
                 {t('명언')}
               </Text>
@@ -311,6 +380,7 @@ export default function RecordWriter() {
                   {
                     backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
                     color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
                   },
                 ]}
                 value={quote}
@@ -323,7 +393,10 @@ export default function RecordWriter() {
               <Text
                 style={[
                   styles.charCount,
-                  {color: isDarkMode ? 'white' : '#2B2B2B'},
+                  {
+                    color: isDarkMode ? 'white' : '#2B2B2B',
+                    fontFamily: theme.fontFamily,
+                  },
                 ]}>
                 {quote.length} / 400
               </Text>
@@ -335,7 +408,11 @@ export default function RecordWriter() {
                 ]}
                 onPress={handleSubmit}
                 disabled={!isFormComplete || isLoading}>
-                <Text style={[styles.submitButtonText, {color: '#FFFFFF'}]}>
+                <Text
+                  style={[
+                    styles.submitButtonText,
+                    {color: '#FFFFFF', fontFamily: theme.fontFamily},
+                  ]}>
                   {isLoading ? t('저장 중...') : t('저장하기')}
                 </Text>
               </TouchableOpacity>
@@ -369,7 +446,7 @@ const styles = StyleSheet.create({
   header: {
     textAlign: 'center',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     padding: 16,
   },
   formContainer: {

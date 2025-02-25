@@ -23,7 +23,7 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 
 export default function BookmarkBookListPage() {
-  const {isDarkMode} = useTheme();
+  const {isDarkMode, theme} = useTheme();
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp>();
   const currentYear = new Date().getFullYear();
@@ -80,6 +80,7 @@ export default function BookmarkBookListPage() {
                 styles.arrow,
                 {
                   color: isDarkMode ? '#FFF' : '#2B2B2B',
+                  fontFamily: theme.fontFamily,
                 },
               ]}>
               {'<'}
@@ -90,6 +91,7 @@ export default function BookmarkBookListPage() {
               styles.dateText,
               {
                 color: isDarkMode ? '#FFF' : '#2B2B2B',
+                fontFamily: theme.fontFamily,
               },
             ]}>{`${year}년 ${month}월`}</Text>
           <TouchableOpacity onPress={() => handleMonthChange(1)}>
@@ -98,6 +100,7 @@ export default function BookmarkBookListPage() {
                 styles.arrow,
                 {
                   color: isDarkMode ? '#FFF' : '#2B2B2B',
+                  fontFamily: theme.fontFamily,
                 },
               ]}>
               {'>'}
@@ -129,6 +132,7 @@ export default function BookmarkBookListPage() {
                     styles.title,
                     {
                       color: isDarkMode ? '#FFF' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
                     },
                   ]}>
                   {item.bookTitle}
@@ -138,6 +142,7 @@ export default function BookmarkBookListPage() {
                     styles.subtitle2,
                     {
                       color: isDarkMode ? '#D3D3D3' : '#828183',
+                      fontFamily: theme.fontFamily,
                     },
                   ]}>
                   {`${item.bookPublisher} / ${item.bookPublishingYear}`}
@@ -169,12 +174,12 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     marginHorizontal: 20,
   },
   arrow: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   card: {
     flexDirection: 'row',
@@ -194,7 +199,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 700,
+    fontWeight: '600',
     marginBottom: 5,
   },
   subtitle: {

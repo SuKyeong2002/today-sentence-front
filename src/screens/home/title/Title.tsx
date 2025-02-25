@@ -49,7 +49,7 @@ const TitleWrapper = styled(View)`
 const TodayDate = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-family: ${({theme}) => theme.fontFamily};
   font-size: ${({theme}) => theme.fontSizes.xLarge}px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
 `;
