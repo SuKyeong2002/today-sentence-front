@@ -1,28 +1,33 @@
-import {useTheme} from '@/context/ThemeContext';
-import {Picker} from '@react-native-picker/picker';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import BackHeader from '@/components/Header/BackHeader';
+import CustomModal from '@/components/Modal/CustomModal';
+import { useTheme } from '@/context/ThemeContext';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import {useSaveQuote} from '../../hooks/useSaveQuote';
-import SuccessModal from './SuccessModal';
-import {QuoteData} from '../../types/QuoteData';
-import BackHeader from '../Header/BackHeader';
-import CustomModal from '../Modal/CustomModal';
+import { useSaveQuote } from '../../hooks/useSaveQuote';
+import { QuoteData } from '../../types/QuoteData';
 
-export default function WriteScreen() {
+type RootStackParamList = {
+  RecordBookList: undefined;
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordBookList'>;
+
+export default function RecordWriter() {
   const [category, setCategory] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
   const [quote, setQuote] = useState<string>('');
@@ -36,12 +41,7 @@ export default function WriteScreen() {
   const {isSaving, error, handleSaveQuote} = useSaveQuote();
   const {isDarkMode} = useTheme();
   const {t} = useTranslation();
-
-  type RootStackParamList = {
-    RecordBookList: undefined;
-  };
-
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp>();
 
   const handleSubmit = async () => {
     const data: QuoteData = {
@@ -72,7 +72,7 @@ export default function WriteScreen() {
         style={[
           styles.container,
           {
-            backgroundColor: isDarkMode ? '#000000' : '#FFF',
+            backgroundColor: isDarkMode ? '#000000' : '#F5F4F5',
             borderColor: isDarkMode ? '#2B2B2B' : '#FFF',
           },
         ]}>
@@ -87,7 +87,7 @@ export default function WriteScreen() {
               style={[
                 styles.header,
                 {
-                  color: isDarkMode ? '#FFF' : '#828183',
+                  color: isDarkMode ? '#FFF' : '#2B2B2B',
                 },
               ]}>
               오늘의 문장은 무엇인가요?
@@ -310,8 +310,8 @@ export default function WriteScreen() {
                 style={[
                   styles.submitButton,
                   {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
+                    backgroundColor: isDarkMode ? '#2B2B2B' : 'gray',
+                    borderColor: isDarkMode ? '#2B2B2B' : 'gray',
                   },
                 ]}
                 onPress={handleSubmit}
@@ -319,7 +319,7 @@ export default function WriteScreen() {
                 <Text
                   style={[
                     styles.submitButtonText,
-                    {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+                    {color: isDarkMode ? '#FFFFFF' : 'white'},
                   ]}>
                   {isSaving ? '저장 중...' : '저장하기'}
                 </Text>

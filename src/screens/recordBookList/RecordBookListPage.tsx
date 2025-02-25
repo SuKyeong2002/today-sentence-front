@@ -1,19 +1,19 @@
+import BackHeader from '@/components/Header/BackHeader';
+import {useTheme} from '@/context/ThemeContext';
+import {useRecordBookList} from '@/hooks/useRecordBookList';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
-  View,
-  Text,
+  ActivityIndicator,
   FlatList,
   Image,
-  ActivityIndicator,
   StyleSheet,
-  TouchableOpacity,
+  Text,
   TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {useTheme} from '@/context/ThemeContext';
-import {useTranslation} from 'react-i18next';
-import CustomHeader from '@/components/Header/CustomHeader';
-import {useRecordBookList} from '@/hooks/useRecordBookList';
-import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 interface Book {
   postId: string;
@@ -26,10 +26,11 @@ interface Book {
 
 type RootStackParamList = {
   BookWrite: {book: Book};
+  RecordSearch: undefined;
+  RecordBook: undefined;
 };
 
 export default function RecordBookListPage() {
-  const {isDarkMode} = useTheme();
   const {t} = useTranslation();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
@@ -37,6 +38,7 @@ export default function RecordBookListPage() {
   const [month, setMonth] = useState<number>(currentMonth);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const {data: records, isLoading, error} = useRecordBookList(year, month);
+  const {isDarkMode, theme} = useTheme();
 
   const filteredRecords = records?.filter(item => {
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -49,8 +51,8 @@ export default function RecordBookListPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleBookClick = (book: Book) => {
-    navigation.navigate('BookWrite', {book}); 
-  };
+    // navigation.navigate('RecordBook');
+  }; 
 
   if (isLoading) {
     return (
@@ -72,15 +74,12 @@ export default function RecordBookListPage() {
 
   return (
     <>
-      <CustomHeader showLogo={true} />
-      <View style={styles.container}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder={t('검색어를 입력하세요')}
-          value={searchTerm}
-          onChangeText={setSearchTerm}
-        />
-
+      <BackHeader searchKeyword={t('기록')} />
+      <View
+        style={[
+          styles.container,
+          {flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
+        ]}>
         <FlatList
           data={filteredRecords}
           keyExtractor={(item, index) =>
@@ -88,18 +87,60 @@ export default function RecordBookListPage() {
           }
           renderItem={({item}) => (
             <TouchableOpacity onPress={() => handleBookClick(item)}>
-              <View style={styles.card}>
-                <Image source={{uri: item.bookCover}} style={styles.bookCover} />
+              <View
+                style={[
+                  styles.card,
+                  {
+                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFF',
+                    borderColor: isDarkMode ? '#2B2B2B' : '#FFF',
+                  },
+                ]}>
+                <Image
+                  source={{uri: item.bookCover}}
+                  style={styles.bookCover}
+                />
                 <View style={styles.textContainer}>
-                  <Text style={styles.title}>{item.bookTitle}</Text>
-                  <Text style={styles.subtitle}>
-                    {`${item.bookAuthor} · ${item.bookPublisher} (${item.bookPublishingYear})`}
+                  <Text
+                    style={[
+                      styles.title,
+                      {
+                        color: isDarkMode ? '#FFF' : '#2B2B2B',
+                      },
+                    ]}>
+                    {item.bookTitle}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.subtitle,
+                      {
+                        color: isDarkMode ? '#FFF' : '#828183',
+                      },
+                    ]}>
+                    {`${item.bookAuthor}`}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.subtitle2,
+                      {
+                        color: isDarkMode ? '#D3D3D3' : '#828183',
+                      },
+                    ]}>
+                    {`${item.bookPublisher} / ${item.bookPublishingYear}`}
                   </Text>
                 </View>
               </View>
             </TouchableOpacity>
           )}
         />
+
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('RecordSearch')}>
+          <Image
+            source={require('@/assets/image/add_button.png')}
+            style={styles.addButtonImage}
+          />
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -114,25 +155,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
   },
-  searchInput: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    fontSize: 16,
-  },
   card: {
     flexDirection: 'row',
     padding: 10,
-    marginVertical: 8,
+    marginVertical: 5,
     backgroundColor: '#fff',
     borderRadius: 10,
   },
   bookCover: {
-    width: 110,
-    height: 150,
+    width: 90,
+    height: 130,
     borderRadius: 10,
     marginRight: 32,
   },
@@ -141,10 +173,28 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 700,
+    marginBottom: 5,
   },
   subtitle: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  subtitle2: {
     fontSize: 14,
-    color: '#666',
+    marginBottom: 5,
+  },
+  addButton: {
+    position: 'absolute', 
+    bottom: 20, 
+    right: 20,
+    width: 60, 
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30, 
+  },
+  addButtonImage: {
+
   },
 });

@@ -4,8 +4,8 @@ import React from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import BackHeader from '../Header/BackHeader';
-import Svg, { G, Path, Text as SvgText } from 'react-native-svg';
-import { ScrollView } from 'react-native-gesture-handler';
+import Svg, {G, Path, Text as SvgText} from 'react-native-svg';
+import {ScrollView} from 'react-native-gesture-handler';
 
 // 카테고리 맵 타입 정의
 const categoryMap: Record<string, string> = {
@@ -36,13 +36,16 @@ interface LegendProps {
 }
 
 // 원형 차트 컴포넌트
-const PieChart: React.FC<PieChartProps> = ({ data, colors }) => {
-  const total: number = Object.values(data).reduce((sum, value) => sum + Number(value), 0);
+const PieChart: React.FC<PieChartProps> = ({data, colors}) => {
+  const total: number = Object.values(data).reduce(
+    (sum, value) => sum + Number(value),
+    0,
+  );
   let startAngle: number = 0;
-  const radius: number = 100;
+  const radius: number = 80;
   const centerX: number = 150;
   const centerY: number = 150;
-  
+
   return (
     <View style={styles.chartContainer}>
       <Svg height="300" width="300" viewBox="0 0 300 300">
@@ -51,33 +54,38 @@ const PieChart: React.FC<PieChartProps> = ({ data, colors }) => {
             const percentage: number = Number(count) / total;
             const angle: number = percentage * 360;
             const endAngle: number = startAngle + angle;
-            
+
             // 원호의 좌표 계산
-            const x1: number = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
-            const y1: number = centerY + radius * Math.sin((startAngle - 90) * Math.PI / 180);
-            const x2: number = centerX + radius * Math.cos((endAngle - 90) * Math.PI / 180);
-            const y2: number = centerY + radius * Math.sin((endAngle - 90) * Math.PI / 180);
-            
+            const x1: number =
+              centerX + radius * Math.cos(((startAngle - 90) * Math.PI) / 180);
+            const y1: number =
+              centerY + radius * Math.sin(((startAngle - 90) * Math.PI) / 180);
+            const x2: number =
+              centerX + radius * Math.cos(((endAngle - 90) * Math.PI) / 180);
+            const y2: number =
+              centerY + radius * Math.sin(((endAngle - 90) * Math.PI) / 180);
+
             // 라벨 위치 계산 (원의 중간 지점)
             const labelAngle: number = startAngle + angle / 2;
             const labelRadius: number = radius * 0.7;
-            const labelX: number = centerX + labelRadius * Math.cos((labelAngle - 90) * Math.PI / 180);
-            const labelY: number = centerY + labelRadius * Math.sin((labelAngle - 90) * Math.PI / 180);
-            
+            const labelX: number =
+              centerX +
+              labelRadius * Math.cos(((labelAngle - 90) * Math.PI) / 180);
+            const labelY: number =
+              centerY +
+              labelRadius * Math.sin(((labelAngle - 90) * Math.PI) / 180);
+
             // 큰 원호일 경우에만 라벨 표시 (5% 이상)
             const showLabel: boolean = percentage >= 0.05;
-            
+
             const sweepFlag: number = 1; // 시계 방향
             const largeArcFlag: number = angle > 180 ? 1 : 0;
-            
+
             const pathData: string = `M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${x2} ${y2} Z`;
-            
+
             const result = (
               <G key={category}>
-                <Path 
-                  d={pathData}
-                  fill={colors[index % colors.length]}
-                />
+                <Path d={pathData} fill={colors[index % colors.length]} />
                 {showLabel && (
                   <SvgText
                     x={labelX}
@@ -85,14 +93,13 @@ const PieChart: React.FC<PieChartProps> = ({ data, colors }) => {
                     textAnchor="middle"
                     fontSize="12"
                     fill="#fff"
-                    fontWeight="bold"
-                  >
+                    fontWeight="bold">
                     {Math.round(percentage * 100)}%
                   </SvgText>
                 )}
               </G>
             );
-            
+
             startAngle += angle;
             return result;
           })}
@@ -103,13 +110,17 @@ const PieChart: React.FC<PieChartProps> = ({ data, colors }) => {
 };
 
 // 범례 컴포넌트
-const Legend: React.FC<LegendProps> = ({ data, colors }) => {
-  const total: number = Object.values(data).reduce((sum, value) => sum + Number(value), 0);
-  
+const Legend: React.FC<LegendProps> = ({data, colors}) => {
+  const {isDarkMode} = useTheme();
+  const total: number = Object.values(data).reduce(
+    (sum, value) => sum + Number(value),
+    0,
+  );
+
   return (
     <View style={styles.legendContainer}>
       {Object.entries(data).map(([category, count], index) => {
-        const percentage: string = (Number(count) / total * 100).toFixed(1);
+        const percentage: string = ((Number(count) / total) * 100).toFixed(1);
         return (
           <View key={category} style={styles.legendItem}>
             <View
@@ -118,8 +129,15 @@ const Legend: React.FC<LegendProps> = ({ data, colors }) => {
                 {backgroundColor: colors[index % colors.length]},
               ]}
             />
-            <Text style={styles.legendText}>
-              {categoryMap[category] || '기타'}: {percentage}% ({count})
+            <Text
+              style={[
+                styles.legendText,
+                {
+                  color: isDarkMode ? 'white' : 'text',
+                },
+              ]}>
+              {categoryMap[category] || '기타'} : {count}
+              {/* {categoryMap[category] || '기타'}: {percentage}% ({count}) */}
             </Text>
           </View>
         );
@@ -133,15 +151,15 @@ const StatsContent: React.FC = () => {
   const {t} = useTranslation();
   const {data, isLoading, error} = useStatistics();
   const colors: string[] = [
-    '#FF5454',
-    '#FCCD8C',
-    '#FFF182',
-    '#88C688',
-    '#7BBCF3',
-    '#7986C8',
-    '#C893F1',
-    '#FFBBEB',
-    '#50505055',
+    '#FF0000',
+    '#F48F03',
+    '#E8CE00',
+    '#3AA031',
+    '#006FD1',
+    '#001FBC',
+    '#9000FF',
+    '#FF00B2',
+    '#8A715D',
   ];
 
   if (isLoading) {
@@ -170,26 +188,60 @@ const StatsContent: React.FC = () => {
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
       <ScrollView
-        style={[
-          styles.container,
-          {backgroundColor: isDarkMode ? '#000000' : '#F5F4F5'},
-        ]}>
+        style={{
+          backgroundColor: isDarkMode ? '#000000' : '#F5F4F5',
+        }}
+        contentContainerStyle={styles.container}>
         <View style={styles.statsContainer}>
           {/* 기록 통계 */}
-          <View style={styles.categorySection}>
-            <Text style={styles.sectionTitle}>{t('카테고리별 기록')}</Text>
-            <View style={styles.chartSection}>
-              <PieChart data={data.records} colors={colors} />
-              <Legend data={data.records} colors={colors} />
+          <View
+            style={[
+              styles.categorySection,
+              {
+                backgroundColor: isDarkMode ? '#2B2B2B' : 'white',
+              },
+            ]}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {
+                  color: isDarkMode ? 'white' : 'text',
+                },
+              ]}>
+              {t('기록한 카테고리')}
+            </Text>
+            <View style={styles.chartContainer}>
+              <View style={styles.chartSection}>
+                <PieChart data={data.records} colors={colors} />
+                <View style={styles.chartSection2}>
+                  <Legend data={data.records} colors={colors} />
+                </View>
+              </View>
             </View>
           </View>
-          
+
           {/* 북마크 통계 */}
-          <View style={styles.categorySection}>
-            <Text style={styles.sectionTitle}>{t('카테고리별 북마크')}</Text>
+          <View
+            style={[
+              styles.categorySection,
+              {
+                backgroundColor: isDarkMode ? '#2B2B2B' : 'white',
+              },
+            ]}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {
+                  color: isDarkMode ? 'white' : 'text',
+                },
+              ]}>
+              {t('저장한 카테고리')}
+            </Text>
             <View style={styles.chartSection}>
               <PieChart data={data.bookmarks} colors={colors} />
-              <Legend data={data.bookmarks} colors={colors} />
+              <View style={styles.chartSection2}>
+                <Legend data={data.bookmarks} colors={colors} />
+              </View>
             </View>
           </View>
         </View>
@@ -201,19 +253,13 @@ const StatsContent: React.FC = () => {
 // 스타일
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
     padding: 20,
   },
-  statsContainer: {
-    width: '100%',
-  },
+  statsContainer: {},
   categorySection: {
-    width: '100%',
-    maxWidth: 500,
-    marginVertical: 20,
+    marginVertical: 10,
     backgroundColor: '#fff',
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
@@ -222,35 +268,34 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
+    fontWeight: 600,
   },
   chartSection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: -60,
+  },
+  chartSection2: {
+    flexDirection: 'row',
+    marginLeft: -40,
   },
   chartContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
+    flexDirection: 'row',
   },
   legendContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   legendItem: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 10,
     marginVertical: 5,
   },
   colorSquare: {
-    width: 15,
-    height: 15,
+    width: 10,
+    height: 5,
     borderRadius: 3,
-    marginRight: 5,
+    marginRight: 10,
+    marginVertical: 5,
   },
   legendText: {
     fontSize: 14,

@@ -105,7 +105,7 @@ export default function PasswordPage() {
               placeholder={t('현재 비밀번호')}
               value={password}
               onChangeText={text => {
-                setPassword(text);
+                setPassword(text.trimEnd());
                 setErrorMessage('');
               }}
               placeholderTextColor="#999"

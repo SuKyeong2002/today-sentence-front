@@ -17,22 +17,23 @@ import PasswordFindPage from './screens/auth/PasswordFind';
 import SignUpScreen from './screens/auth/SignUpPage';
 import AuthenticationScreen from './screens/authentication/AuthenticationPage';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
-import CategoryBookSearchScreen2 from './screens/bookSearch2/categoryBookSearch';
+import CategoryBookSearchScreen2 from './screens/bookSearch2/CategoryBookSearch';
 import EmailScreen from './screens/email/EmailPage';
 import BookDetailScreen from './components/Record/BookDetail';
 import FontScreen from './screens/font/FontPage';
 import IntroductionScreen from './screens/introduction/IntroductionPage';
 import LandingScreen from './screens/LandingPage';
-import NewsScreen from './screens/News/NewsPage';
+import NewsScreen from './screens/news/NewsPage';
 import NicknameScreen from './screens/nickname/NicknamePage';
 import NotFoundPage from './screens/NotFound';
 import PasswordScreen from './screens/password/PasswordPage';
 import ProfileScreen from './screens/profile/ProfilePage';
-import BookWrite from "./components/Record/BookWrite";
+import BookWrite from './components/Record/BookWrite';
 import ScreenScreen from './screens/screen/ScreenPage';
 import SettingScreen from './screens/setting/SettingPage';
 import RecordContentScreen from './components/Record/RecordContent';
-import RecordSearchScreen from './components/Record/RecordSearch';
+import RecordWriterScreen from './screens/RecordWriter/RecordWriterPage';
+import RecordSearchScreen from './screens/RecordSearch/RecordSearchPage';
 import RecordBookListScreen from './screens/recordBookList/RecordBookListPage';
 import BookmarkBookListScreen from './screens/bookmarkBookList/BookmarkBookListPage';
 import SavedContentScreen from './components/Record/SavedContent';
@@ -119,6 +120,7 @@ type RootStackParamList = {
   Authentication: undefined;
   RecordContent: undefined;
   RecordBookList: undefined;
+  RecordWriter: undefined;
   RecordSearch: undefined;
   SavedContent: undefined;
   StatusContent: undefined;
@@ -165,7 +167,7 @@ function ThemedApp() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Home" component={Footer} />
-          <Stack.Screen name="BookWrite" component={BookWrite}/>
+          <Stack.Screen name="BookWrite" component={BookWrite} />
           <Stack.Screen name="RecordFooter" component={Footer} />
           <Stack.Screen name="Search" component={Footer} />
           <Stack.Screen name="BookSearch" component={BookSearchScreen} />
@@ -181,6 +183,7 @@ function ThemedApp() {
           <Stack.Screen name="Screen" component={ScreenScreen} />
           <Stack.Screen name="Record" component={Footer} />
           <Stack.Screen name="RecordContent" component={RecordContentScreen} />
+          <Stack.Screen name="RecordWriter" component={RecordWriterScreen} />
           <Stack.Screen name="RecordSearch" component={RecordSearchScreen} />
           <Stack.Screen
             name="RecordBookList"

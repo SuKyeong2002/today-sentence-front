@@ -41,15 +41,6 @@ export default function IntroductionaPage() {
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
 
-  // 상태 메시지 입력란 공백 확인
-  const handleDuplicateCheck = async () => {
-    if (message.trim().length === 0) {
-      setErrorMessage('닉네임을 입력해주세요.');
-      setIsError(true);
-      return;
-    }
-  };
-
   const {isDarkMode, theme} = useTheme();
 
   return (
