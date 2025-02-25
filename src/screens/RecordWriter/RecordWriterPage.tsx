@@ -1,25 +1,23 @@
 import BackHeader from '@/components/Header/BackHeader';
 import CustomModal from '@/components/Modal/CustomModal';
-import { useTheme } from '@/context/ThemeContext';
-import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTheme} from '@/context/ThemeContext';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useSaveQuote } from '../../hooks/useSaveQuote';
-import { QuoteData } from '../../types/QuoteData';
+import {Picker} from '@react-native-picker/picker';
+import {usePostQuote} from '@/hooks/usePostQuote';
 
 type RootStackParamList = {
   RecordBookList: undefined;
@@ -27,28 +25,44 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordBookList'>;
 
+interface Book {
+  title: string;
+  authors: string[];
+  publisher: string;
+  thumbnail: string;
+  bookPublishingYear?: number;
+  isbn?: string;
+}
+
 export default function RecordWriter() {
+  const route = useRoute();
+  const {bookData} = route.params as {bookData: Book};
+  const navigation = useNavigation<NavigationProp>();
+  const {isDarkMode} = useTheme();
+  const {t} = useTranslation();
+  const {mutate: saveQuote, isLoading} = usePostQuote();
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [bookTitle, setBookTitle] = useState<string>(bookData.title);
+  const [bookAuthor, setBookAuthor] = useState<string>(
+    bookData.authors.join(', '),
+  );
+  const [bookPublisher, setBookPublisher] = useState<string>(
+    bookData.publisher,
+  );
+  const [bookCover, setBookCover] = useState<string>(bookData.thumbnail);
+  const [bookPublishingYear, setBookPublishingYear] = useState<number>(
+    bookData.bookPublishingYear || new Date().getFullYear(),
+  );
+  const [isbn, setIsbn] = useState<string>(bookData.isbn || '');
   const [category, setCategory] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
   const [quote, setQuote] = useState<string>('');
-  const [bookTitle, setBookTitle] = useState<string>(''); // 책 제목
-  const [bookAuthor, setBookAuthor] = useState<string>(''); // 책 저자
-  const [bookPublisher, setBookPublisher] = useState<string>(''); // 책 출판사
-  const [bookPublishingYear, setBookPublishingYear] = useState<string>(''); // 책 출판 연도
-  const [bookCover, setBookCover] = useState<string>(''); // 책 표지 URL
-  const [isbn, setIsbn] = useState<string>(''); // ISBN
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const {isSaving, error, handleSaveQuote} = useSaveQuote();
-  const {isDarkMode} = useTheme();
-  const {t} = useTranslation();
-  const navigation = useNavigation<NavigationProp>();
-
-  const handleSubmit = async () => {
-    const data: QuoteData = {
+  const handleSubmit = () => {
+    const data = {
       bookTitle,
       bookAuthor,
       bookPublisher,
-      bookPublishingYear: parseInt(bookPublishingYear, 10),
+      bookPublishingYear,
       bookCover,
       isbn,
       category,
@@ -56,13 +70,9 @@ export default function RecordWriter() {
       content: quote,
     };
 
-    try {
-      await handleSaveQuote(data);
-      setModalVisible(true);
-    } catch (err) {
-      Alert.alert('오류', '저장 중 문제가 발생했습니다.');
-      console.error(err);
-    }
+    saveQuote(data, {
+      onSuccess: () => setModalVisible(true),
+    });
   };
 
   return (
@@ -71,12 +81,8 @@ export default function RecordWriter() {
       <SafeAreaView
         style={[
           styles.container,
-          {
-            backgroundColor: isDarkMode ? '#000000' : '#F5F4F5',
-            borderColor: isDarkMode ? '#2B2B2B' : '#FFF',
-          },
+          {backgroundColor: isDarkMode ? '#000000' : '#F5F4F5'},
         ]}>
-        {/* 키보드가 열릴 때 자동 조정 (iOS 전용) */}
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={{flex: 1}}>
@@ -84,17 +90,12 @@ export default function RecordWriter() {
             contentContainerStyle={styles.scrollContainer}
             keyboardShouldPersistTaps="handled">
             <Text
-              style={[
-                styles.header,
-                {
-                  color: isDarkMode ? '#FFF' : '#2B2B2B',
-                },
-              ]}>
-              오늘의 문장은 무엇인가요?
+              style={[styles.header, {color: isDarkMode ? '#FFF' : '#2B2B2B'}]}>
+              {t('오늘의 문장은 무엇인가요?')}
             </Text>
 
             <View style={styles.formContainer}>
-              {/* <Text
+              <Text
                 style={[
                   styles.label,
                   {color: isDarkMode ? '#FFFFFF' : '#000000'},
@@ -102,19 +103,12 @@ export default function RecordWriter() {
                 책 제목
               </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    color: isDarkMode ? '#FFFFFF' : '#000000',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                  },
-                ]}
+                style={styles.input}
                 value={bookTitle}
                 onChangeText={setBookTitle}
-                placeholder="책 제목을 입력해주세요"
-                placeholderTextColor={isDarkMode ? '#AAAAAA' : '#666666'}
+                editable={false}
               />
+
               <Text
                 style={[
                   styles.label,
@@ -123,83 +117,40 @@ export default function RecordWriter() {
                 책 저자
               </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    color: isDarkMode ? '#FFFFFF' : '#000000',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                  },
-                ]}
+                style={styles.input}
                 value={bookAuthor}
                 onChangeText={setBookAuthor}
-                placeholder="책 저자를 입력해주세요"
-                placeholderTextColor={isDarkMode ? '#AAAAAA' : '#666666'}
+                editable={false}
               />
+
               <Text
                 style={[
                   styles.label,
                   {color: isDarkMode ? '#FFFFFF' : '#000000'},
                 ]}>
-                책 출판사
+                출판사
               </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    color: isDarkMode ? '#FFFFFF' : '#000000',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                  },
-                ]}
+                style={styles.input}
                 value={bookPublisher}
                 onChangeText={setBookPublisher}
-                placeholder="책 출판사를 입력해주세요"
-                placeholderTextColor={isDarkMode ? '#AAAAAA' : '#666666'}
+                editable={false}
               />
+
               <Text
                 style={[
                   styles.label,
                   {color: isDarkMode ? '#FFFFFF' : '#000000'},
                 ]}>
-                책 출판년도
+                출판 연도
               </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    color: isDarkMode ? '#FFFFFF' : '#000000',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                  },
-                ]}
-                value={bookPublishingYear}
-                onChangeText={setBookPublishingYear}
-                placeholder="책 출판년도를 입력해주세요"
-                placeholderTextColor={isDarkMode ? '#AAAAAA' : '#666666'}
+                style={styles.input}
+                value={bookPublishingYear.toString()}
+                onChangeText={text => setBookPublishingYear(Number(text))}
                 keyboardType="numeric"
               />
-              <Text
-                style={[
-                  styles.label,
-                  {color: isDarkMode ? '#FFFFFF' : '#000000'},
-                ]}>
-                책 표지 URL
-              </Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    color: isDarkMode ? '#FFFFFF' : '#000000',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                  },
-                ]}
-                value={bookCover}
-                onChangeText={setBookCover}
-                placeholder="책 표지 URL를 입력해주세요"
-                placeholderTextColor={isDarkMode ? '#AAAAAA' : '#666666'}
-              />
+
               <Text
                 style={[
                   styles.label,
@@ -208,20 +159,11 @@ export default function RecordWriter() {
                 ISBN
               </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    color: isDarkMode ? '#FFFFFF' : '#000000',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                  },
-                ]}
+                style={styles.input}
                 value={isbn}
                 onChangeText={setIsbn}
-                placeholder="책 ISBN을 입력해주세요"
-                placeholderTextColor={isDarkMode ? '#AAAAAA' : '#666666'}
-                keyboardType="numeric"
-              /> */}
+              />
+
               <Text
                 style={[
                   styles.label,
@@ -236,14 +178,19 @@ export default function RecordWriter() {
                   styles.picker,
                   {backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF'},
                 ]}>
+                <Picker.Item label="선택해주세요." value="" />
+                <Picker.Item label="시/소설/에세이" value="POEM_NOVEL_ESSAY" />
+                <Picker.Item label="경제/경영" value="ECONOMY_MANAGEMENT" />
+                <Picker.Item label="역사/사회" value="HISTORY_SOCIETY" />
                 <Picker.Item
-                  label="선택해주세요."
-                  value=""
-                  style={{color: isDarkMode ? '#AAAAAA' : '#000000'}}
+                  label="철학/심리학"
+                  value="PHILOSOPHY_PSYCHOLOGY"
                 />
-                <Picker.Item label="책" value="book" />
-                <Picker.Item label="영화" value="movie" />
-                <Picker.Item label="음악" value="music" />
+                <Picker.Item label="자기계발" value="SELF_DEVELOPMENT" />
+                <Picker.Item label="예체능" value="ARTS_PHYSICAL" />
+                <Picker.Item label="아동/청소년" value="KID_YOUTH" />
+                <Picker.Item label="여행/문화" value="TRAVEL_CULTURE" />
+                <Picker.Item label="기타" value="ETC" />
               </Picker>
 
               <Text
@@ -254,28 +201,12 @@ export default function RecordWriter() {
                 해시태그
               </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    color: isDarkMode ? '#FFFFFF' : '#000000',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                  },
-                ]}
+                style={styles.input}
                 value={hashtags}
                 onChangeText={setHashtags}
-                placeholder="명언과 관련된 내용을 해시태그로 남겨보세요."
-                placeholderTextColor={isDarkMode ? '#AAAAAA' : '#666666'}
-                maxLength={300}
+                placeholder="원하시는 태그를 입력해주세요"
               />
 
-              <Text
-                style={[
-                  styles.charCount,
-                  {color: isDarkMode ? '#FFFFFF' : '#000000'},
-                ]}>
-                {hashtags.length}/20자
-              </Text>
               <Text
                 style={[
                   styles.label,
@@ -284,46 +215,29 @@ export default function RecordWriter() {
                 명언
               </Text>
               <TextInput
-                style={[
-                  styles.input,
-                  styles.quoteInput,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    color: isDarkMode ? '#FFFFFF' : '#000000',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                  },
-                ]}
+                style={[styles.input, styles.quoteInput]}
                 value={quote}
                 onChangeText={setQuote}
-                placeholder="책 속 명언을 입력해주세요."
-                placeholderTextColor={isDarkMode ? '#AAAAAA' : '#666666'}
+                placeholder="마음에 드는 명언을 입력해주세요."
                 multiline
               />
-              <Text
-                style={[
-                  styles.charCount,
-                  {color: isDarkMode ? '#FFFFFF' : '#000000'},
-                ]}>
-                {hashtags.length}/400자
-              </Text>
+
               <TouchableOpacity
                 style={[
                   styles.submitButton,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : 'gray',
-                    borderColor: isDarkMode ? '#2B2B2B' : 'gray',
-                  },
+                  {backgroundColor: isDarkMode ? '#2B2B2B' : 'gray'},
                 ]}
                 onPress={handleSubmit}
-                disabled={isSaving}>
+                disabled={isLoading}>
                 <Text
                   style={[
                     styles.submitButtonText,
                     {color: isDarkMode ? '#FFFFFF' : 'white'},
                   ]}>
-                  {isSaving ? '저장 중...' : '저장하기'}
+                  {isLoading ? '저장 중...' : '저장하기'}
                 </Text>
               </TouchableOpacity>
+
               <CustomModal
                 visible={modalVisible}
                 title={t('기록 성공')}
@@ -342,6 +256,7 @@ export default function RecordWriter() {
   );
 }
 
+// 🔹 스타일
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -371,6 +286,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
+    backgroundColor: '#fff',
   },
   quoteInput: {
     height: 100,
@@ -381,18 +297,13 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
   },
-  charCount: {
-    textAlign: 'right',
-    color: '#666',
-    marginTop: 4,
-  },
   submitButton: {
     padding: 16,
     borderRadius: 8,
     marginTop: 24,
+    alignItems: 'center',
   },
   submitButtonText: {
-    textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
   },

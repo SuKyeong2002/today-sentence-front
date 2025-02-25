@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/Book';
+import BackHeader from '@/components/Header/BackHeader';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookDetail'>;
 

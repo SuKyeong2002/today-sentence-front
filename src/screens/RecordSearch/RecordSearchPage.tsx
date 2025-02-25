@@ -1,8 +1,10 @@
 import BackHeader from '@/components/Header/BackHeader';
-import {useTheme} from '@/context/ThemeContext';
-import {KAKAO_API_KEY} from '@env';
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import { useTheme } from '@/context/ThemeContext';
+import { KAKAO_API_KEY } from '@env';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,17 +12,21 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
+// 📌 Book 타입 (필수 정보 포함)
 interface Book {
   title: string;
   authors: string[];
   publisher: string;
   thumbnail: string;
+  isbn: string;
+  bookPublishingYear: number;
 }
 
-// 카카오 API에서 책 데이터 가져오는 함수
+// 📌 카카오 API에서 책 데이터 가져오기
 const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
   try {
     const response = await fetch(
@@ -34,21 +40,19 @@ const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
       },
     );
 
-    console.log(`API 응답 상태: ${response.status}`);
-
     if (!response.ok) {
       console.error(`API 요청 실패: ${response.status}`);
       return [];
     }
 
     const data = await response.json();
-    console.log(`API 응답 데이터:`, JSON.stringify(data, null, 2));
-
     return data.documents.map((book: any) => ({
-      title: book.title,
-      authors: book.authors || [],
+      title: book.title || '정보 없음',
+      authors: book.authors.length > 0 ? book.authors : ['정보 없음'],
       publisher: book.publisher || '정보 없음',
       thumbnail: book.thumbnail || '',
+      isbn: book.isbn13 || book.isbn10 || '정보 없음',
+      bookPublishingYear: book.datetime ? new Date(book.datetime).getFullYear() : 0,
     }));
   } catch (error) {
     console.error('카카오 API 요청 오류:', error);
@@ -56,14 +60,22 @@ const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
   }
 };
 
+// 📌 네비게이션 타입 지정
+type RootStackParamList = {
+  RecordWriter: { bookData: Book };
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordWriter'>;
+
 export default function RecordSearchPage() {
-  const {t} = useTranslation();
-  const {isDarkMode} = useTheme();
+  const { t } = useTranslation();
+  const { isDarkMode } = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigation = useNavigation<NavigationProp>();
 
-  // 입력 시 카카오로 책 조회
+  // 📌 책 검색 기능
   const handleSearch = async (query: string) => {
     setSearchTerm(query);
     if (query.length > 0) {
@@ -76,23 +88,17 @@ export default function RecordSearchPage() {
     }
   };
 
+  // 📌 책 선택 시 `RecordWriter`로 이동
+  const handleBookSelect = (book: Book) => {
+    navigation.navigate('RecordWriter', { bookData: book });
+  };
+
   return (
     <>
       <BackHeader searchKeyword={t('기록')} />
-      <View
-        style={[
-          styles.container,
-          {backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
-        ]}>
+      <View style={[styles.container, { backgroundColor: isDarkMode ? '#000000' : '#F8F9FA' }]}>
         <TextInput
-          style={[
-            styles.searchInput,
-            {
-              backgroundColor: isDarkMode ? '#2B2B2B' : 'white',
-              color: isDarkMode ? '#FFF' : '#2B2B2B',
-              borderColor: isDarkMode ? '#2B2B2B' : 'white',
-            },
-          ]}
+          style={[styles.searchInput, { backgroundColor: isDarkMode ? '#2B2B2B' : 'white' }]}
           placeholder={t('책 제목을 입력해주세요.')}
           placeholderTextColor={isDarkMode ? '#BBB' : '#666'}
           value={searchTerm}
@@ -100,45 +106,31 @@ export default function RecordSearchPage() {
         />
 
         {isLoading && (
-          <ActivityIndicator
-            size="large"
-            color="#8A715D"
-            style={{marginTop: 20}}
-          />
+          <ActivityIndicator size="large" color="#8A715D" style={{ marginTop: 20 }} />
         )}
-        {books.length === 0 && !isLoading ? (
-          <View style={styles.centeredContainer}>
-            <Text
-              style={[
-                styles.contentText,
-                {color: isDarkMode ? '#FFF' : '#2B2B2B'},
-              ]}>
-              {t('검색 결과가 없습니다.')}
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={books}
-            keyExtractor={(item, index) => `${item.title}-${index}`}
-            contentContainerStyle={books.length === 0 ? styles.centeredContainer : {}}
-            renderItem={({item}) => (
+
+        <FlatList
+          data={books}
+          keyExtractor={(item, index) => `${item.title}-${index}`}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleBookSelect(item)}>
               <View style={styles.bookContainer}>
-                <Image source={{uri: item.thumbnail}} style={styles.bookCover} />
+                <Image source={{ uri: item.thumbnail }} style={styles.bookCover} />
                 <View style={styles.textContainer}>
                   <Text style={styles.bookTitle}>{item.title}</Text>
                   <Text style={styles.bookAuthor}>{item.authors.join(', ')}</Text>
                   <Text style={styles.bookPublisher}>{item.publisher}</Text>
                 </View>
               </View>
-            )}
-          />
-        )}
+            </TouchableOpacity>
+          )}
+        />
       </View>
     </>
   );
 }
 
-// 🔹 스타일
+// 📌 스타일
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -151,16 +143,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     fontSize: 16,
-  },
-  centeredContainer: {
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-  },
-  contentText: {
-    fontSize: 16,
-    fontWeight: 500,
-    textAlign: 'center', 
   },
   bookContainer: {
     flexDirection: 'row',

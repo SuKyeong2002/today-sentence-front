@@ -16,7 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useSaveQuote} from '../../hooks/useSaveQuote';
+import {useSaveQuote} from '../../hooks/usePostQuote';
 import SuccessModal from './SuccessModal';
 import {QuoteData} from '../../types/QuoteData';
 import BackHeader from '../Header/BackHeader';
