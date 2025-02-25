@@ -82,7 +82,15 @@ export default function BookmarkBookListPage() {
               },
             ]}>{`${year}년 ${month}월`}</Text>
           <TouchableOpacity onPress={() => handleMonthChange(1)}>
-            <Text style={styles.arrow}>{'>'}</Text>
+            <Text
+              style={[
+                styles.arrow,
+                {
+                  color: isDarkMode ? '#FFF' : '#2B2B2B',
+                },
+              ]}>
+              {'>'}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -147,7 +155,6 @@ const styles = StyleSheet.create({
   arrow: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFFFFF',
   },
   card: {
     flexDirection: 'row',
