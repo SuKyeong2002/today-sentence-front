@@ -27,6 +27,7 @@ import NicknameScreen from './screens/nickname/NicknamePage';
 import NotFoundPage from './screens/NotFound';
 import PasswordScreen from './screens/password/PasswordPage';
 import ProfileScreen from './screens/profile/ProfilePage';
+import BookWrite from "./components/Record/BookWrite";
 import ScreenScreen from './screens/screen/ScreenPage';
 import SettingScreen from './screens/setting/SettingPage';
 import RecordContentScreen from './components/Record/RecordContent';
@@ -108,6 +109,7 @@ type RootStackParamList = {
   Font: undefined;
   Profile: undefined;
   Nickname: undefined;
+  BookWrite: undefined;
   Introduction: undefined;
   Account: undefined;
   Email: undefined;
@@ -161,6 +163,7 @@ function ThemedApp() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Home" component={Footer} />
+          <Stack.Screen name="BookWrite" component={BookWrite}/>
           <Stack.Screen name="RecordFooter" component={Footer} />
           <Stack.Screen name="Search" component={Footer} />
           <Stack.Screen name="BookSearch" component={BookSearchScreen} />

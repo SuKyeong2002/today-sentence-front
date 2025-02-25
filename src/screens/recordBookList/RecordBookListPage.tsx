@@ -7,26 +7,52 @@ import {
   ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import {useTheme} from '@/context/ThemeContext';
 import {useTranslation} from 'react-i18next';
 import CustomHeader from '@/components/Header/CustomHeader';
 import {useRecordBookList} from '@/hooks/useRecordBookList';
-import {PanGestureHandler} from 'react-native-gesture-handler';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from 'react-native-reanimated';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
+
+interface Book {
+  postId: string;
+  bookTitle: string;
+  bookAuthor: string;
+  bookPublisher: string;
+  bookPublishingYear: string;
+  bookCover: string;
+}
+
+type RootStackParamList = {
+  BookWrite: {book: Book};
+};
 
 export default function RecordBookListPage() {
   const {isDarkMode} = useTheme();
   const {t} = useTranslation();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
-  const [year, setYear] = useState(currentYear);
-  const [month, setMonth] = useState(currentMonth);
+  const [year, setYear] = useState<number>(currentYear);
+  const [month, setMonth] = useState<number>(currentMonth);
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const {data: records, isLoading, error} = useRecordBookList(year, month);
+
+  const filteredRecords = records?.filter(item => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return (
+      item.bookTitle.toLowerCase().includes(lowerSearchTerm) ||
+      item.bookAuthor.toLowerCase().includes(lowerSearchTerm)
+    );
+  });
+
+  // useNavigation의 타입을 RootStackParamList로 설정
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // 책 클릭 시 BookWrite 페이지로 해당 책 정보 전달
+  const handleBookClick = (book: Book) => {
+    navigation.navigate('BookWrite', {book}); // book 정보를 BookWrite로 전달
+  };
 
   if (isLoading) {
     return (
@@ -50,21 +76,30 @@ export default function RecordBookListPage() {
     <>
       <CustomHeader showLogo={true} />
       <View style={styles.container}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder={t('검색어를 입력하세요')}
+          value={searchTerm}
+          onChangeText={setSearchTerm}
+        />
+
         <FlatList
-          data={records}
+          data={filteredRecords}
           keyExtractor={(item, index) =>
             `${year}-${month}-${item.postId}-${index}`
           }
           renderItem={({item}) => (
-            <View style={styles.card}>
-              <Image source={{uri: item.bookCover}} style={styles.bookCover} />
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.bookTitle}</Text>
-                <Text style={styles.subtitle}>
-                  {`${item.bookAuthor} · ${item.bookPublisher} (${item.bookPublishingYear})`}
-                </Text>
+            <TouchableOpacity onPress={() => handleBookClick(item)}>
+              <View style={styles.card}>
+                <Image source={{uri: item.bookCover}} style={styles.bookCover} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.title}>{item.bookTitle}</Text>
+                  <Text style={styles.subtitle}>
+                    {`${item.bookAuthor} · ${item.bookPublisher} (${item.bookPublishingYear})`}
+                  </Text>
+                </View>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -81,22 +116,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
   },
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
     marginBottom: 20,
-  },
-  dateText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginHorizontal: 20,
-  },
-  arrow: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#8A715D',
+    fontSize: 16,
   },
   card: {
     flexDirection: 'row',
