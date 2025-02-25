@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useTheme } from '@/context/ThemeContext';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Search: undefined;
@@ -22,17 +22,21 @@ const BackHeader: React.FC<BackHeaderProps> = ({
   onNotificationPress,
 }) => {
   const navigation = useNavigation<NavigationProp>();
-  const { isDarkMode, theme } = useTheme(); 
+  const {isDarkMode, theme} = useTheme();
 
   return (
-    <View style={styles.headerContainer}>
+    <View
+      style={[
+        styles.headerContainer,
+        {backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
+      ]}>
       <View style={styles.leftContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('Search')}>
           <Image
             source={require('../../assets/image/back2.png')}
             style={[
               styles.backIcon,
-              { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' },
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
             ]}
           />
         </TouchableOpacity>
@@ -41,10 +45,9 @@ const BackHeader: React.FC<BackHeaderProps> = ({
             styles.searchText,
             {
               color: isDarkMode ? '#FFFFFF' : '#2B2B2B',
-              fontFamily: theme.fontFamily, 
+              fontFamily: theme.fontFamily,
             },
-          ]}
-        >
+          ]}>
           {searchKeyword}
         </Text>
       </View>
@@ -56,10 +59,9 @@ const BackHeader: React.FC<BackHeaderProps> = ({
               styles.coinText,
               {
                 color: isDarkMode ? '#FFFFFF' : '#2B2B2B',
-                fontFamily: theme.fontFamily, 
+                fontFamily: theme.fontFamily,
               },
-            ]}
-          >
+            ]}>
             0
           </Text>
           <TouchableOpacity onPress={() => console.log('Coin icon clicked')}>
@@ -75,7 +77,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({
             source={require('../../assets/image/notification.png')}
             style={[
               styles.backIcon,
-              { tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B' },
+              {tintColor: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
             ]}
           />
         </TouchableOpacity>

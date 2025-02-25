@@ -1,19 +1,19 @@
+import BackHeader from '@/components/Header/BackHeader';
+import {useTheme} from '@/context/ThemeContext';
+import {useRecordBookList} from '@/hooks/useRecordBookList';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
-  View,
-  Text,
+  ActivityIndicator,
   FlatList,
   Image,
-  ActivityIndicator,
   StyleSheet,
-  TouchableOpacity,
+  Text,
   TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {useTheme} from '@/context/ThemeContext';
-import {useTranslation} from 'react-i18next';
-import CustomHeader from '@/components/Header/CustomHeader';
-import {useRecordBookList} from '@/hooks/useRecordBookList';
-import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 interface Book {
   postId: string;
@@ -29,7 +29,6 @@ type RootStackParamList = {
 };
 
 export default function RecordBookListPage() {
-  const {isDarkMode} = useTheme();
   const {t} = useTranslation();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
@@ -37,6 +36,7 @@ export default function RecordBookListPage() {
   const [month, setMonth] = useState<number>(currentMonth);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const {data: records, isLoading, error} = useRecordBookList(year, month);
+  const {isDarkMode, theme} = useTheme();
 
   const filteredRecords = records?.filter(item => {
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -74,11 +74,27 @@ export default function RecordBookListPage() {
 
   return (
     <>
-      <CustomHeader showLogo={true} />
-      <View style={styles.container}>
+      <BackHeader
+        searchKeyword={t('기록')}
+        onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
+        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
+      />
+      <View
+        style={[
+          styles.container,
+          {flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
+        ]}>
         <TextInput
-          style={styles.searchInput}
+          style={[
+            styles.searchInput,
+            {
+              backgroundColor: isDarkMode ? '#2B2B2B' : 'white',
+              color: isDarkMode ? '#FFF' : '#2B2B2B',
+              borderColor: isDarkMode ? '#2B2B2B' : 'white',
+            },
+          ]}
           placeholder={t('검색어를 입력하세요')}
+          placeholderTextColor={isDarkMode ? '#BBB' : '#666'}
           value={searchTerm}
           onChangeText={setSearchTerm}
         />
@@ -90,12 +106,45 @@ export default function RecordBookListPage() {
           }
           renderItem={({item}) => (
             <TouchableOpacity onPress={() => handleBookClick(item)}>
-              <View style={styles.card}>
-                <Image source={{uri: item.bookCover}} style={styles.bookCover} />
+              <View
+                style={[
+                  styles.card,
+                  {
+                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFF',
+                    borderColor: isDarkMode ? '#2B2B2B' : '#FFF',
+                  },
+                ]}>
+                <Image
+                  source={{uri: item.bookCover}}
+                  style={styles.bookCover}
+                />
                 <View style={styles.textContainer}>
-                  <Text style={styles.title}>{item.bookTitle}</Text>
-                  <Text style={styles.subtitle}>
-                    {`${item.bookAuthor} · ${item.bookPublisher} (${item.bookPublishingYear})`}
+                  <Text
+                    style={[
+                      styles.title,
+                      {
+                        color: isDarkMode ? '#FFF' : '#2B2B2B',
+                      },
+                    ]}>
+                    {item.bookTitle}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.subtitle,
+                      {
+                        color: isDarkMode ? '#FFF' : '#828183',
+                      },
+                    ]}>
+                    {`${item.bookAuthor}`}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.subtitle2,
+                      {
+                        color: isDarkMode ? '#D3D3D3' : '#828183',
+                      },
+                    ]}>
+                    {`${item.bookPublisher} / ${item.bookPublishingYear}`}
                   </Text>
                 </View>
               </View>
@@ -143,10 +192,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 700,
+    marginBottom: 5,
   },
   subtitle: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  subtitle2: {
     fontSize: 14,
-    color: '#666',
+    marginBottom: 5,
   },
 });
