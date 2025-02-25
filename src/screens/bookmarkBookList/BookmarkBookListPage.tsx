@@ -1,25 +1,39 @@
 import CustomHeader from '@/components/Header/CustomHeader';
 import { useTheme } from '@/context/ThemeContext';
 import { useBookmarkBookList } from '@/hooks/useBookmarkBookList';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    View
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
 } from 'react-native';
 
 export default function BookmarkBookListPage() {
-  const {isDarkMode} = useTheme();
-  const {t} = useTranslation();
+  const { isDarkMode } = useTheme();
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
-  const {data: records, isLoading, error} = useBookmarkBookList(year, month);
+
+  const { data: records, isLoading, error } = useBookmarkBookList(year, month);
+
+  const handleMonthChange = useCallback((direction :any) => {
+    let newMonth = month + direction;
+    if (newMonth > 12) {
+      newMonth = 1;
+      setYear(year + 1);  
+    } else if (newMonth < 1) {
+      newMonth = 12;
+      setYear(year - 1);  
+    }
+    setMonth(newMonth);
+  }, [month, year]);
 
   if (isLoading) {
     return (
@@ -43,14 +57,26 @@ export default function BookmarkBookListPage() {
     <>
       <CustomHeader showLogo={true} />
       <View style={styles.container}>
+        <View style={styles.dateContainer}>
+          <TouchableOpacity onPress={() => handleMonthChange(-1)}>
+            <Text style={styles.arrow}>{"<"}</Text>
+          </TouchableOpacity>
+          <Text style={styles.dateText}>
+            {`${year}년 ${month}월`}
+          </Text>
+          <TouchableOpacity onPress={() => handleMonthChange(1)}>
+            <Text style={styles.arrow}>{">"}</Text> 
+          </TouchableOpacity>
+        </View>
+
         <FlatList
           data={records}
           keyExtractor={(item, index) =>
             `${year}-${month}-${item.postId}-${index}`
           }
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <View style={styles.card}>
-              <Image source={{uri: item.bookCover}} style={styles.bookCover} />
+              <Image source={{ uri: item.bookCover }} style={styles.bookCover} />
               <View style={styles.textContainer}>
                 <Text style={styles.title}>{item.bookTitle}</Text>
                 <Text style={styles.subtitle}>

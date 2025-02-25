@@ -17,16 +17,17 @@ import PasswordFindPage from './screens/auth/PasswordFind';
 import SignUpScreen from './screens/auth/SignUpPage';
 import AuthenticationScreen from './screens/authentication/AuthenticationPage';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
-import CategoryBookSearchScreen2 from './screens/bookSearch2/CategoryBookSearch';
+import CategoryBookSearchScreen2 from './screens/bookSearch2/categoryBookSearch';
 import EmailScreen from './screens/email/EmailPage';
 import FontScreen from './screens/font/FontPage';
 import IntroductionScreen from './screens/introduction/IntroductionPage';
 import LandingScreen from './screens/LandingPage';
-import NewsScreen from './screens/news/NewsPage';
+import NewsScreen from './screens/News/NewsPage';
 import NicknameScreen from './screens/nickname/NicknamePage';
 import NotFoundPage from './screens/NotFound';
 import PasswordScreen from './screens/password/PasswordPage';
 import ProfileScreen from './screens/profile/ProfilePage';
+import BookWrite from "./components/Record/BookWrite";
 import ScreenScreen from './screens/screen/ScreenPage';
 import SettingScreen from './screens/setting/SettingPage';
 import RecordContentScreen from './components/Record/RecordContent';
@@ -108,6 +109,7 @@ type RootStackParamList = {
   Font: undefined;
   Profile: undefined;
   Nickname: undefined;
+  BookWrite: undefined;
   Introduction: undefined;
   Account: undefined;
   Email: undefined;
@@ -161,6 +163,7 @@ function ThemedApp() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Home" component={Footer} />
+          <Stack.Screen name="BookWrite" component={BookWrite}/>
           <Stack.Screen name="RecordFooter" component={Footer} />
           <Stack.Screen name="Search" component={Footer} />
           <Stack.Screen name="BookSearch" component={BookSearchScreen} />
