@@ -4,7 +4,10 @@ import React from 'react';
 import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import BackHeader from '../Header/BackHeader';
+import Svg, { G, Path, Text as SvgText } from 'react-native-svg';
+import { ScrollView } from 'react-native-gesture-handler';
 
+// 카테고리 맵 타입 정의
 const categoryMap: Record<string, string> = {
   POEM_NOVEL_ESSAY: '시/소설/에세이',
   ECONOMY_MANAGEMENT: '경제/경영',
@@ -17,11 +20,119 @@ const categoryMap: Record<string, string> = {
   ETC: '기타',
 };
 
-export default function StatsContent() {
+// 데이터 타입 정의
+type CategoryCount = Record<string, number>;
+
+// 원형 차트 컴포넌트 props 타입 정의
+interface PieChartProps {
+  data: CategoryCount;
+  colors: string[];
+}
+
+// 범례 컴포넌트 props 타입 정의
+interface LegendProps {
+  data: CategoryCount;
+  colors: string[];
+}
+
+// 원형 차트 컴포넌트
+const PieChart: React.FC<PieChartProps> = ({ data, colors }) => {
+  const total: number = Object.values(data).reduce((sum, value) => sum + Number(value), 0);
+  let startAngle: number = 0;
+  const radius: number = 100;
+  const centerX: number = 150;
+  const centerY: number = 150;
+  
+  return (
+    <View style={styles.chartContainer}>
+      <Svg height="300" width="300" viewBox="0 0 300 300">
+        <G>
+          {Object.entries(data).map(([category, count], index) => {
+            const percentage: number = Number(count) / total;
+            const angle: number = percentage * 360;
+            const endAngle: number = startAngle + angle;
+            
+            // 원호의 좌표 계산
+            const x1: number = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
+            const y1: number = centerY + radius * Math.sin((startAngle - 90) * Math.PI / 180);
+            const x2: number = centerX + radius * Math.cos((endAngle - 90) * Math.PI / 180);
+            const y2: number = centerY + radius * Math.sin((endAngle - 90) * Math.PI / 180);
+            
+            // 라벨 위치 계산 (원의 중간 지점)
+            const labelAngle: number = startAngle + angle / 2;
+            const labelRadius: number = radius * 0.7;
+            const labelX: number = centerX + labelRadius * Math.cos((labelAngle - 90) * Math.PI / 180);
+            const labelY: number = centerY + labelRadius * Math.sin((labelAngle - 90) * Math.PI / 180);
+            
+            // 큰 원호일 경우에만 라벨 표시 (5% 이상)
+            const showLabel: boolean = percentage >= 0.05;
+            
+            const sweepFlag: number = 1; // 시계 방향
+            const largeArcFlag: number = angle > 180 ? 1 : 0;
+            
+            const pathData: string = `M ${centerX} ${centerY} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${x2} ${y2} Z`;
+            
+            const result = (
+              <G key={category}>
+                <Path 
+                  d={pathData}
+                  fill={colors[index % colors.length]}
+                />
+                {showLabel && (
+                  <SvgText
+                    x={labelX}
+                    y={labelY}
+                    textAnchor="middle"
+                    fontSize="12"
+                    fill="#fff"
+                    fontWeight="bold"
+                  >
+                    {Math.round(percentage * 100)}%
+                  </SvgText>
+                )}
+              </G>
+            );
+            
+            startAngle += angle;
+            return result;
+          })}
+        </G>
+      </Svg>
+    </View>
+  );
+};
+
+// 범례 컴포넌트
+const Legend: React.FC<LegendProps> = ({ data, colors }) => {
+  const total: number = Object.values(data).reduce((sum, value) => sum + Number(value), 0);
+  
+  return (
+    <View style={styles.legendContainer}>
+      {Object.entries(data).map(([category, count], index) => {
+        const percentage: string = (Number(count) / total * 100).toFixed(1);
+        return (
+          <View key={category} style={styles.legendItem}>
+            <View
+              style={[
+                styles.colorSquare,
+                {backgroundColor: colors[index % colors.length]},
+              ]}
+            />
+            <Text style={styles.legendText}>
+              {categoryMap[category] || '기타'}: {percentage}% ({count})
+            </Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
+const StatsContent: React.FC = () => {
   const {isDarkMode} = useTheme();
   const {t} = useTranslation();
   const {data, isLoading, error} = useStatistics();
-  const colors = [
+  const colors: string[] = [
     '#FF5454',
     '#FCCD8C',
     '#FFF182',
@@ -32,12 +143,6 @@ export default function StatsContent() {
     '#FFBBEB',
     '#50505055',
   ];
-
-  <BackHeader
-    searchKeyword={t('기록')}
-    onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-    onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
-  />;
 
   if (isLoading) {
     return (
@@ -57,8 +162,6 @@ export default function StatsContent() {
     );
   }
 
-  console.log('불러온 통계 데이터:', data);
-
   return (
     <>
       <BackHeader
@@ -66,47 +169,34 @@ export default function StatsContent() {
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
         onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
-      <View
+      <ScrollView
         style={[
           styles.container,
           {backgroundColor: isDarkMode ? '#000000' : '#F5F4F5'},
         ]}>
         <View style={styles.statsContainer}>
-          <View style={styles.recordContainer}>
-            {Object.entries(data.records).map(([category, count], index) => (
-              <View key={category} style={styles.statRow}>
-                <View
-                  style={[
-                    styles.colorBar,
-                    {backgroundColor: colors[index % colors.length]},
-                  ]}
-                />
-                <Text style={styles.statText}>
-                  {t(categoryMap[category] || '기타')} : {Number(count)}
-                </Text>
-              </View>
-            ))}
+          {/* 기록 통계 */}
+          <View style={styles.categorySection}>
+            <Text style={styles.sectionTitle}>{t('카테고리별 기록')}</Text>
+            <View style={styles.chartSection}>
+              <PieChart data={data.records} colors={colors} />
+              <Legend data={data.records} colors={colors} />
+            </View>
           </View>
-          <View style={styles.bookmarkContainer}>
-            {Object.entries(data.bookmarks).map(([category, count], index) => (
-              <View key={category} style={styles.statRow}>
-                <View
-                  style={[
-                    styles.colorBar,
-                    {backgroundColor: colors[index % colors.length]},
-                  ]}
-                />
-                <Text style={styles.statText}>
-                  {t(categoryMap[category] || '기타')} : {Number(count)}
-                </Text>
-              </View>
-            ))}
+          
+          {/* 북마크 통계 */}
+          <View style={styles.categorySection}>
+            <Text style={styles.sectionTitle}>{t('카테고리별 북마크')}</Text>
+            <View style={styles.chartSection}>
+              <PieChart data={data.bookmarks} colors={colors} />
+              <Legend data={data.bookmarks} colors={colors} />
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
-}
+};
 
 // 스타일
 const styles = StyleSheet.create({
@@ -118,10 +208,10 @@ const styles = StyleSheet.create({
   statsContainer: {
     width: '100%',
   },
-  recordContainer: {
+  categorySection: {
     width: '100%',
     maxWidth: 500,
-    marginVertical: 10,
+    marginVertical: 20,
     backgroundColor: '#fff',
     padding: 15,
     borderRadius: 10,
@@ -130,46 +220,46 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 10,
   },
-  bookmarkContainer: {
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  chartSection: {
+    alignItems: 'center',
+  },
+  chartContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  legendContainer: {
     width: '100%',
-    maxWidth: 500,
-    marginVertical: 10,
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
+  colorSquare: {
+    width: 15,
+    height: 15,
+    borderRadius: 3,
+    marginRight: 5,
+  },
+  legendText: {
+    fontSize: 14,
+    color: '#555',
   },
   errorText: {
     fontSize: 16,
     color: 'red',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  statTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  statText: {
-    fontSize: 16,
-    color: '#555',
-    marginLeft: 10,
-  },
-  colorBar: {
-    width: 30,
-    height: 5,
-    borderRadius: 3,
-    marginRight: 10,
-  },
-  statRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 5,
-  },
 });
+
+export default StatsContent;
