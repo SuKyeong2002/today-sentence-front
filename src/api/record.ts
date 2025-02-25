@@ -4,6 +4,7 @@ import { Statistics } from '../types/CategoryData';
 import { QuoteData } from '@/types/QuoteData';
 import { Bookmark } from '@/types/Bookmark';
 import { Book } from '@/types/Book';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = 'http://3.34.197.35';
 
@@ -140,9 +141,25 @@ export const SearchBookRecord = async (
   }
 
   export async function fetchBookDetail(postId: number): Promise<Book> {
-    const response = await axios.get<{ data: Book }>(`/api/posts/${postId}`);
-    if (response.status !== 200) {
-      throw new Error('Failed to fetch book detail');
+    const token = AsyncStorage.getItem('authToken');
+    
+    if (!token) {
+      throw new Error('No authentication token found');
     }
-    return response.data.data;
+  
+    try {
+      const response = await axios.get<{ data: Book }>(`${API_URL}/api/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch book detail');
+      }
+  
+      return response.data.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch book detail');
+    }
   }
