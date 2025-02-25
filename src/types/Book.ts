@@ -11,5 +11,5 @@ export interface Book {
   
   export type RootStackParamList = {
     BookmarkBookList: undefined;  
-    BookDetail: { postId: string };  
+    BookDetail: { postId: number };  
   };
