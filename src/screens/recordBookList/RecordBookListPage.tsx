@@ -26,6 +26,7 @@ interface Book {
 
 type RootStackParamList = {
   BookWrite: {book: Book};
+  RecordWriter: undefined;
 };
 
 export default function RecordBookListPage() {
@@ -51,7 +52,7 @@ export default function RecordBookListPage() {
 
   // 책 클릭 시 BookWrite 페이지로 해당 책 정보 전달
   const handleBookClick = (book: Book) => {
-    navigation.navigate('BookWrite', {book}); // book 정보를 BookWrite로 전달
+    // navigation.navigate('BookWrite', {book}); // book 정보를 BookWrite로 전달
   };
 
   if (isLoading) {
@@ -80,7 +81,8 @@ export default function RecordBookListPage() {
           styles.container,
           {flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
         ]}>
-        <TextInput
+          
+        {/* <TextInput
           style={[
             styles.searchInput,
             {
@@ -93,7 +95,7 @@ export default function RecordBookListPage() {
           placeholderTextColor={isDarkMode ? '#BBB' : '#666'}
           value={searchTerm}
           onChangeText={setSearchTerm}
-        />
+        /> */}
 
         <FlatList
           data={filteredRecords}
@@ -147,6 +149,15 @@ export default function RecordBookListPage() {
             </TouchableOpacity>
           )}
         />
+
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('RecordWriter')}>
+          <Image
+            source={require('@/assets/image/add_button.png')}
+            style={styles.addButtonImage}
+          />
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -198,5 +209,18 @@ const styles = StyleSheet.create({
   subtitle2: {
     fontSize: 14,
     marginBottom: 5,
+  },
+  addButton: {
+    position: 'absolute', 
+    bottom: 20, 
+    right: 20,
+    width: 60, 
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30, 
+  },
+  addButtonImage: {
+
   },
 });

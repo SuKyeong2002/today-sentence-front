@@ -27,10 +27,11 @@ import NicknameScreen from './screens/nickname/NicknamePage';
 import NotFoundPage from './screens/NotFound';
 import PasswordScreen from './screens/password/PasswordPage';
 import ProfileScreen from './screens/profile/ProfilePage';
-import BookWrite from "./components/Record/BookWrite";
+import BookWrite from './components/Record/BookWrite';
 import ScreenScreen from './screens/screen/ScreenPage';
 import SettingScreen from './screens/setting/SettingPage';
 import RecordContentScreen from './components/Record/RecordContent';
+import RecordWriterScreen from './screens/RecordWriter/RecordWriterPage';
 import RecordSearchScreen from './components/Record/RecordSearch';
 import RecordBookListScreen from './screens/recordBookList/RecordBookListPage';
 import BookmarkBookListScreen from './screens/bookmarkBookList/BookmarkBookListPage';
@@ -117,6 +118,7 @@ type RootStackParamList = {
   Authentication: undefined;
   RecordContent: undefined;
   RecordBookList: undefined;
+  RecordWriter: undefined;
   RecordSearch: undefined;
   SavedContent: undefined;
   StatusContent: undefined;
@@ -163,7 +165,7 @@ function ThemedApp() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Home" component={Footer} />
-          <Stack.Screen name="BookWrite" component={BookWrite}/>
+          <Stack.Screen name="BookWrite" component={BookWrite} />
           <Stack.Screen name="RecordFooter" component={Footer} />
           <Stack.Screen name="Search" component={Footer} />
           <Stack.Screen name="BookSearch" component={BookSearchScreen} />
@@ -178,6 +180,7 @@ function ThemedApp() {
           <Stack.Screen name="Screen" component={ScreenScreen} />
           <Stack.Screen name="Record" component={Footer} />
           <Stack.Screen name="RecordContent" component={RecordContentScreen} />
+          <Stack.Screen name="RecordWriter" component={RecordWriterScreen} />
           <Stack.Screen name="RecordSearch" component={RecordSearchScreen} />
           <Stack.Screen
             name="RecordBookList"
