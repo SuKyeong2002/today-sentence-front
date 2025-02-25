@@ -52,7 +52,7 @@ export default function RecordBookListPage() {
 
   const handleBookClick = (book: Book) => {
     // navigation.navigate('RecordBook');
-  }; 
+  };
 
   if (isLoading) {
     return (
@@ -105,6 +105,7 @@ export default function RecordBookListPage() {
                       styles.title,
                       {
                         color: isDarkMode ? '#FFF' : '#2B2B2B',
+                        fontFamily: theme.fontFamily,
                       },
                     ]}>
                     {item.bookTitle}
@@ -114,6 +115,7 @@ export default function RecordBookListPage() {
                       styles.subtitle,
                       {
                         color: isDarkMode ? '#FFF' : '#828183',
+                        fontFamily: theme.fontFamily,
                       },
                     ]}>
                     {`${item.bookAuthor}`}
@@ -123,6 +125,7 @@ export default function RecordBookListPage() {
                       styles.subtitle2,
                       {
                         color: isDarkMode ? '#D3D3D3' : '#828183',
+                        fontFamily: theme.fontFamily,
                       },
                     ]}>
                     {`${item.bookPublisher} / ${item.bookPublishingYear}`}
@@ -173,7 +176,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 700,
+    fontWeight: 600,
     marginBottom: 5,
   },
   subtitle: {
@@ -185,16 +188,14 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   addButton: {
-    position: 'absolute', 
-    bottom: 20, 
+    position: 'absolute',
+    bottom: 20,
     right: 20,
-    width: 60, 
+    width: 60,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 30, 
+    borderRadius: 30,
   },
-  addButtonImage: {
-
-  },
+  addButtonImage: {},
 });
