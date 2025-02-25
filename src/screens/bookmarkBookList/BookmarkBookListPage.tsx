@@ -10,8 +10,8 @@ import {
   Image,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/Book';
@@ -27,19 +27,22 @@ export default function BookmarkBookListPage() {
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
 
-  const { data: records, isLoading, error } = useBookmarkBookList(year, month);
+  const {data: records, isLoading, error} = useBookmarkBookList(year, month);
 
-  const handleMonthChange = useCallback((direction :any) => {
-    let newMonth = month + direction;
-    if (newMonth > 12) {
-      newMonth = 1;
-      setYear(year + 1);  
-    } else if (newMonth < 1) {
-      newMonth = 12;
-      setYear(year - 1);  
-    }
-    setMonth(newMonth);
-  }, [month, year]);
+  const handleMonthChange = useCallback(
+    (direction: any) => {
+      let newMonth = month + direction;
+      if (newMonth > 12) {
+        newMonth = 1;
+        setYear(year + 1);
+      } else if (newMonth < 1) {
+        newMonth = 12;
+        setYear(year - 1);
+      }
+      setMonth(newMonth);
+    },
+    [month, year],
+  );
 
   if (isLoading) {
     return (
@@ -61,17 +64,25 @@ export default function BookmarkBookListPage() {
 
   return (
     <>
-      <CustomHeader showLogo={true} />
-      <View style={styles.container}>
+      <BackHeader searchKeyword={t('기록')} />
+      <View
+        style={[
+          styles.container,
+          {flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
+        ]}>
         <View style={styles.dateContainer}>
           <TouchableOpacity onPress={() => handleMonthChange(-1)}>
-            <Text style={styles.arrow}>{"<"}</Text>
+            <Text style={styles.arrow}>{'<'}</Text>
           </TouchableOpacity>
-          <Text style={styles.dateText}>
-            {`${year}년 ${month}월`}
-          </Text>
+          <Text
+            style={[
+              styles.dateText,
+              {
+                color: isDarkMode ? '#FFF' : '#2B2B2B',
+              },
+            ]}>{`${year}년 ${month}월`}</Text>
           <TouchableOpacity onPress={() => handleMonthChange(1)}>
-            <Text style={styles.arrow}>{">"}</Text> 
+            <Text style={styles.arrow}>{'>'}</Text>
           </TouchableOpacity>
         </View>
 
@@ -85,9 +96,23 @@ export default function BookmarkBookListPage() {
             >
               <Image source={{ uri: item.bookCover }} style={styles.bookCover} />
               <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.bookTitle}</Text>
-                <Text style={styles.subtitle}>
-                  {`${item.bookAuthor} · ${item.bookPublisher} (${item.bookPublishingYear})`}
+                <Text
+                  style={[
+                    styles.title,
+                    {
+                      color: isDarkMode ? '#FFF' : '#2B2B2B',
+                    },
+                  ]}>
+                  {item.bookTitle}
+                </Text>
+                <Text
+                  style={[
+                    styles.subtitle2,
+                    {
+                      color: isDarkMode ? '#D3D3D3' : '#828183',
+                    },
+                  ]}>
+                  {`${item.bookPublisher} / ${item.bookPublishingYear}`}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -122,7 +147,7 @@ const styles = StyleSheet.create({
   arrow: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#8A715D',
+    color: '#FFFFFF',
   },
   card: {
     flexDirection: 'row',
@@ -142,10 +167,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 700,
+    marginBottom: 5,
   },
   subtitle: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  subtitle2: {
     fontSize: 14,
-    color: '#666',
+    marginBottom: 5,
   },
 });

@@ -1,28 +1,33 @@
-import {useTheme} from '@/context/ThemeContext';
-import {Picker} from '@react-native-picker/picker';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import BackHeader from '@/components/Header/BackHeader';
+import CustomModal from '@/components/Modal/CustomModal';
+import { useTheme } from '@/context/ThemeContext';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import { useSaveQuote } from '../../hooks/useSaveQuote';
-import SuccessModal from './SuccessModal';
-import { QuoteData } from '../../types/QuoteData'; 
+import { QuoteData } from '../../types/QuoteData';
 
+type RootStackParamList = {
+  RecordBookList: undefined;
+};
 
-export default function WriteScreen() {
+type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordBookList'>;
+
+export default function RecordWriter() {
   const [category, setCategory] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
   const [quote, setQuote] = useState<string>('');
