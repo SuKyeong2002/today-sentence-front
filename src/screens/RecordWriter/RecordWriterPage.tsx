@@ -72,7 +72,7 @@ export default function RecordWriter() {
         style={[
           styles.container,
           {
-            backgroundColor: isDarkMode ? '#000000' : '#FFF',
+            backgroundColor: isDarkMode ? '#000000' : '#F5F4F5',
             borderColor: isDarkMode ? '#2B2B2B' : '#FFF',
           },
         ]}>
@@ -87,7 +87,7 @@ export default function RecordWriter() {
               style={[
                 styles.header,
                 {
-                  color: isDarkMode ? '#FFF' : '#828183',
+                  color: isDarkMode ? '#FFF' : '#2B2B2B',
                 },
               ]}>
               오늘의 문장은 무엇인가요?
@@ -310,8 +310,8 @@ export default function RecordWriter() {
                 style={[
                   styles.submitButton,
                   {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                    borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
+                    backgroundColor: isDarkMode ? '#2B2B2B' : 'gray',
+                    borderColor: isDarkMode ? '#2B2B2B' : 'gray',
                   },
                 ]}
                 onPress={handleSubmit}
@@ -319,7 +319,7 @@ export default function RecordWriter() {
                 <Text
                   style={[
                     styles.submitButtonText,
-                    {color: isDarkMode ? '#FFFFFF' : '#2B2B2B'},
+                    {color: isDarkMode ? '#FFFFFF' : 'white'},
                   ]}>
                   {isSaving ? '저장 중...' : '저장하기'}
                 </Text>

@@ -19,6 +19,7 @@ import AuthenticationScreen from './screens/authentication/AuthenticationPage';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
 import CategoryBookSearchScreen2 from './screens/bookSearch2/CategoryBookSearch';
 import EmailScreen from './screens/email/EmailPage';
+import BookDetailScreen from './components/Record/BookDetail';
 import FontScreen from './screens/font/FontPage';
 import IntroductionScreen from './screens/introduction/IntroductionPage';
 import LandingScreen from './screens/LandingPage';
@@ -32,7 +33,7 @@ import ScreenScreen from './screens/screen/ScreenPage';
 import SettingScreen from './screens/setting/SettingPage';
 import RecordContentScreen from './components/Record/RecordContent';
 import RecordWriterScreen from './screens/RecordWriter/RecordWriterPage';
-import RecordSearchScreen from './components/Record/RecordSearch';
+import RecordSearchScreen from './screens/RecordSearch/RecordSearchPage';
 import RecordBookListScreen from './screens/recordBookList/RecordBookListPage';
 import BookmarkBookListScreen from './screens/bookmarkBookList/BookmarkBookListPage';
 import SavedContentScreen from './components/Record/SavedContent';
@@ -94,6 +95,7 @@ type RootStackParamList = {
   SignUp: undefined;
   Home: undefined;
   Record: undefined;
+  BookDetail: { postId: string };
   Search: undefined;
   BookSearch: undefined;
   CategoryBookSearch: {category: string};
@@ -173,6 +175,7 @@ function ThemedApp() {
             name="CategoryBookSearch"
             component={CategoryBookSearchScreen2}
           />
+          <Stack.Screen name="BookDetail" component={BookDetailScreen}/>
           <Stack.Screen name="Category" component={Footer} />
           <Stack.Screen name="My" component={Footer} />
           <Stack.Screen name="Setting" component={SettingScreen} />

@@ -66,7 +66,6 @@ export default function CategoryList() {
     setCategories(fetchedCategories);
   }, []);
 
-  // 🔹 번역이 적용된 카테고리 제목과 설명 매핑
   const categoryMap: {[key: string]: string} = {
     POEM_NOVEL_ESSAY: t('시/소설/에세이'),
     ECONOMY_MANAGEMENT: t('경제/경영'),

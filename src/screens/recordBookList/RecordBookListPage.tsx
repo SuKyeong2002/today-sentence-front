@@ -26,7 +26,8 @@ interface Book {
 
 type RootStackParamList = {
   BookWrite: {book: Book};
-  RecordWriter: undefined;
+  RecordSearch: undefined;
+  RecordBook: undefined;
 };
 
 export default function RecordBookListPage() {
@@ -47,13 +48,11 @@ export default function RecordBookListPage() {
     );
   });
 
-  // useNavigation의 타입을 RootStackParamList로 설정
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // 책 클릭 시 BookWrite 페이지로 해당 책 정보 전달
   const handleBookClick = (book: Book) => {
-    // navigation.navigate('BookWrite', {book}); // book 정보를 BookWrite로 전달
-  };
+    // navigation.navigate('RecordBook');
+  }; 
 
   if (isLoading) {
     return (
@@ -81,22 +80,6 @@ export default function RecordBookListPage() {
           styles.container,
           {flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
         ]}>
-          
-        {/* <TextInput
-          style={[
-            styles.searchInput,
-            {
-              backgroundColor: isDarkMode ? '#2B2B2B' : 'white',
-              color: isDarkMode ? '#FFF' : '#2B2B2B',
-              borderColor: isDarkMode ? '#2B2B2B' : 'white',
-            },
-          ]}
-          placeholder={t('검색어를 입력하세요')}
-          placeholderTextColor={isDarkMode ? '#BBB' : '#666'}
-          value={searchTerm}
-          onChangeText={setSearchTerm}
-        /> */}
-
         <FlatList
           data={filteredRecords}
           keyExtractor={(item, index) =>
@@ -152,7 +135,7 @@ export default function RecordBookListPage() {
 
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => navigation.navigate('RecordWriter')}>
+          onPress={() => navigation.navigate('RecordSearch')}>
           <Image
             source={require('@/assets/image/add_button.png')}
             style={styles.addButtonImage}
@@ -172,25 +155,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
   },
-  searchInput: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    fontSize: 16,
-  },
   card: {
     flexDirection: 'row',
     padding: 10,
-    marginVertical: 8,
+    marginVertical: 5,
     backgroundColor: '#fff',
     borderRadius: 10,
   },
   bookCover: {
-    width: 110,
-    height: 150,
+    width: 90,
+    height: 130,
     borderRadius: 10,
     marginRight: 32,
   },

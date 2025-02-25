@@ -4,7 +4,7 @@ import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons'; 
 import { useFetchBookDetail } from '../../hooks/useFetchBookDetail';
-import { Book, RootStackParamList } from '../../types/Book';
+import { RootStackParamList } from '../../types/Book';
 
 type BookDetailScreenProps = {
   route: RouteProp<RootStackParamList, 'BookDetail'>;

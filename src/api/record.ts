@@ -5,7 +5,7 @@ import { QuoteData } from '@/types/QuoteData';
 import { Bookmark } from '@/types/Bookmark';
 import { Book } from '@/types/Book';
 
-const API_URL = 'http://3.36.71.224';
+const API_URL = 'http://3.34.197.35';
 
 interface SearchResponse {
   data: {

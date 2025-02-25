@@ -1,8 +1,9 @@
-import BackHeader from '@/components/Header/BackHeader';
-import {useTheme} from '@/context/ThemeContext';
-import {useBookmarkBookList} from '@/hooks/useBookmarkBookList';
-import React, {useCallback, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import CustomHeader from '@/components/Header/CustomHeader';
+import { useTheme } from '@/context/ThemeContext';
+import { useBookmarkBookList } from '@/hooks/useBookmarkBookList';
+import { useNavigation } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -12,10 +13,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/Book';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'BookDetail'>;
 
 export default function BookmarkBookListPage() {
-  const {isDarkMode, theme} = useTheme();
-  const {t} = useTranslation();
+  const { isDarkMode } = useTheme();
+  const { t } = useTranslation();
+  const navigation = useNavigation<NavigationProp>();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const [year, setYear] = useState(currentYear);
@@ -76,25 +82,27 @@ export default function BookmarkBookListPage() {
               },
             ]}>{`${year}년 ${month}월`}</Text>
           <TouchableOpacity onPress={() => handleMonthChange(1)}>
-            <Text style={styles.arrow}>{'>'}</Text>
+            <Text
+              style={[
+                styles.arrow,
+                {
+                  color: isDarkMode ? '#FFF' : '#2B2B2B',
+                },
+              ]}>
+              {'>'}
+            </Text>
           </TouchableOpacity>
         </View>
 
         <FlatList
           data={records}
-          keyExtractor={(item, index) =>
-            `${year}-${month}-${item.postId}-${index}`
-          }
-          renderItem={({item}) => (
-            <View
-              style={[
-                styles.card,
-                {
-                  backgroundColor: isDarkMode ? '#2B2B2B' : '#FFF',
-                  borderColor: isDarkMode ? '#2B2B2B' : '#FFF',
-                },
-              ]}>
-              <Image source={{uri: item.bookCover}} style={styles.bookCover} />
+          keyExtractor={(item, index) => `${year}-${month}-${item.postId}-${index}`}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('BookDetail', { postId: item.postId })}
+              style={styles.card}
+            >
+              <Image source={{ uri: item.bookCover }} style={styles.bookCover} />
               <View style={styles.textContainer}>
                 <Text
                   style={[
@@ -115,7 +123,7 @@ export default function BookmarkBookListPage() {
                   {`${item.bookPublisher} / ${item.bookPublishingYear}`}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -147,7 +155,6 @@ const styles = StyleSheet.create({
   arrow: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFFFFF',
   },
   card: {
     flexDirection: 'row',
