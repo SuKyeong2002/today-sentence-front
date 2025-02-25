@@ -1,10 +1,10 @@
 import BackHeader from '@/components/Header/BackHeader';
-import { useTheme } from '@/context/ThemeContext';
-import { KAKAO_API_KEY } from '@env';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTheme} from '@/context/ThemeContext';
+import {KAKAO_API_KEY} from '@env';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -16,7 +16,6 @@ import {
   View,
 } from 'react-native';
 
-// 📌 Book 타입 (필수 정보 포함)
 interface Book {
   title: string;
   authors: string[];
@@ -26,7 +25,6 @@ interface Book {
   bookPublishingYear: number;
 }
 
-// 📌 카카오 API에서 책 데이터 가져오기
 const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
   try {
     const response = await fetch(
@@ -52,7 +50,9 @@ const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
       publisher: book.publisher || '정보 없음',
       thumbnail: book.thumbnail || '',
       isbn: book.isbn13 || book.isbn10 || '정보 없음',
-      bookPublishingYear: book.datetime ? new Date(book.datetime).getFullYear() : 0,
+      bookPublishingYear: book.datetime
+        ? new Date(book.datetime).getFullYear()
+        : 0,
     }));
   } catch (error) {
     console.error('카카오 API 요청 오류:', error);
@@ -60,22 +60,20 @@ const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
   }
 };
 
-// 📌 네비게이션 타입 지정
 type RootStackParamList = {
-  RecordWriter: { bookData: Book };
+  RecordWriter: {bookData: Book};
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordWriter'>;
 
 export default function RecordSearchPage() {
-  const { t } = useTranslation();
-  const { isDarkMode } = useTheme();
+  const {t} = useTranslation();
+  const {isDarkMode} = useTheme();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp>();
 
-  // 📌 책 검색 기능
   const handleSearch = async (query: string) => {
     setSearchTerm(query);
     if (query.length > 0) {
@@ -88,38 +86,87 @@ export default function RecordSearchPage() {
     }
   };
 
-  // 📌 책 선택 시 `RecordWriter`로 이동
   const handleBookSelect = (book: Book) => {
-    navigation.navigate('RecordWriter', { bookData: book });
+    navigation.navigate('RecordWriter', {bookData: book});
   };
 
   return (
     <>
       <BackHeader searchKeyword={t('기록')} />
-      <View style={[styles.container, { backgroundColor: isDarkMode ? '#000000' : '#F8F9FA' }]}>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: isDarkMode ? '#000000' : '#F5F4F5',
+          },
+        ]}>
         <TextInput
-          style={[styles.searchInput, { backgroundColor: isDarkMode ? '#2B2B2B' : 'white' }]}
+          style={[
+            styles.searchInput,
+            {
+              backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
+              borderColor: isDarkMode ? '#2B2B2B' : '#FFFFFF',
+              color: isDarkMode ? 'white' : '#2B2B2B'
+            },
+          ]}
           placeholder={t('책 제목을 입력해주세요.')}
-          placeholderTextColor={isDarkMode ? '#BBB' : '#666'}
+          placeholderTextColor={isDarkMode ? '#FFFFFF' : '#828183'}
           value={searchTerm}
           onChangeText={handleSearch}
         />
 
         {isLoading && (
-          <ActivityIndicator size="large" color="#8A715D" style={{ marginTop: 20 }} />
+          <ActivityIndicator
+            size="large"
+            color="#8A715D"
+            style={{marginTop: 20}}
+          />
         )}
 
         <FlatList
           data={books}
           keyExtractor={(item, index) => `${item.title}-${index}`}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <TouchableOpacity onPress={() => handleBookSelect(item)}>
-              <View style={styles.bookContainer}>
-                <Image source={{ uri: item.thumbnail }} style={styles.bookCover} />
+              <View
+                style={[
+                  styles.bookContainer,
+                  {
+                    backgroundColor: isDarkMode ? '#2B2B2B' : 'white',
+                  },
+                ]}>
+                <Image
+                  source={{uri: item.thumbnail}}
+                  style={styles.bookCover}
+                />
                 <View style={styles.textContainer}>
-                  <Text style={styles.bookTitle}>{item.title}</Text>
-                  <Text style={styles.bookAuthor}>{item.authors.join(', ')}</Text>
-                  <Text style={styles.bookPublisher}>{item.publisher}</Text>
+                  <Text
+                    style={[
+                      styles.bookTitle,
+                      {
+                        color: isDarkMode ? 'white' : '#2B2B2B',
+                      },
+                    ]}>
+                    {item.title}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.bookAuthor,
+                      {
+                        color: isDarkMode ? 'white' : '#2B2B2B',
+                      },
+                    ]}>
+                    {item.authors.join(', ')}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.bookPublisher,
+                      {
+                        color: isDarkMode ? '#D3D3D3' : '#2B2B2B',
+                      },
+                    ]}>
+                    {item.publisher}
+                  </Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -130,18 +177,18 @@ export default function RecordSearchPage() {
   );
 }
 
-// 📌 스타일
+// 스타일
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
   },
   searchInput: {
-    height: 40,
+    height: 45,
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 14,
     fontSize: 16,
   },
   bookContainer: {
@@ -163,14 +210,14 @@ const styles = StyleSheet.create({
   },
   bookTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 600,
+    marginBottom: 10,
   },
   bookAuthor: {
     fontSize: 14,
-    color: '#666',
+    marginBottom: 10,
   },
   bookPublisher: {
     fontSize: 12,
-    color: '#888',
   },
 });
