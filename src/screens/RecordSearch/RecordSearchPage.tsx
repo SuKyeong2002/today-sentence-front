@@ -20,7 +20,7 @@ interface Book {
   thumbnail: string;
 }
 
-// 카오 API에서 책 데이터 가져오는 함수
+// 카카오 API에서 책 데이터 가져오는 함수
 const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
   try {
     const response = await fetch(
@@ -34,10 +34,16 @@ const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
       },
     );
 
+    console.log(`API 응답 상태: ${response.status}`);
+
     if (!response.ok) {
+      console.error(`API 요청 실패: ${response.status}`);
       return [];
     }
+
     const data = await response.json();
+    console.log(`API 응답 데이터:`, JSON.stringify(data, null, 2));
+
     return data.documents.map((book: any) => ({
       title: book.title,
       authors: book.authors || [],
@@ -45,6 +51,7 @@ const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
       thumbnail: book.thumbnail || '',
     }));
   } catch (error) {
+    console.error('카카오 API 요청 오류:', error);
     return [];
   }
 };
@@ -56,7 +63,7 @@ export default function RecordSearchPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // 입략 시 카카오로 책 조회
+  // 입력 시 카카오로 책 조회
   const handleSearch = async (query: string) => {
     setSearchTerm(query);
     if (query.length > 0) {
@@ -86,11 +93,12 @@ export default function RecordSearchPage() {
               borderColor: isDarkMode ? '#2B2B2B' : 'white',
             },
           ]}
-          placeholder={t('책 제목을 입력하세요')}
+          placeholder={t('책 제목을 입력해주세요.')}
           placeholderTextColor={isDarkMode ? '#BBB' : '#666'}
           value={searchTerm}
           onChangeText={handleSearch}
         />
+
         {isLoading && (
           <ActivityIndicator
             size="large"
@@ -98,26 +106,39 @@ export default function RecordSearchPage() {
             style={{marginTop: 20}}
           />
         )}
-        <FlatList
-          data={books}
-          keyExtractor={(item, index) => `${item.title}-${index}`}
-          renderItem={({item}) => (
-            <View style={styles.bookContainer}>
-              <Image source={{uri: item.thumbnail}} style={styles.bookCover} />
-              <View style={styles.textContainer}>
-                <Text style={styles.bookTitle}>{item.title}</Text>
-                <Text style={styles.bookAuthor}>{item.authors.join(', ')}</Text>
-                <Text style={styles.bookPublisher}>{item.publisher}</Text>
+        {books.length === 0 && !isLoading ? (
+          <View style={styles.centeredContainer}>
+            <Text
+              style={[
+                styles.contentText,
+                {color: isDarkMode ? '#FFF' : '#2B2B2B'},
+              ]}>
+              {t('검색 결과가 없습니다.')}
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={books}
+            keyExtractor={(item, index) => `${item.title}-${index}`}
+            contentContainerStyle={books.length === 0 ? styles.centeredContainer : {}}
+            renderItem={({item}) => (
+              <View style={styles.bookContainer}>
+                <Image source={{uri: item.thumbnail}} style={styles.bookCover} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.bookTitle}>{item.title}</Text>
+                  <Text style={styles.bookAuthor}>{item.authors.join(', ')}</Text>
+                  <Text style={styles.bookPublisher}>{item.publisher}</Text>
+                </View>
               </View>
-            </View>
-          )}
-        />
+            )}
+          />
+        )}
       </View>
     </>
   );
 }
 
-// 스타일
+// 🔹 스타일
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -127,24 +148,37 @@ const styles = StyleSheet.create({
     height: 40,
     borderWidth: 1,
     borderRadius: 8,
+    marginBottom: 10,
     paddingHorizontal: 10,
     fontSize: 16,
+  },
+  centeredContainer: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+  },
+  contentText: {
+    fontSize: 16,
+    fontWeight: 500,
+    textAlign: 'center', 
   },
   bookContainer: {
     flexDirection: 'row',
     padding: 10,
-    marginVertical: 8,
+    marginVertical: 5,
     backgroundColor: '#fff',
     borderRadius: 10,
     alignItems: 'center',
   },
   bookCover: {
-    width: 110,
-    height: 150,
-    marginRight: 10,
+    width: 90,
+    height: 130,
+    marginRight: 32,
     borderRadius: 5,
   },
-  textContainer: {},
+  textContainer: {
+    flex: 1,
+  },
   bookTitle: {
     fontSize: 16,
     fontWeight: 'bold',

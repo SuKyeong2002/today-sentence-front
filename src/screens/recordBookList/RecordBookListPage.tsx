@@ -158,13 +158,13 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     padding: 10,
-    marginVertical: 8,
+    marginVertical: 5,
     backgroundColor: '#fff',
     borderRadius: 10,
   },
   bookCover: {
-    width: 110,
-    height: 150,
+    width: 90,
+    height: 130,
     borderRadius: 10,
     marginRight: 32,
   },
