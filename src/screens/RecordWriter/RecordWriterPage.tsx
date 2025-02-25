@@ -183,7 +183,7 @@ export default function RecordWriter() {
                     fontFamily: theme.fontFamily,
                   },
                 ]}>
-                {t('출판 연도')}
+                {t('출판년도')}
               </Text>
               <TextInput
                 style={[
@@ -208,7 +208,7 @@ export default function RecordWriter() {
                     fontFamily: theme.fontFamily,
                   },
                 ]}>
-                {t('ISBN')}
+                {'ISBN'}
               </Text>
               <TextInput
                 style={[

@@ -42,7 +42,7 @@ const PieChart: React.FC<PieChartProps> = ({data, colors}) => {
     0,
   );
   let startAngle: number = 0;
-  const radius: number = 80;
+  const radius: number = 70;
   const centerX: number = 150;
   const centerY: number = 150;
 
@@ -112,6 +112,7 @@ const PieChart: React.FC<PieChartProps> = ({data, colors}) => {
 // 범례 컴포넌트
 const Legend: React.FC<LegendProps> = ({data, colors}) => {
   const {isDarkMode, theme} = useTheme();
+  const {t} = useTranslation();
   const total: number = Object.values(data).reduce(
     (sum, value) => sum + Number(value),
     0,
@@ -137,7 +138,7 @@ const Legend: React.FC<LegendProps> = ({data, colors}) => {
                   fontFamily: theme.fontFamily,
                 },
               ]}>
-              {categoryMap[category] || '기타'} : {count}
+              {t(categoryMap[category] || '기타')} : {count}
               {/* {categoryMap[category] || '기타'}: {percentage}% ({count}) */}
             </Text>
           </View>
@@ -185,8 +186,6 @@ const StatsContent: React.FC = () => {
     <>
       <BackHeader
         searchKeyword={t('기록')}
-        onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
       <ScrollView
         style={{
@@ -235,6 +234,7 @@ const StatsContent: React.FC = () => {
                 styles.sectionTitle,
                 {
                   color: isDarkMode ? 'white' : 'text',
+                  fontFamily: theme.fontFamily,
                 },
               ]}>
               {t('저장한 카테고리')}
@@ -276,11 +276,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: -60,
+    marginLeft: -80,
   },
   chartSection2: {
     flexDirection: 'row',
-    marginLeft: -40,
+    marginLeft: -50,
   },
   chartContainer: {
     flexDirection: 'row',
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   colorSquare: {
-    width: 10,
+    width: 5,
     height: 5,
     borderRadius: 3,
     marginRight: 10,
