@@ -12,7 +12,7 @@ export default function BookSearchPage() {
 
   return (
     <Container
-      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : 'background'}}>
       <BackHeader
         searchKeyword={t('검색')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
