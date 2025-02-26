@@ -1,4 +1,6 @@
 export interface Book {
+    interaction: Interaction;
+    posts: Post;
     publisher: string;
     authors: any;
     postId: number;
