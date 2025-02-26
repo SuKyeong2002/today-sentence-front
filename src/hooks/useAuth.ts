@@ -13,6 +13,7 @@ import {
   checkPasswordMatch,
   deleteUserAccount,
   sendAuthCode,
+  findEmail,
   findPassword,
   findUsername,
   verifyAuthCode,
@@ -36,9 +37,7 @@ interface UseAuthReturn {
     nickname: string,
   ) => Promise<void>;
   handleLogin: (email: string, password: string) => Promise<void>;
-  handleChangePassword: (
-    checkChangePassword: string
-  ) => Promise<void>;
+  handleChangePassword: (checkChangePassword: string) => Promise<void>;
   handleChangeNickname: (nickname: string) => Promise<void>;
   handleChangeEmail: (email: string) => Promise<void>;
   handleChangeEmail2: (email: string) => Promise<void>;
@@ -47,7 +46,7 @@ interface UseAuthReturn {
   handleCheckedPassword: (password: string) => Promise<void>;
   handleSendAuthCode: (email: string) => Promise<{data: boolean}>;
   handleFindPassword: (email: string) => Promise<void>;
-  handleFindUsername: (email: string) => Promise<string>;
+  handleFindUsername: (nickname: string) => Promise<void>;
   handleVerifyAuthCode: (email: string, code: string) => Promise<boolean>;
   handleDeleteUserAccount: (email: string, password: string) => Promise<void>;
   handleVerifiedEmail: (email: string) => Promise<void>;
@@ -65,7 +64,7 @@ const useAuth = (): UseAuthReturn => {
   const [password, setPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const queryClient = useQueryClient();
-  console.log("메세지", message);
+  console.log('메세지', message);
   const setUniqueMessage = (newMessage: string) => {
     if (message !== newMessage) {
       setMessage(newMessage);
@@ -236,7 +235,27 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
-  // 비밀번호 일치 여부 확인
+  // 아이디 찾기
+  const findEmailMutation = useMutation(
+    async (nickname: string) => {
+      return await findEmail(nickname);
+    },
+    {
+      onSuccess: response => {
+        if (response?.success) {
+          setMessage('아이디 찾기 성공');
+        } else {
+          setMessage('아이디 찾기 살패');
+        }
+      },
+      onError: (error: any) => {
+        console.error('아이디 찾기 실패:', error.message);
+        setMessage('아이디 찾기 중 오류 발생');
+      },
+    },
+  );
+
+  //  비밀번호 일치 여부 확인
   const passwordCheckMutation = useMutation(
     async (password: string) => {
       return await CheckedPassword(password);
@@ -386,7 +405,6 @@ const useAuth = (): UseAuthReturn => {
     }
   };
 
-
   // 상태메시지 변경 핸들러
   const handleChangeStatusMessage = async (message: string) => {
     try {
@@ -415,10 +433,15 @@ const useAuth = (): UseAuthReturn => {
     setMessage('비밀번호 찾기 성공!');
   };
 
-  const handleFindUsername = async (email: string) => {
-    const username = await findUsername(email);
-    setMessage('아이디 찾기 성공!');
-    return username;
+  // 아이디 찾기 핸들러
+  const handleFindUsername = async (nickname: string) => {
+    try {
+      const response = await findEmailMutation.mutateAsync(nickname);
+      console.log('아이디 찾기 성공', response);
+    } catch (error: any) {
+      console.error('아이디 찾기 실패:', error.message);
+      throw new Error(error.message || '아이디 찾기 실패');
+    }
   };
 
   const handleVerifyAuthCode = async (email: string, code: string) => {
