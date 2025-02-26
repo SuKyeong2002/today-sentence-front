@@ -84,10 +84,7 @@ export default function RecordWriter() {
       <SafeAreaView
         style={[
           styles.container,
-          {
-            backgroundColor: isDarkMode ? '#000000' : '#F5F4F5',
-            borderColor: isDarkMode ? '#2B2B2B' : '#FFF',
-          },
+          {backgroundColor: isDarkMode ? '#000000' : '#F5F4F5'},
         ]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -407,10 +404,7 @@ export default function RecordWriter() {
               <TouchableOpacity
                 style={[
                   styles.submitButton,
-                  {
-                    backgroundColor: isDarkMode ? '#2B2B2B' : 'gray',
-                    borderColor: isDarkMode ? '#2B2B2B' : 'gray',
-                  },
+                  {backgroundColor: isFormComplete ? '#8A715D' : 'gray'},
                 ]}
                 onPress={handleSubmit}
                 disabled={!isFormComplete || isLoading}>
