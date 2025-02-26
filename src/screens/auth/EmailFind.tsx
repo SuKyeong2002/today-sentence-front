@@ -136,7 +136,7 @@ export default function EmailFind() {
             onPress={handleFindEmail}
             disabled={!nickname.trim()}
           >
-            <Text style={styles.loginButtonText}>확인</Text>
+            <Text style={styles.loginButtonText}>다음</Text>
           </TouchableOpacity>
         )}
       </View>

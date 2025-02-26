@@ -255,6 +255,26 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
+  // 비밀번호 찾기
+  const findPasswordMutation = useMutation(
+    async (email: string) => {
+      return await findPassword(email);
+    },
+    {
+      onSuccess: response => {
+        if (response?.success) {
+          setMessage('비밀번호 찾기 성공');
+        } else {
+          setMessage('비밀번호 찾기 살패');
+        }
+      },
+      onError: (error: any) => {
+        console.error('비밀번호 찾기 실패:', error.message);
+        setMessage('비밀번호 찾기 중 오류 발생');
+      },
+    },
+  );
+
   //  비밀번호 일치 여부 확인
   const passwordCheckMutation = useMutation(
     async (password: string) => {
@@ -428,11 +448,6 @@ const useAuth = (): UseAuthReturn => {
     return await sendAuthCode(email);
   };
 
-  const handleFindPassword = async (email: string) => {
-    await findPassword(email);
-    setMessage('비밀번호 찾기 성공!');
-  };
-
   // 아이디 찾기 핸들러
   const handleFindUsername = async (nickname: string) => {
     try {
@@ -441,6 +456,17 @@ const useAuth = (): UseAuthReturn => {
     } catch (error: any) {
       console.error('아이디 찾기 실패:', error.message);
       throw new Error(error.message || '아이디 찾기 실패');
+    }
+  };
+
+  // 비밀번호 찾기 핸들러
+  const handleFindPassword = async (email: string) => {
+    try {
+      const response = await findPasswordMutation.mutateAsync(email);
+      console.log('비밀번호 찾기 성공', response);
+    } catch (error: any) {
+      console.error('비밀번호 찾기 실패:', error.message);
+      throw new Error(error.message || '비밀번호 찾기 실패');
     }
   };
 

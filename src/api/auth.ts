@@ -410,7 +410,9 @@ export const sendAuthCode = async (email: string): Promise<{data: boolean}> => {
 };
 
 // 이메일 찾기
-export const findEmail = async (nickname: string): Promise<{ success: boolean; message?: string }> => {
+export const findEmail = async (nickname: string): Promise<{
+  data(arg0: string, data: any): unknown; success: boolean; message?: string 
+}> => {
   try {
     const response = await apiClient.post("/api/member/find-email", { nickname });
     return response.data;
@@ -420,8 +422,15 @@ export const findEmail = async (nickname: string): Promise<{ success: boolean; m
   }
 };
 
-export const findPassword = async (password: string): Promise<void> => {
-  await axios.post(`${API_URL}/api/member/find-password`, {password});
+// 비밀번호 찾기
+export const findPassword = async (email: string): Promise<{ success: boolean; message?: string }> => { 
+  try {
+    const response = await apiClient.post("/api/member/find-password", { email });
+    return response.data;
+  } catch (error: any) {
+    console.error("비밀번호 찾기 실패:", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "비밀번호 찾기 중 오류 발생");
+  }
 };
 
 export const findUsername = async (email: string): Promise<string> => {
