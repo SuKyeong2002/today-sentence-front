@@ -63,7 +63,7 @@ export default function CategoryBookSearch({route}: Props) {
     if (!data?.pages) return [];
 
     return data.pages.flatMap(page =>
-      (page.posts || []).map((post, index) => ({
+      (page.posts || []).map((post: any, index: string | number) => ({
         ...post,
         interaction: (page.interaction || [])[index] || {
           isLiked: false,
@@ -75,7 +75,7 @@ export default function CategoryBookSearch({route}: Props) {
 
   return (
     <Container
-      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : 'background'}}>
       <BackHeader
         searchKeyword={t('검색')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
@@ -86,7 +86,6 @@ export default function CategoryBookSearch({route}: Props) {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            opacity: isSwitchDisabled ? 0.5 : 1,
           }}>
           <Switch
             value={sortByLatest}
