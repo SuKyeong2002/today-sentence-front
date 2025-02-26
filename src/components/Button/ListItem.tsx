@@ -62,7 +62,7 @@ const TitleWrapper = styled(View)`
 
 const TitleText = styled(Text)<{ isDarkMode: boolean; theme: any }>`
   font-size: ${({ theme }) => theme.fontSizes.medium}px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${({ isDarkMode, theme }) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
   font-family: ${({ theme }) => theme.fontFamily};

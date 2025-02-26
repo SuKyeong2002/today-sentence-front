@@ -1,7 +1,8 @@
-import BackHeader from '@/components/Header/BackHeader';
+import CustomHeader from '@/components/Header/CustomHeader';
 import {useTheme} from '@/context/ThemeContext';
 import {useBookmarkBookList} from '@/hooks/useBookmarkBookList';
-import React, {useCallback, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState, useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
   ActivityIndicator,
@@ -12,10 +13,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../types/Book';
+import BackHeader from '@/components/Header/BackHeader';
+
+type NavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'BookDetail'
+>;
 
 export default function BookmarkBookListPage() {
   const {isDarkMode, theme} = useTheme();
   const {t} = useTranslation();
+  const navigation = useNavigation<NavigationProp>();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const [year, setYear] = useState(currentYear);
@@ -58,7 +68,6 @@ export default function BookmarkBookListPage() {
 
   return (
     <>
-      <BackHeader searchKeyword={t('기록')} />
       <View
         style={[
           styles.container,
@@ -66,17 +75,36 @@ export default function BookmarkBookListPage() {
         ]}>
         <View style={styles.dateContainer}>
           <TouchableOpacity onPress={() => handleMonthChange(-1)}>
-            <Text style={styles.arrow}>{'<'}</Text>
+            <Text
+              style={[
+                styles.arrow,
+                {
+                  color: isDarkMode ? '#FFF' : '#2B2B2B',
+                  fontFamily: theme.fontFamily,
+                },
+              ]}>
+              {'<'}
+            </Text>
           </TouchableOpacity>
           <Text
             style={[
               styles.dateText,
               {
                 color: isDarkMode ? '#FFF' : '#2B2B2B',
+                fontFamily: theme.fontFamily,
               },
             ]}>{`${year}년 ${month}월`}</Text>
           <TouchableOpacity onPress={() => handleMonthChange(1)}>
-            <Text style={styles.arrow}>{'>'}</Text>
+            <Text
+              style={[
+                styles.arrow,
+                {
+                  color: isDarkMode ? '#FFF' : '#2B2B2B',
+                  fontFamily: theme.fontFamily,
+                },
+              ]}>
+              {'>'}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -86,7 +114,10 @@ export default function BookmarkBookListPage() {
             `${year}-${month}-${item.postId}-${index}`
           }
           renderItem={({item}) => (
-            <View
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('BookDetail', {postId: item.postId})
+              }
               style={[
                 styles.card,
                 {
@@ -101,6 +132,7 @@ export default function BookmarkBookListPage() {
                     styles.title,
                     {
                       color: isDarkMode ? '#FFF' : '#2B2B2B',
+                      fontFamily: theme.fontFamily,
                     },
                   ]}>
                   {item.bookTitle}
@@ -110,12 +142,13 @@ export default function BookmarkBookListPage() {
                     styles.subtitle2,
                     {
                       color: isDarkMode ? '#D3D3D3' : '#828183',
+                      fontFamily: theme.fontFamily,
                     },
                   ]}>
                   {`${item.bookPublisher} / ${item.bookPublishingYear}`}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -141,13 +174,12 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     marginHorizontal: 20,
   },
   arrow: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: '600',
   },
   card: {
     flexDirection: 'row',
@@ -167,7 +199,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 700,
+    fontWeight: '600',
     marginBottom: 5,
   },
   subtitle: {

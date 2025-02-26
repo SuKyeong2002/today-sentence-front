@@ -1,6 +1,6 @@
 import {useTheme} from '@/context/ThemeContext';
 import {Picker} from '@react-native-picker/picker';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -16,16 +16,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useSaveQuote} from '../../hooks/useSaveQuote';
+import {useSaveQuote} from '../../hooks/usePostQuote';
+import SuccessModal from './SuccessModal';
 import {QuoteData} from '../../types/QuoteData';
 import BackHeader from '../Header/BackHeader';
 import CustomModal from '../Modal/CustomModal';
-
-type RootStackParamList = {
-  RecordBookList: undefined;
-};
-
-type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordBookList'>;
 
 export default function WriteScreen() {
   const [category, setCategory] = useState<string>('');
@@ -41,7 +36,12 @@ export default function WriteScreen() {
   const {isSaving, error, handleSaveQuote} = useSaveQuote();
   const {isDarkMode} = useTheme();
   const {t} = useTranslation();
-  const navigation = useNavigation<NavigationProp>();
+
+  type RootStackParamList = {
+    RecordBookList: undefined;
+  };
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleSubmit = async () => {
     const data: QuoteData = {

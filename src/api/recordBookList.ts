@@ -32,3 +32,5 @@ export const fetchRecordBookList = async (year: number, month: number) => {
     throw error;
   }
 };
+
+

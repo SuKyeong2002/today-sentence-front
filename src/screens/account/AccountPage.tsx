@@ -32,6 +32,7 @@ type RootStackParamList = {
 };
 
 export default function AccountPage() {
+  const {isDarkMode} = useTheme();
   const queryClient = useQueryClient();
   const {t, i18n} = useTranslation();
   const [language, setLanguage] = useState<string>('ko');
@@ -40,6 +41,23 @@ export default function AccountPage() {
   const navigation = useNavigation<NavigationProp>();
   const {mutate: deleteAccount} = useDeleteAccount();
   const {data: user, isLoading, error} = useUser();
+  const handleLanguageChange = async (lang: string) => {
+    await changeLanguage(lang);
+    setLanguage(lang);
+  };
+
+  const handleFontChange = async (selectedFont: string) => {
+    await AsyncStorage.setItem('selectedFont', selectedFont);
+    setFont(selectedFont);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const storedLang = await getStoredLanguage();
+      setLanguage(storedLang);
+      i18n.changeLanguage(storedLang);
+    })();
+  }, []);
 
   if (isLoading) {
     return (
@@ -55,24 +73,6 @@ export default function AccountPage() {
 
   useEffect(() => {
     (async () => {
-      const storedLang = await getStoredLanguage();
-      setLanguage(storedLang);
-      i18n.changeLanguage(storedLang);
-    })();
-  }, []);
-
-  const handleLanguageChange = async (lang: string) => {
-    await changeLanguage(lang);
-    setLanguage(lang);
-  };
-
-  const handleFontChange = async (selectedFont: string) => {
-    await AsyncStorage.setItem('selectedFont', selectedFont);
-    setFont(selectedFont);
-  };
-
-  useEffect(() => {
-    (async () => {
       const storedFont = await AsyncStorage.getItem('selectedFont');
       if (storedFont) {
         setFont(storedFont);
@@ -84,8 +84,6 @@ export default function AccountPage() {
     deleteAccount();
     setModalVisible(false);
   };
-
-  const {isDarkMode} = useTheme();
 
   type NavigationProp = StackNavigationProp<RootStackParamList, 'Nickname'>;
 
