@@ -190,8 +190,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   bookCover: {
-    width: 110,
-    height: 150,
+    width: 90,
+    height: 130,
     borderRadius: 10,
     marginRight: 32,
   },

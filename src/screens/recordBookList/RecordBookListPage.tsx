@@ -40,7 +40,7 @@ export default function RecordBookListPage() {
   const {data: records, isLoading, error} = useRecordBookList(year, month);
   const {isDarkMode, theme} = useTheme();
 
-  const filteredRecords = records?.filter(item => {
+  const filteredRecords = records?.filter((item: { bookTitle: string; bookAuthor: string; }) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
     return (
       item.bookTitle.toLowerCase().includes(lowerSearchTerm) ||
@@ -78,7 +78,7 @@ export default function RecordBookListPage() {
       <View
         style={[
           styles.container,
-          {flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
+          {flex: 1, backgroundColor: isDarkMode ? '#000000' : 'background'},
         ]}>
         <FlatList
           data={filteredRecords}
@@ -151,7 +151,6 @@ export default function RecordBookListPage() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
   },
   errorText: {
