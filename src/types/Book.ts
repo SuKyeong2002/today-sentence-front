@@ -1,4 +1,6 @@
 export interface Book {
+    publisher: string;
+    authors: any;
     postId: number;
     bookTitle: string;
     bookAuthor: string;

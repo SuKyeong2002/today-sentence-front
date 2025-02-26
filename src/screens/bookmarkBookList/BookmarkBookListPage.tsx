@@ -68,10 +68,11 @@ export default function BookmarkBookListPage() {
 
   return (
     <>
+      <BackHeader searchKeyword={t('기록')} />
       <View
         style={[
           styles.container,
-          {flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
+          {flex: 1, backgroundColor: isDarkMode ? '#' : 'background'},
         ]}>
         <View style={styles.dateContainer}>
           <TouchableOpacity onPress={() => handleMonthChange(-1)}>
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     padding: 10,
-    marginVertical: 8,
+    marginVertical: 5,
     backgroundColor: '#fff',
     borderRadius: 10,
   },
