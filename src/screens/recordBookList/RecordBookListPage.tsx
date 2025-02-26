@@ -1,7 +1,8 @@
 import BackHeader from '@/components/Header/BackHeader';
 import {useTheme} from '@/context/ThemeContext';
 import {useRecordBookList} from '@/hooks/useRecordBookList';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
@@ -14,6 +15,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+
+type NavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'BookDetail'
+>;
 
 interface Book {
   postId: string;
@@ -28,6 +34,7 @@ type RootStackParamList = {
   BookWrite: {book: Book};
   RecordSearch: undefined;
   RecordBook: undefined;
+  BookDetail: {postId: string};
 };
 
 export default function RecordBookListPage() {
@@ -40,15 +47,17 @@ export default function RecordBookListPage() {
   const {data: records, isLoading, error} = useRecordBookList(year, month);
   const {isDarkMode, theme} = useTheme();
 
-  const filteredRecords = records?.filter(item => {
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    return (
-      item.bookTitle.toLowerCase().includes(lowerSearchTerm) ||
-      item.bookAuthor.toLowerCase().includes(lowerSearchTerm)
-    );
-  });
+  const filteredRecords = records?.filter(
+    (item: {bookTitle: string; bookAuthor: string}) => {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      return (
+        item.bookTitle.toLowerCase().includes(lowerSearchTerm) ||
+        item.bookAuthor.toLowerCase().includes(lowerSearchTerm)
+      );
+    },
+  );
 
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp>();
 
   const handleBookClick = (book: Book) => {
     // navigation.navigate('RecordBook');
@@ -78,7 +87,7 @@ export default function RecordBookListPage() {
       <View
         style={[
           styles.container,
-          {flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'},
+          {flex: 1, backgroundColor: isDarkMode ? '#000000' : 'background'},
         ]}>
         <FlatList
           data={filteredRecords}
@@ -86,7 +95,10 @@ export default function RecordBookListPage() {
             `${year}-${month}-${item.postId}-${index}`
           }
           renderItem={({item}) => (
-            <TouchableOpacity onPress={() => handleBookClick(item)}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('BookDetail', {postId: item.postId})
+              }>
               <View
                 style={[
                   styles.card,
@@ -151,7 +163,6 @@ export default function RecordBookListPage() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
   },
   errorText: {

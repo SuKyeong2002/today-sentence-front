@@ -51,14 +51,14 @@ export default function SearchContent() {
     if (!bookData?.pages && !tagData?.pages) return [];
 
     const bookPosts = bookData?.pages?.flatMap((page) =>
-      (page.posts || []).map((post, index) => ({
+      (page.posts || []).map((post: any, index: string | number) => ({
         ...post,
         interaction: (page.interaction || [])[index] || { isLiked: false, isSaved: false },
       }))
     ) || [];
 
     const tagPosts = tagData?.pages?.flatMap((page) =>
-      (page.posts || []).map((post, index) => ({
+      (page.posts || []).map((post: any, index: string | number) => ({
         ...post,
         interaction: (page.interaction || [])[index] || { isLiked: false, isSaved: false },
       }))
@@ -103,12 +103,8 @@ export default function SearchContent() {
   }
 
 // 스타일 정의
-const ScrollContainer = styled(ScrollView)`
-  margin: 10px 20px;
-`;
-
 const SentenceContainer = styled(View)`
-  margin-bottom: 20px;
+  margin: 10px 20px;
 `;
 
 const TitleText = styled(Text)`

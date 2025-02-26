@@ -246,7 +246,7 @@ export default function RecordWriter() {
                     label={t('명언의 종류를 선택해주세요.')}
                     value="select"
                     style={{
-                      color: isDarkMode ? 'gray' : '#2B2B2B',
+                      color: isDarkMode ? 'gray' : 'gray',
                       fontFamily: theme.fontFamily,
                     }}
                   />
@@ -348,7 +348,7 @@ export default function RecordWriter() {
                 value={hashtags}
                 onChangeText={setHashtags}
                 placeholder={t('여러 개 입력 시 띄어쓰기로 구분됩니다.')}
-                placeholderTextColor={isDarkMode ? 'gray' : '#2B2B2B'}
+                placeholderTextColor={isDarkMode ? 'gray' : 'gray'}
                 maxLength={20}
               />
               <Text
@@ -386,7 +386,7 @@ export default function RecordWriter() {
                 value={quote}
                 onChangeText={setQuote}
                 placeholder={t('책 속 명언을 입력해주세요.')}
-                placeholderTextColor={isDarkMode ? 'gray' : '#2B2B2B'}
+                placeholderTextColor={isDarkMode ? 'gray' : 'gray'}
                 multiline
                 maxLength={400}
               />
@@ -441,16 +441,15 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    paddingBottom: 20,
   },
   header: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    padding: 16,
+    marginTop: 20,
   },
   formContainer: {
-    padding: 16,
+    margin: 20,
   },
   label: {
     fontSize: 16,
@@ -459,7 +458,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    height: 50,
+    height: 52,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
@@ -472,20 +471,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
-  picker: {},
+  picker: {
+    height: 52,
+  },
   charCount: {
     textAlign: 'right',
     color: '#666',
-    marginTop: 4,
+    marginTop: 10,
   },
   submitButton: {
     padding: 16,
     borderRadius: 8,
-    marginTop: 24,
+    marginTop: 32,
     alignItems: 'center',
   },
   submitButtonText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
   },
 });

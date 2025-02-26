@@ -1,21 +1,22 @@
-import React from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import Sentence from '@/components/Book/Sentence';
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useFetchBookDetail } from '../../hooks/useFetchBookDetail';
-import BackHeader from '../Header/BackHeader';
 import { RootStackParamList } from '../../types/Book';
-import Sentence from '@/components/Book/Sentence';
-import Footer from '../Footer/Footer';
+import BackHeader from '../Header/BackHeader';
 
 type BookDetailScreenProps = {
   route: RouteProp<RootStackParamList, 'BookDetail'>;
   navigation: NativeStackNavigationProp<RootStackParamList>;
 };
 
-const BookDetailScreen: React.FC<BookDetailScreenProps> = ({ route }) => {
-  const { postId } = route.params;
-  const { book, loading, error } = useFetchBookDetail(postId);
+const BookDetailScreen: React.FC<BookDetailScreenProps> = ({route}) => {
+  const {postId} = route.params;
+  const {t} = useTranslation();
+  const {book, loading, error} = useFetchBookDetail(postId);
 
   if (loading) {
     return (
@@ -36,17 +37,18 @@ const BookDetailScreen: React.FC<BookDetailScreenProps> = ({ route }) => {
   if (!book) {
     return (
       <View style={styles.centeredContainer}>
-        <Text style={styles.errorText}>No data available</Text>
+        <Text style={styles.errorText}>저장된 책이 없습니다.</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <BackHeader/>
-      <Sentence post={book.posts} interaction={book.interaction} />
-      <Footer/>
-    </View>
+    <>
+      <BackHeader searchKeyword={t('기록')} />
+      <View style={styles.container}>
+        <Sentence post={book.posts} interaction={book.interaction} />
+      </View>
+    </>
   );
 };
 
@@ -55,16 +57,10 @@ export default BookDetailScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 16,
+    backgroundColor: 'background',
+    margin: 20,
   },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  centeredContainer: {},
   errorText: {
     color: 'red',
     textAlign: 'center',
