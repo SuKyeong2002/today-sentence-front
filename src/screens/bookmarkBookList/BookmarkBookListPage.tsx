@@ -31,7 +31,7 @@ export default function BookmarkBookListPage() {
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
 
-  const { data: records, isLoading, error } = useBookmarkBookList(year, month);
+  const { data: bookmarkBookList, isLoading, error } = useBookmarkBookList(year, month);
 
   // 월 변경 핸들러
   const handleMonthChange = useCallback(
@@ -71,7 +71,7 @@ export default function BookmarkBookListPage() {
   }
 
   // 데이터가 없을 경우
-  if (!records || records.length === 0) {
+  if (!bookmarkBookList || bookmarkBookList.length === 0) {
     return (
       <>
         <BackHeader searchKeyword={t('기록')} />
@@ -121,7 +121,7 @@ export default function BookmarkBookListPage() {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={records}
+          data={bookmarkBookList}
           keyExtractor={(item, index) => `${year}-${month}-${item.postId}-${index}`}
           renderItem={({ item }) => (
             <TouchableOpacity
