@@ -9,7 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Alert, Linking, View} from 'react-native';
+import {Alert, Linking, ScrollView, View} from 'react-native';
 import styled from 'styled-components';
 
 type RootStackParamList = {
@@ -41,6 +41,7 @@ export default function SettingPage() {
   }, []);
 
   return (
+    <ScrollView contentContainerStyle={{paddingBottom: 20}}>
     <View
       style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <ProfileBackHeader
@@ -113,6 +114,7 @@ export default function SettingPage() {
         />
       </ListContainer>
     </View>
+    </ScrollView>
   );
 }
 
