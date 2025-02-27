@@ -11,6 +11,9 @@ import {
   View,
 } from 'react-native';
 import useAuth from '../../hooks/useAuth';
+import CustomButton from '@/components/Button/CustomButton';
+import CustomModal from '@/components/Modal/CustomModal';
+import { useTranslation } from 'react-i18next';
 
 type RootStackParamList = {
   Home: undefined;
@@ -22,19 +25,26 @@ type RootStackParamList = {
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 export default function LoginPage({navigation}: {navigation: NavigationProp}) {
+  const {t} = useTranslation();
   const {handleLogin, message} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPasswordState] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
 
   const onLoginPress = async () => {
+    if(!email.trim() || !password.trim()) {
+      setModalVisible(true)
+      return;
+    }
     setIsLoading(true);
     await handleLogin(email, password);
   };
 
   useEffect(() => {
     if (message) {
-      if (message === '로그인 성공!') {
+      if (message === '로그인 성공') {
         requestAnimationFrame(() => {
           setTimeout(() => {
             navigation.replace('Home');
@@ -42,7 +52,7 @@ export default function LoginPage({navigation}: {navigation: NavigationProp}) {
         });
       } else {
         setIsLoading(false);
-        Alert.alert('로그인 실패', message);
+        setModalVisible2(true)
       }
     }
   }, [message, navigation]);
@@ -102,12 +112,27 @@ export default function LoginPage({navigation}: {navigation: NavigationProp}) {
               <Text style={styles.footerLinkText}>회원가입</Text>
             </TouchableOpacity>
           </View>
+          
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.loginButton} onPress={onLoginPress}>
-              <Text style={styles.loginButtonText}>로그인</Text>
-            </TouchableOpacity>
+            <CustomButton title={"로그인"} width={'100%'} onPress={onLoginPress} />
           </View>
+
+          <CustomModal
+            visible={modalVisible}
+            title={t('로그인 실패')}
+            message={t('이메일과 비밀번호를 모두 입력해주세요.')}
+            rightButton={t('확인')}
+            onConfirm={() => setModalVisible(false)}
+          />
+
+            <CustomModal
+              visible={modalVisible2}
+              title={t('로그인 실패')}
+              message={t('사용자 정보가 올바르지 않습니다.')}
+              rightButton={t('확인')}
+              onConfirm={() => setModalVisible2(false)}
+            />
         </>
       )}
     </View>
@@ -163,22 +188,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 40,
-    width: '90%',
-    alignSelf: 'center',
-  },
-  loginButton: {
+    bottom: 32,
     width: '100%',
-    height: 50,
-    backgroundColor: '#8A715D',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  loginButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    alignSelf: 'center',
   },
   loadingContainer: {
     position: 'absolute',

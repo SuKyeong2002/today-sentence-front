@@ -1,36 +1,35 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { TouchableOpacity, Text, StyleSheet, DimensionValue } from "react-native";
 
-interface CustomButtonProps {
-  title: string;
+interface LoginButtonProps {
+  title: string; 
+  width: DimensionValue; 
   onPress: () => void;
 }
 
-export default function CustomButton({ title, onPress }: CustomButtonProps) {
+export default function CustomButton({
+  title = "",
+  width = "100%",
+  onPress,
+}: LoginButtonProps) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonText}>{title}</Text>
+    <TouchableOpacity style={[styles.button, { width }]} onPress={onPress}>
+      <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    display: 'flex',
-    width: 310,
-    height: 58,
-    paddingVertical: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 10,
+    height: 52,
+    backgroundColor: "#8A715D",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 8,
-    backgroundColor: '#8A715D',
   },
-  buttonText: {
-    color: '#FFF',
-    textAlign: 'center',
-    fontFamily: 'Pretendard Variable',
+  text: {
+    color: "white",
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '600'
   },
 });
