@@ -129,7 +129,15 @@ export default function LandingPage({ navigation }: LandingPageProps) {
       </View>
     ) : (
       <View style={styles.buttonContainer}>
-        <CustomButton title="로그인" width={'90%'} onPress={handleStart} />
+        <View style={styles.arrowIndicator}>
+          <LottieView
+            source={require('@/assets/animation/alert_right_arrow.json')}
+            autoPlay
+            loop
+            style={styles.arrowLottie}
+          />
+        </View>
+      <CustomButton title="로그인" width={'90%'} onPress={handleStart} />
       </View>
     );
   }, [currentIndex]);
@@ -188,5 +196,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
     color: '#8A715D',
+  },
+  // right arrow animation 
+  arrowIndicator: {
+    position: 'absolute',
+    bottom: 80,
+    right: 20,
+    width: 60,
+    height: 60,
+  },
+  arrowLottie: {
+    width: '100%',
+    height: '100%',
   },
 });
