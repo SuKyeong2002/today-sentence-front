@@ -1,6 +1,6 @@
 import CustomButton from '@/components/Button/CustomButton';
 import { NavigationProp } from '@react-navigation/native';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -70,10 +70,30 @@ const { width } = Dimensions.get('window');
 
 export default function LandingPage({ navigation }: LandingPageProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef<FlatList>(null);
+  const autoScrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (currentIndex === 0) {
+      autoScrollTimeout.current = setTimeout(() => {
+        if (flatListRef.current) {
+          flatListRef.current.scrollToIndex({ index: 1, animated: true });
+        }
+      }, 1800);
+    }
+    return () => {
+      if (autoScrollTimeout.current) clearTimeout(autoScrollTimeout.current);
+    };
+  }, [currentIndex]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const index = Math.round(event.nativeEvent.contentOffset.x / width);
     setCurrentIndex(index);
+    
+    if (autoScrollTimeout.current) {
+      clearTimeout(autoScrollTimeout.current);
+      autoScrollTimeout.current = null;
+    }
   };
 
   const handleStart = () => {
@@ -117,6 +137,7 @@ export default function LandingPage({ navigation }: LandingPageProps) {
   return (
     <View style={[styles.container]}>
       <FlatList
+        ref={flatListRef}
         data={slides}
         horizontal
         pagingEnabled
