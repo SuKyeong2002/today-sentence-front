@@ -3,7 +3,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useRecordBookList } from '@/hooks/useRecordBookList';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
