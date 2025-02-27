@@ -95,7 +95,7 @@ type RootStackParamList = {
   SignUp: undefined;
   Home: undefined;
   Record: undefined;
-  BookDetail: {postId: string};
+  BookDetail: { postId: string };
   Search: undefined;
   BookSearch: undefined;
   CategoryBookSearch: {category: string};
@@ -149,6 +149,7 @@ function ThemedApp() {
   const [theme, setTheme] = useState({...lightTheme, fontFamily: selectedFont});
 
   useEffect(() => {
+    console.log(`🟡 Updating Theme with Font: ${selectedFont}`);
     setTheme(prevTheme => ({
       ...prevTheme,
       fontFamily: selectedFont,
@@ -159,180 +160,52 @@ function ThemedApp() {
     <ThemeProvider theme={theme} key={selectedFont}>
       <NavigationContainer theme={MyNavigationTheme}>
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen
-            name="Landing"
-            component={LandingScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="EmailFind"
-            component={EmailFindPage}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="PasswordFind"
-            component={PasswordFindPage}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="NotFound"
-            component={NotFoundPage}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUpScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Home"
-            component={Footer}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="BookWrite"
-            component={BookWrite}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="RecordFooter"
-            component={Footer}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Search"
-            component={Footer}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="BookSearch"
-            component={BookSearchScreen}
-            options={{animation: 'none'}}
-          />
+          <Stack.Screen name="Landing" component={LandingScreen} />
+          <Stack.Screen name="EmailFind" component={EmailFindPage} />
+          <Stack.Screen name="PasswordFind" component={PasswordFindPage} />
+          <Stack.Screen name="NotFound" component={NotFoundPage} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Home" component={Footer} options={{ animation: "none" }} />
+          <Stack.Screen name="BookWrite" component={BookWrite} />
+          <Stack.Screen name="RecordFooter" component={Footer} />
+          <Stack.Screen name="Search" component={Footer} />
+          <Stack.Screen name="BookSearch" component={BookSearchScreen} />
           <Stack.Screen
             name="CategoryBookSearch"
             component={CategoryBookSearchScreen2}
-            options={{animation: 'none'}}
           />
-          <Stack.Screen
-            name="BookDetail"
-            component={BookDetailScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Category"
-            component={Footer}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="My"
-            component={Footer}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Setting"
-            component={SettingScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Alert"
-            component={AlertScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Screen"
-            component={ScreenScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Record"
-            component={Footer}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="RecordContent"
-            component={RecordContentScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="RecordWriter"
-            component={RecordWriterScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="RecordSearch"
-            component={RecordSearchScreen}
-            options={{animation: 'none'}}
-          />
+          <Stack.Screen name="BookDetail" component={BookDetailScreen}/>
+          <Stack.Screen name="Category" component={Footer} />
+          <Stack.Screen name="My" component={Footer} />
+          <Stack.Screen name="Setting" component={SettingScreen} />
+          <Stack.Screen name="Alert" component={AlertScreen} />
+          <Stack.Screen name="Screen" component={ScreenScreen} />
+          <Stack.Screen name="Record" component={Footer} />
+          <Stack.Screen name="RecordContent" component={RecordContentScreen} />
+          <Stack.Screen name="RecordWriter" component={RecordWriterScreen} />
+          <Stack.Screen name="RecordSearch" component={RecordSearchScreen} />
           <Stack.Screen
             name="RecordBookList"
             component={RecordBookListScreen}
-            options={{animation: 'none'}}
           />
           <Stack.Screen
             name="BookmarkBookList"
             component={BookmarkBookListScreen}
-            options={{animation: 'none'}}
           />
-          <Stack.Screen
-            name="SavedContent"
-            component={SavedContentScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="StatusContent"
-            component={StatusContentScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Font"
-            component={FontScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Profile"
-            component={ProfileScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Nickname"
-            component={NicknameScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Introduction"
-            component={IntroductionScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="News"
-            component={NewsScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Account"
-            component={AccountScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Email"
-            component={EmailScreen}
-            options={{animation: 'none'}}
-          />
-          <Stack.Screen
-            name="Password"
-            component={PasswordScreen}
-            options={{animation: 'none'}}
-          />
+          <Stack.Screen name="SavedContent" component={SavedContentScreen} />
+          <Stack.Screen name="StatusContent" component={StatusContentScreen} />
+          <Stack.Screen name="Font" component={FontScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Nickname" component={NicknameScreen} />
+          <Stack.Screen name="Introduction" component={IntroductionScreen} />
+          <Stack.Screen name="News" component={NewsScreen} />
+          <Stack.Screen name="Account" component={AccountScreen} />
+          <Stack.Screen name="Email" component={EmailScreen} />
+          <Stack.Screen name="Password" component={PasswordScreen} />
           <Stack.Screen
             name="Authentication"
             component={AuthenticationScreen}
-            options={{animation: 'none'}}
           />
         </Stack.Navigator>
       </NavigationContainer>
