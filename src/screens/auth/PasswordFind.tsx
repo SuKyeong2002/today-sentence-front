@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {useMutation} from 'react-query';
 import {useTheme} from 'styled-components';
+import LottieView from 'lottie-react-native';
 
 type RootStackParamList = {
   Login: undefined;
@@ -27,7 +28,7 @@ export default function PasswordFind() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  // 비밀번호 찾기 
+  // 비밀번호 찾기
   const findPasswordMutation = useMutation(
     async (email: string) => {
       return await findPassword(email);
@@ -65,7 +66,8 @@ export default function PasswordFind() {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <TouchableOpacity
         onPress={() => navigation.navigate('Login')}
         style={styles.cancelIcon}>
@@ -80,11 +82,21 @@ export default function PasswordFind() {
       </TouchableOpacity>
 
       <View style={styles.container}>
-        {!isLoading && password ? (
+        {isLoading ? (
+          <LottieView
+            source={require('../../assets/animation/loading_search.json')}
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+        ) : password ? (
           <View style={styles.emailFoundContainer}>
             <Image
               source={require('../../assets/image/login_search_success.png')}
-              style={[styles.backIcon, {tintColor: isDarkMode ? '#FFFFFF' : '#23C16D'}]}
+              style={[
+                styles.backIcon,
+                {tintColor: isDarkMode ? '#FFFFFF' : '#23C16D'},
+              ]}
             />
             <Text style={styles.emailFoundText}>
               <Text>{email}</Text>님{'\n'}
@@ -96,17 +108,23 @@ export default function PasswordFind() {
           </View>
         ) : (
           <View style={styles.nicknameContainer}>
-            <Text style={[styles.title, {color: isDarkMode ? 'white' : 'text'}]}>
+            <Text
+              style={[styles.title, {color: isDarkMode ? 'white' : 'text'}]}>
               이메일을 입력해주세요
             </Text>
             <TextInput
-              style={[styles.input, {backgroundColor: isDarkMode ? '#2B2B2B' : 'white'}]}
+              style={[
+                styles.input,
+                {backgroundColor: isDarkMode ? '#2B2B2B' : 'white'},
+              ]}
               placeholder="이메일"
               placeholderTextColor={isDarkMode ? '#D3D3D3' : '#828183'}
               value={email}
               onChangeText={text => setEmail(text.trimEnd())}
             />
-            {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+            {errorMessage && (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            )}
           </View>
         )}
       </View>
@@ -123,9 +141,11 @@ export default function PasswordFind() {
           <TouchableOpacity
             style={[
               styles.loginButton,
-              email.trim() ? styles.activeLoginButton : styles.disabledLoginButton,
+              email.trim()
+                ? styles.activeLoginButton
+                : styles.disabledLoginButton,
             ]}
-            onPress={handleFindPasswordRequest}  
+            onPress={handleFindPasswordRequest}
             disabled={!email.trim()}>
             <Text style={styles.loginButtonText}>다음</Text>
           </TouchableOpacity>
@@ -206,5 +226,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 10,
   },
+  lottie: {
+    width: 200,
+    height: 200,
+  },
 });
-

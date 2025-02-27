@@ -1,8 +1,9 @@
-import { findEmail } from '@/api/auth';
+import {findEmail} from '@/api/auth';
 import useAuth from '@/hooks/useAuth';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useState } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import LottieView from 'lottie-react-native';
+import React, {useState} from 'react';
 import {
   Image,
   StyleSheet,
@@ -11,8 +12,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useMutation } from 'react-query';
-import { useTheme } from 'styled-components';
+import {useMutation} from 'react-query';
+import {useTheme} from 'styled-components';
 
 type RootStackParamList = {
   Login: undefined;
@@ -22,8 +23,8 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function EmailFind() {
   const navigation = useNavigation<NavigationProp>();
-  const { isDarkMode } = useTheme();
-  const { handleFindUsername } = useAuth();
+  const {isDarkMode} = useTheme();
+  const {handleFindUsername} = useAuth();
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,24 +68,41 @@ export default function EmailFind() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA' }}>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.cancelIcon}>
+    <View
+      style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Login')}
+        style={styles.cancelIcon}>
         <Image
           source={require('../../assets/image/cancel.png')}
-          style={{ tintColor: isDarkMode ? '#FFFFFF' : '#2A343D', width: 24, height: 24 }}
+          style={{
+            tintColor: isDarkMode ? '#FFFFFF' : '#2A343D',
+            width: 24,
+            height: 24,
+          }}
         />
       </TouchableOpacity>
 
       <View style={styles.container}>
-        {!isLoading && email ? (
+        {isLoading ? (
+          <LottieView
+            source={require('../../assets/animation/loading_search.json')}
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+        ) : email ? (
           <View style={styles.emailFoundContainer}>
             <Image
               source={require('../../assets/image/login_search_success.png')}
-              style={[styles.backIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#23C16D' }]}
+              style={[
+                styles.backIcon,
+                {tintColor: isDarkMode ? '#FFFFFF' : '#23C16D'},
+              ]}
             />
             <Text style={styles.emailFoundText}>
               <Text>{nickname}</Text>님의 이메일은{'\n'}
-              <Text style={{ color: isDarkMode ? '#FFFFFF' : '#8A715D' }}>
+              <Text style={{color: isDarkMode ? '#FFFFFF' : '#8A715D'}}>
                 {email}
               </Text>{' '}
               입니다.
@@ -92,9 +110,16 @@ export default function EmailFind() {
             <View style={styles.infoBox}>
               <Image
                 source={require('../../assets/image/login_alert_info.png')}
-                style={[styles.infoIcon, { tintColor: isDarkMode ? '#FFFFFF' : '#828183' }]}
+                style={[
+                  styles.infoIcon,
+                  {tintColor: isDarkMode ? '#FFFFFF' : '#828183'},
+                ]}
               />
-              <Text style={[styles.infoText, { color: isDarkMode ? '#FFFFFF' : 'gray' }]}>
+              <Text
+                style={[
+                  styles.infoText,
+                  {color: isDarkMode ? '#FFFFFF' : 'gray'},
+                ]}>
                 정보 보호를 위해 이메일의 일부만 보여집니다.{'\n'}
                 가려지지 않은 전체 이메일은 추가 인증을 통해 확인할 수 있습니다.
               </Text>
@@ -102,18 +127,24 @@ export default function EmailFind() {
           </View>
         ) : (
           <View style={styles.nicknameContainer}>
-            <Text style={[styles.title, { color: isDarkMode ? 'white' : 'text' }]}>
+            <Text
+              style={[styles.title, {color: isDarkMode ? 'white' : 'text'}]}>
               닉네임을 입력해주세요
             </Text>
             <TextInput
-              style={[styles.input, { backgroundColor: isDarkMode ? '#2B2B2B' : 'white' }]}
+              style={[
+                styles.input,
+                {backgroundColor: isDarkMode ? '#2B2B2B' : 'white'},
+              ]}
               placeholder="닉네임"
               placeholderTextColor={isDarkMode ? '#D3D3D3' : '#828183'}
               value={nickname}
               maxLength={8}
-              onChangeText={(text) => setNickname(text.trimEnd())}
+              onChangeText={text => setNickname(text.trimEnd())}
             />
-            {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
+            {errorMessage && (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            )}
           </View>
         )}
       </View>
@@ -123,19 +154,19 @@ export default function EmailFind() {
         {email ? (
           <TouchableOpacity
             style={[styles.loginButton, styles.activeLoginButton]}
-            onPress={() => navigation.navigate('Login')}
-          >
+            onPress={() => navigation.navigate('Login')}>
             <Text style={styles.loginButtonText}>로그인</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={[
               styles.loginButton,
-              nickname.trim() ? styles.activeLoginButton : styles.disabledLoginButton,
+              nickname.trim()
+                ? styles.activeLoginButton
+                : styles.disabledLoginButton,
             ]}
             onPress={handleFindEmail}
-            disabled={!nickname.trim()}
-          >
+            disabled={!nickname.trim()}>
             <Text style={styles.loginButtonText}>다음</Text>
           </TouchableOpacity>
         )}
@@ -233,5 +264,9 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 14,
     marginBottom: 10,
+  },
+  lottie: {
+    width: 200,
+    height: 200,
   },
 });
