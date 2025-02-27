@@ -53,7 +53,7 @@ export default function LoginPage({
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={text => setEmail(text.trimEnd())}
       />
       <TextInput
         style={styles.input}
@@ -62,7 +62,7 @@ export default function LoginPage({
         secureTextEntry
         autoCapitalize="none"
         value={password}
-        onChangeText={setPasswordState}
+        onChangeText={text => setPasswordState(text.trimEnd())}
       />
       <View style={styles.footerLinks}>
         <TouchableOpacity onPress={() => navigation.navigate('EmailFind')}>
