@@ -113,5 +113,7 @@
   "달별로 기록한 명언을 확인해보세요.": "Check out the quotes recorded by month.",
   "데이터를 불러올 수 없습니다.": "Could not retrieve data.",
   "기록한 카테고리": "Recorded categories",
-  "저장한 카테고리": "Saved categories"
+  "저장한 카테고리": "Saved categories",
+  "로그인 실패": "Login failed",
+  "이메일과 비밀번호를 모두 입력해주세요.": "Please enter both your email and password."
 }

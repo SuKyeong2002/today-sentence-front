@@ -64,7 +64,6 @@ const useAuth = (): UseAuthReturn => {
   const [password, setPassword] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const queryClient = useQueryClient();
-  console.log('메세지', message);
   const setUniqueMessage = (newMessage: string) => {
     if (message !== newMessage) {
       setMessage(newMessage);
@@ -94,15 +93,12 @@ const useAuth = (): UseAuthReturn => {
 
     {
       onSuccess: async data => {
-        console.log('받은 데이터:', data);
-
         if (data?.accessToken && data?.refreshToken) {
           await AsyncStorage.setItem('accessToken', data.accessToken);
           await AsyncStorage.setItem('refreshToken', data.refreshToken);
-          setUniqueMessage('로그인 성공!');
+          setUniqueMessage('로그인 성공');
         } else {
-          console.warn('토큰이 없습니다:', data);
-          setUniqueMessage('회원정보가 없습니다.');
+          setUniqueMessage('로그인 실패');
         }
       },
     },

@@ -79,7 +79,7 @@ export const signInUser = async (
       refreshToken: response.headers['refresh-token'],
     };
   } catch (error: any) {
-    console.error("로그인 및 토큰 갱신 실패:", error.response?.status, error.response?.data);
+    // console.error("로그인 및 토큰 갱신 실패:", error.response?.status, error.response?.data);
     return null;
   }
 };
