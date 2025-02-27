@@ -59,10 +59,7 @@ export default function Footer() {
           return (
             <Image
               source={iconName}
-              style={[
-                styles.logoImage,
-                { tintColor: isDarkMode ? '#FFFFFF' : '#8A715D' }, 
-              ]}
+              style={styles.logoImage}
             />
           );
         },
