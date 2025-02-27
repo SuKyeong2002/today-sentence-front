@@ -1,9 +1,9 @@
 import CustomHeader from '@/components/Header/CustomHeader';
-import {useTheme} from '@/context/ThemeContext';
-import {useBookmarkBookList} from '@/hooks/useBookmarkBookList';
-import {useNavigation} from '@react-navigation/native';
-import React, {useState, useCallback} from 'react';
-import {useTranslation} from 'react-i18next';
+import { useTheme } from '@/context/ThemeContext';
+import { useBookmarkBookList } from '@/hooks/useBookmarkBookList';
+import { useNavigation } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -13,8 +13,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../types/Book';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/Book';
 import BackHeader from '@/components/Header/BackHeader';
 
 type NavigationProp = NativeStackNavigationProp<
@@ -23,31 +23,36 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 
 export default function BookmarkBookListPage() {
-  const {isDarkMode, theme} = useTheme();
-  const {t} = useTranslation();
+  const { isDarkMode, theme } = useTheme();
+  const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp>();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
 
-  const {data: records, isLoading, error} = useBookmarkBookList(year, month);
+  const { data: bookmarkBookList, isLoading, error } = useBookmarkBookList(year, month);
 
+  // 월 변경 핸들러
   const handleMonthChange = useCallback(
-    (direction: any) => {
+    (direction: number) => {
       let newMonth = month + direction;
+      let newYear = year;
+
       if (newMonth > 12) {
         newMonth = 1;
-        setYear(year + 1);
+        newYear += 1;
       } else if (newMonth < 1) {
         newMonth = 12;
-        setYear(year - 1);
+        newYear -= 1;
       }
+      setYear(newYear);
       setMonth(newMonth);
     },
-    [month, year],
+    [month, year]
   );
 
+  // 데이터 로딩 중
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -56,13 +61,42 @@ export default function BookmarkBookListPage() {
     );
   }
 
-  if (error || !records) {
+  // API 에러 발생 시
+  if (error) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>
-          {t('데이터를 불러올 수 없습니다.')}
-        </Text>
+        <Text style={styles.errorText}>{t('데이터를 불러올 수 없습니다.')}</Text>
       </View>
+    );
+  }
+
+  // 데이터가 없을 경우
+  if (!bookmarkBookList || bookmarkBookList.length === 0) {
+    return (
+      <>
+        <BackHeader searchKeyword={t('기록')} />
+        <View
+          style={[
+            styles.container,
+            { flex: 1, backgroundColor: isDarkMode ? '#000000' : 'background' },
+          ]}
+        >
+          <View style={styles.dateContainer}>
+            <TouchableOpacity onPress={() => handleMonthChange(-1)}>
+              <Text style={[styles.arrow, { color: isDarkMode ? '#FFF' : '#2B2B2B' }]}>{'<'}</Text>
+            </TouchableOpacity>
+            <Text style={[styles.dateText, { color: isDarkMode ? '#FFF' : '#2B2B2B' }]}>
+              {`${year}년 ${month}월`}
+            </Text>
+            <TouchableOpacity onPress={() => handleMonthChange(1)}>
+              <Text style={[styles.arrow, { color: isDarkMode ? '#FFF' : '#2B2B2B' }]}>{'>'}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>{t('검색 결과가 없습니다.')}</Text>
+          </View>
+        </View>
+      </>
     );
   }
 
@@ -72,80 +106,40 @@ export default function BookmarkBookListPage() {
       <View
         style={[
           styles.container,
-          {flex: 1, backgroundColor: isDarkMode ? '#' : 'background'},
-        ]}>
+          { flex: 1, backgroundColor: isDarkMode ? '#000000' : 'background' },
+        ]}
+      >
         <View style={styles.dateContainer}>
           <TouchableOpacity onPress={() => handleMonthChange(-1)}>
-            <Text
-              style={[
-                styles.arrow,
-                {
-                  color: isDarkMode ? '#FFF' : '#2B2B2B',
-                  fontFamily: theme.fontFamily,
-                },
-              ]}>
-              {'<'}
-            </Text>
+            <Text style={[styles.arrow, { color: isDarkMode ? '#FFF' : '#2B2B2B' }]}>{'<'}</Text>
           </TouchableOpacity>
-          <Text
-            style={[
-              styles.dateText,
-              {
-                color: isDarkMode ? '#FFF' : '#2B2B2B',
-                fontFamily: theme.fontFamily,
-              },
-            ]}>{`${year}년 ${month}월`}</Text>
+          <Text style={[styles.dateText, { color: isDarkMode ? '#FFF' : '#2B2B2B' }]}>
+            {`${year}년 ${month}월`}
+          </Text>
           <TouchableOpacity onPress={() => handleMonthChange(1)}>
-            <Text
-              style={[
-                styles.arrow,
-                {
-                  color: isDarkMode ? '#FFF' : '#2B2B2B',
-                  fontFamily: theme.fontFamily,
-                },
-              ]}>
-              {'>'}
-            </Text>
+            <Text style={[styles.arrow, { color: isDarkMode ? '#FFF' : '#2B2B2B' }]}>{'>'}</Text>
           </TouchableOpacity>
         </View>
-
         <FlatList
-          data={records}
-          keyExtractor={(item, index) =>
-            `${year}-${month}-${item.postId}-${index}`
-          }
-          renderItem={({item}) => (
+          data={bookmarkBookList}
+          keyExtractor={(item, index) => `${year}-${month}-${item.postId}-${index}`}
+          renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('BookDetail', {postId: item.postId})
-              }
+              onPress={() => navigation.navigate('BookDetail', { postId: item.postId })}
               style={[
                 styles.card,
                 {
                   backgroundColor: isDarkMode ? '#2B2B2B' : '#FFF',
                   borderColor: isDarkMode ? '#2B2B2B' : '#FFF',
                 },
-              ]}>
-              <Image source={{uri: item.bookCover}} style={styles.bookCover} />
+              ]}
+            >
+              <Image source={{ uri: item.bookCover }} style={styles.bookCover} />
               <View style={styles.textContainer}>
-                <Text
-                  style={[
-                    styles.title,
-                    {
-                      color: isDarkMode ? '#FFF' : '#2B2B2B',
-                      fontFamily: theme.fontFamily,
-                    },
-                  ]}>
+                <Text style={[styles.title, { color: isDarkMode ? '#FFF' : '#2B2B2B' }]}>
                   {item.bookTitle}
                 </Text>
-                <Text
-                  style={[
-                    styles.subtitle2,
-                    {
-                      color: isDarkMode ? '#D3D3D3' : '#828183',
-                      fontFamily: theme.fontFamily,
-                    },
-                  ]}>
+                <Text style={[styles.subtitle2, { color: isDarkMode ? '#D3D3D3' : '#828183' }]}>
                   {`${item.bookPublisher} / ${item.bookPublishingYear}`}
                 </Text>
               </View>
@@ -210,5 +204,15 @@ const styles = StyleSheet.create({
   subtitle2: {
     fontSize: 14,
     marginBottom: 5,
+  },
+  // no data
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: 18,
+    color: 'gray',
   },
 });

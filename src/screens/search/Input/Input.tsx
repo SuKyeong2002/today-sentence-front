@@ -1,3 +1,4 @@
+import CustomModal from '@/components/Modal/CustomModal';
 import {useTheme} from '@/context/ThemeContext';
 import {useSearch} from '@/hooks/useSearch';
 import {useTagSearch} from '@/hooks/useTagSearch';
@@ -55,11 +56,15 @@ type RootStackParamList = {
 type NavigationProps = StackNavigationProp<RootStackParamList, 'BookSearch'>;
 
 export default function Input({onSearchResultChange}: InputProps) {
-  const [selectedOption, setSelectedOption] = useState<string>('');
-  const [searchText, setSearchText] = useState<string>('');
   const {t} = useTranslation();
-  const navigation = useNavigation<NavigationProps>();
   const {isDarkMode, theme} = useTheme();
+  const navigation = useNavigation<NavigationProps>();
+  const [searchText, setSearchText] = useState<string>('');
+  const [selectedOption, setSelectedOption] = useState<string>('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisible3, setModalVisible3] = useState(false);
 
   const searchHook =
     selectedOption === 'tag'
@@ -79,22 +84,26 @@ export default function Input({onSearchResultChange}: InputProps) {
   }, [data]);
 
   useEffect(() => {
-    if (onSearchResultChange) {
+    if (searchText.trim().length === 0) {
+      setIsSearching(false);
+    } else if (onSearchResultChange) {
       onSearchResultChange(searchResults.length > 0);
+      setIsSearching(true);
     }
   }, [searchResults, onSearchResultChange]);
 
   const onSearchPress = async () => {
     if (!selectedOption) {
-      Alert.alert(t('검색 실패'), t('검색 기준을 선택해주세요!'));
+      setIsSearching(false);
+      setModalVisible2(true);
       return;
-    }
-    if ((searchText?.length ?? 0) === 0) {
-      Alert.alert(t('검색 실패'), t('검색어를 입력해주세요!'));
+    } else if (searchText.trim().length === 0) {
+      setIsSearching(false);
+      setModalVisible3(true);
       return;
+    } else {
+      setIsSearching(true); 
     }
-
-    console.log('검색 실행:', {type: selectedOption, search: searchText});
 
     try {
       await refetch();
@@ -170,10 +179,31 @@ export default function Input({onSearchResultChange}: InputProps) {
           </SearchContainer>
         </SelectWrapper>
       </ContentWrapper>
-
-      {error && (
-        <ErrorText>{t('검색에 실패했습니다. 다시 시도해주세요.')}</ErrorText>
+      {error &&  setModalVisible(true)}
+      {isSearching && !isLoading && searchResults.length === 0 && (
+        <NoResultText>{t('검색 결과가 없습니다.')}</NoResultText>
       )}
+      <CustomModal
+          visible={modalVisible}
+          title={t('로그인 에러')}
+          message={t('곧 이용하실 수 있어요 :)')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible(false)}
+        />
+      <CustomModal
+          visible={modalVisible2}
+          title={t('검색 실패')}
+          message={ t('검색 기준을 선택해주세요.')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible2(false)}
+        />
+      <CustomModal
+          visible={modalVisible3}
+          title={t('검색 실패')}
+          message={t('검색어를 입력해주세요.')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible3(false)}
+        />
 
       {selectedOption === 'tag' && tags?.length > 0 && (
         <TagListContainer>
@@ -192,7 +222,6 @@ export default function Input({onSearchResultChange}: InputProps) {
           ))}
         </TagListContainer>
       )}
-
       {isLoading && <ActivityIndicator size="large" color="gray" />}
       {!isLoading && searchResults.length > 0 && selectedOption !== 'tag' ? (
         <ScrollContainer

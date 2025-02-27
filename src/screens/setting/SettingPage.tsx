@@ -9,7 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Alert, Linking, View} from 'react-native';
+import {Alert, Linking, ScrollView, View} from 'react-native';
 import styled from 'styled-components';
 
 type RootStackParamList = {
@@ -43,6 +43,7 @@ export default function SettingPage() {
   return (
     <View
       style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
+      <ScrollView contentContainerStyle={{paddingBottom: 10}}>
       <ProfileBackHeader
         searchKeyword={t('설정')}
         onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
@@ -112,6 +113,7 @@ export default function SettingPage() {
           onConfirm={logout}
         />
       </ListContainer>
+      </ScrollView>
     </View>
   );
 }

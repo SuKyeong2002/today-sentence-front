@@ -1,6 +1,6 @@
 import CustomButton from '@/components/Button/CustomButton';
 import { NavigationProp } from '@react-navigation/native';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -70,10 +70,30 @@ const { width } = Dimensions.get('window');
 
 export default function LandingPage({ navigation }: LandingPageProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef<FlatList>(null);
+  const autoScrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (currentIndex === 0) {
+      autoScrollTimeout.current = setTimeout(() => {
+        if (flatListRef.current) {
+          flatListRef.current.scrollToIndex({ index: 1, animated: true });
+        }
+      }, 1800);
+    }
+    return () => {
+      if (autoScrollTimeout.current) clearTimeout(autoScrollTimeout.current);
+    };
+  }, [currentIndex]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const index = Math.round(event.nativeEvent.contentOffset.x / width);
     setCurrentIndex(index);
+    
+    if (autoScrollTimeout.current) {
+      clearTimeout(autoScrollTimeout.current);
+      autoScrollTimeout.current = null;
+    }
   };
 
   const handleStart = () => {
@@ -109,7 +129,15 @@ export default function LandingPage({ navigation }: LandingPageProps) {
       </View>
     ) : (
       <View style={styles.buttonContainer}>
-        <CustomButton title="로그인" width={'90%'} onPress={handleStart} />
+        <View style={styles.arrowIndicator}>
+          <LottieView
+            source={require('@/assets/animation/alert_right_arrow.json')}
+            autoPlay
+            loop
+            style={styles.arrowLottie}
+          />
+        </View>
+      <CustomButton title="로그인" width={'90%'} onPress={handleStart} />
       </View>
     );
   }, [currentIndex]);
@@ -117,6 +145,7 @@ export default function LandingPage({ navigation }: LandingPageProps) {
   return (
     <View style={[styles.container]}>
       <FlatList
+        ref={flatListRef}
         data={slides}
         horizontal
         pagingEnabled
@@ -167,5 +196,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
     color: '#8A715D',
+  },
+  // right arrow animation 
+  arrowIndicator: {
+    position: 'absolute',
+    bottom: 80,
+    right: 20,
+    width: 60,
+    height: 60,
+  },
+  arrowLottie: {
+    width: '100%',
+    height: '100%',
   },
 });

@@ -1,4 +1,5 @@
 import Sentence from '@/components/Book/Sentence';
+import { useTheme } from '@/context/ThemeContext';
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
@@ -7,6 +8,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useFetchBookDetail } from '../../hooks/useFetchBookDetail';
 import { RootStackParamList } from '../../types/Book';
 import BackHeader from '../Header/BackHeader';
+;
 
 type BookDetailScreenProps = {
   route: RouteProp<RootStackParamList, 'BookDetail'>;
@@ -16,6 +18,7 @@ type BookDetailScreenProps = {
 const BookDetailScreen: React.FC<BookDetailScreenProps> = ({route}) => {
   const {postId} = route.params;
   const {t} = useTranslation();
+  const { isDarkMode, theme } = useTheme();
   const {book, loading, error} = useFetchBookDetail(postId);
 
   if (loading) {
@@ -45,8 +48,11 @@ const BookDetailScreen: React.FC<BookDetailScreenProps> = ({route}) => {
   return (
     <>
       <BackHeader searchKeyword={t('기록')} />
-      <View style={styles.container}>
-        <Sentence post={book.posts} interaction={book.interaction} />
+      <View style={[styles.centeredContainer, { backgroundColor: isDarkMode ? '#000000' : 'background' },
+          ]}>
+        <View style={styles.container}>
+          <Sentence post={book.posts} interaction={book.interaction} />
+        </View>
       </View>
     </>
   );
@@ -56,11 +62,12 @@ export default BookDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: 'background',
     margin: 20,
   },
-  centeredContainer: {},
+  centeredContainer: {
+    flex: 1,
+  },
   errorText: {
     color: 'red',
     textAlign: 'center',

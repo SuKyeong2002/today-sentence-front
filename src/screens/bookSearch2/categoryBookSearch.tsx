@@ -1,12 +1,12 @@
-import React, {useState, useMemo, useEffect} from 'react';
-import {View, FlatList, ActivityIndicator, Text, Switch} from 'react-native';
-import styled from 'styled-components';
 import BackHeader from '@/components/Header/BackHeader';
+import { useTheme } from '@/context/ThemeContext';
+import { useCategorySearch } from '@/hooks/useCategorySearch';
+import { RouteProp } from '@react-navigation/native';
+import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, FlatList, Switch, Text, View } from 'react-native';
+import styled from 'styled-components';
 import SearchContent2 from './content/SearchContent2';
-import {RouteProp} from '@react-navigation/native';
-import {useCategorySearch} from '@/hooks/useCategorySearch';
-import {useTheme} from '@/context/ThemeContext';
-import {useTranslation} from 'react-i18next';
 
 interface Post {
   postId: number;
@@ -32,10 +32,9 @@ interface Props {
 }
 
 export default function CategoryBookSearch({route}: Props) {
+  const {t} = useTranslation();
   const {category} = route.params;
   const {isDarkMode} = useTheme();
-  const {t} = useTranslation();
-
   const [sortByLatest, setSortByLatest] = useState(false);
   const [isSwitchDisabled, setIsSwitchDisabled] = useState(false);
 
@@ -94,7 +93,7 @@ export default function CategoryBookSearch({route}: Props) {
             trackColor={{false: '#D3D3D3', true: '#8A715D'}}
             thumbColor={isDarkMode ? '#FFFFFF' : '#FFFFFF'}
           />
-          <ToggleText isDarkMode={isDarkMode}>{t('최신순')}</ToggleText>
+          <ToggleText isDarkMode={isDarkMode}>{sortByLatest ? t('최신순') : t('공감순')}</ToggleText>
         </View>
       </ToggleContainer>
 
