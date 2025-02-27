@@ -1,12 +1,13 @@
-import {fetchRecordBookList} from '@/api/recordBookList';
-import {useQuery} from 'react-query';
+
+import { fetchBookmarkBookList } from '@/api/bookmarkBookList';
+import { useQuery } from 'react-query';
 
 export const useBookmarkBookList = (year: number, month: number) => {
   return useQuery(
-    ['recordBookList', year, month],
-    () => fetchRecordBookList(year, month),
+    ['bookmarkBookList', year, month],
+    () => fetchBookmarkBookList(year, month),
     {
-      onError: error => console.error('기록한 명언 목록 로딩 실패:', error),
+      onError: error => console.error('저장한 명언 목록 로딩 실패:', error),
     },
   );
 };
