@@ -1,14 +1,14 @@
-import {View, Text, Image, TouchableOpacity, Alert, StyleSheet} from 'react-native';
+import ProfileEditItem from '@/components/Button/ProfileEditItem';
+import CustomModal from '@/components/Modal/CustomModal';
+import { useTheme } from '@/context/ThemeContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components';
 import Profile from './profile/Profile';
-import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import ProfileEditItem from '@/components/Button/ProfileEditItem';
-import {useTranslation} from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomModal from '@/components/Modal/CustomModal';
-import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Setting: undefined;
@@ -18,8 +18,8 @@ type RootStackParamList = {
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Setting'>;
 
 export default function MyPage() {
-  const navigation = useNavigation<NavigationProp>();
   const {t} = useTranslation();
+  const navigation = useNavigation<NavigationProp>();
   const [modalVisible, setModalVisible] = useState(false);
   const [font, setFont] = useState<string>('PretendardRegular');
   const {isDarkMode, setThemeMode} = useTheme();

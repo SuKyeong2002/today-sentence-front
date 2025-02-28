@@ -31,7 +31,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({
         {backgroundColor: isDarkMode ? '#000000' : '#F5F4F5'},
       ]}>
       <View style={styles.leftContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             source={require('../../assets/image/back2.png')}
             style={[
