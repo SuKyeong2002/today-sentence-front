@@ -469,9 +469,9 @@ const BookPublisher = styled(Text)<{isDarkMode: boolean; theme: any}>`
 
 // 검색 결과 관련
 const NoResultText = styled(Text)<{theme: any}>`
-  font-size: ${({theme}) => theme.fontSizes.small}px;
+  font-size: ${({theme}) => theme.fontSizes.regular}px;
   text-align: center;
-  margin: 10px;
+  margin-top: 20px;
   font-family: ${({theme}) => theme.fontFamily};
 `;
 

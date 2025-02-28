@@ -23,11 +23,17 @@ export default function SearchPage() {
 
       {/* 검색 결과가 없을 경우에만 인기 Tag 보임*/}
       {!hasResults && (
-        <>
+        <View style={styles.flexContainer}>
           <RegistrationTag />
           <InquiryTag />
-        </>
+        </View>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flexContainer: {
+    marginTop: 10 
+  },
+});
