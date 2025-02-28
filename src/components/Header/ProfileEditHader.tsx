@@ -1,9 +1,10 @@
+import { useTheme } from '@/context/ThemeContext';
 import useAuth from '@/hooks/useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
@@ -13,9 +14,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useQueryClient} from 'react-query';
+import { useQueryClient } from 'react-query';
 import CustomModal from '../Modal/CustomModal';
-import {useTheme} from '@/context/ThemeContext';
 
 type RootStackParamList = {
   Profile: undefined;
@@ -235,7 +235,7 @@ export const ProfileEditHader: React.FC<BackHeaderProps> = ({
   return (
     <View style={styles.headerContainer}>
       <View style={styles.leftContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             source={require('../../assets/image/back2.png')}
             style={[

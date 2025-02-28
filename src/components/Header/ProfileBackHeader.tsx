@@ -28,7 +28,7 @@ export const ProfileBackHeader: React.FC<BackHeaderProps> = ({
   return (
     <HeaderContainer isDarkMode={isDarkMode}>
       <LeftContainer>
-        <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             source={require('../../assets/image/back2.png')}
             style={[

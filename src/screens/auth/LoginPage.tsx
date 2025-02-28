@@ -3,6 +3,7 @@ import LottieView from 'lottie-react-native';
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
+  BackHandler,
   Image,
   StyleSheet,
   Text,
@@ -32,6 +33,21 @@ export default function LoginPage({navigation}: {navigation: NavigationProp}) {
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
+
+  {/* 폰 뒤로가기 누를 시 앱 종료 */}
+  useEffect(() => {
+    const backAction = () => {
+      BackHandler.exitApp();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const onLoginPress = async () => {
     if(!email.trim() || !password.trim()) {

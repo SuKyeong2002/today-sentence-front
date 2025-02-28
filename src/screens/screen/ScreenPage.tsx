@@ -38,11 +38,7 @@ export default function ScreenPage() {
     <View
       style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
       <ScreenContainer fontFamily={font}>
-        <ProfileBackHeader
-          searchKeyword={t('설정')}
-          onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-          onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
-        />
+        <ProfileBackHeader searchKeyword={t('설정')} />
         <ProfileEditItem
           title={t('테마')}
           onPress={() => setModalVisible2(true)}
