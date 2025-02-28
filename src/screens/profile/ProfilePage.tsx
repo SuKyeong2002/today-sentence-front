@@ -69,8 +69,6 @@ export default function ProfilePage() {
     <View style={{ flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA' }}>
       <ProfileBackHeader
         searchKeyword={t('설정')}
-        onBackPress={() => console.log('뒤로 가기 버튼 클릭됨!')}
-        onNotificationPress={() => console.log('알림 버튼 클릭됨!')}
       />
 
       <ProfileWrapper>
