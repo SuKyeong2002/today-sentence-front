@@ -30,7 +30,7 @@ type Slide = {
 const slides: Slide[] = [
   {
     id: '1',
-    animation: require('@/assets/animation/landing_logo.json'),
+    animation: require('@/assets/animation/landing_logo3.json'),
   },
   {
     id: '2',

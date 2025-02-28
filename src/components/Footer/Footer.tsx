@@ -1,8 +1,7 @@
-import { useTheme } from '@/context/ThemeContext';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {useTheme} from '@/context/ThemeContext';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Image, StyleSheet, Text } from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import CategoryScreen from '../../screens/category/CategoryPage';
 import HomeScreen from '../../screens/home/HomePage';
 import MyScreen from '../../screens/mypage/MyPage';
@@ -12,87 +11,61 @@ import SearchScreen from '../../screens/search/SearchPage';
 const Tab = createBottomTabNavigator();
 
 export default function Footer() {
-  const { t } = useTranslation();
-  const { isDarkMode } = useTheme(); 
+  const {isDarkMode} = useTheme();
 
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      screenOptions={({ route }) => ({
+      screenOptions={({route}) => ({
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          backgroundColor: isDarkMode ? '#121212' : '#FFFFFF', 
+          backgroundColor: isDarkMode ? '#121212' : '#FFFFFF',
           borderTopWidth: 0,
         },
-        tabBarIcon: ({ focused }) => {
+        tabBarShowLabel: false,
+        tabBarIcon: ({focused}) => {
           let iconName;
 
           switch (route.name) {
             case 'Home':
               iconName = focused
                 ? require('../../assets/image/clickHome.png')
-                : require('../../assets/image/home.png');
+                : isDarkMode
+                  ? require('../../assets/image/dark_home.png')
+                  : require('../../assets/image/home.png');
               break;
             case 'Record':
               iconName = focused
                 ? require('../../assets/image/clickRecord.png')
-                : require('../../assets/image/record.png');
+                : isDarkMode
+                  ? require('../../assets/image/dark_record.png')
+                  : require('../../assets/image/record.png');
               break;
             case 'Search':
               iconName = focused
                 ? require('../../assets/image/clickSearch.png')
-                : require('../../assets/image/search.png');
+                : isDarkMode
+                  ? require('../../assets/image/dark_search.png')
+                  : require('../../assets/image/search.png');
               break;
             case 'Category':
               iconName = focused
                 ? require('../../assets/image/clickCategory.png')
-                : require('../../assets/image/category.png');
+                : isDarkMode
+                  ? require('../../assets/image/dark_category.png')
+                  : require('../../assets/image/category.png');
               break;
             case 'My':
               iconName = focused
                 ? require('../../assets/image/clickUser.png')
-                : require('../../assets/image/user.png');
+                : isDarkMode
+                  ? require('../../assets/image/dark_user.png')
+                  : require('../../assets/image/user.png');
               break;
           }
 
-          return (
-            <Image
-              source={iconName}
-              style={styles.logoImage}
-            />
-          );
-        },
-        tabBarLabel: ({ focused }) => {
-          let label;
-
-          switch (route.name) {
-            case 'Home':
-              label = t('홈');
-              break;
-            case 'Record':
-              label = t('기록');
-              break;
-            case 'Search':
-              label = t('검색');
-              break;
-            case 'Category':
-              label = t('카테고리');
-              break;
-            case 'My':
-              label = t('내정보');
-              break;
-          }
-
-          return (
-            <Text
-              style={[
-                styles.label,
-                { color: isDarkMode ? '#FFFFFF' : '#8A715D' },
-              ]}>
-              {label}
-            </Text>
-          );
+          return <Image source={iconName} style={styles.logoImage} />;
         },
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -105,12 +78,9 @@ export default function Footer() {
 }
 
 const styles = StyleSheet.create({
-  label: {
-    fontSize: 12,
-    marginTop: 2,
-  },
   logoImage: {
-    width: 24,
-    height: 24,
+    marginTop: 10,
+    width: 26,
+    height: 26,
   },
 });
