@@ -1,11 +1,11 @@
+import { ProfileBackHeader } from '@/components/Header/ProfileBackHeader';
+import { useFont } from '@/context/FontContext';
+import { useTheme } from '@/context/ThemeContext';
 import React from 'react';
-import {View, Text} from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Text, View } from 'react-native';
+import { RadioButton } from 'react-native-paper';
 import styled from 'styled-components';
-import BackHeader from '@/components/Header/BackHeader';
-import {useTranslation} from 'react-i18next';
-import {RadioButton} from 'react-native-paper';
-import {useFont} from '@/context/FontContext';
-import {useTheme} from '@/context/ThemeContext';
 
 export default function FontPage() {
   const {t} = useTranslation();
@@ -26,7 +26,7 @@ export default function FontPage() {
   return (
     <View
       style={{flex: 1, backgroundColor: isDarkMode ? '#000000' : '#F8F9FA'}}>
-      <BackHeader searchKeyword={t('설정')} />
+     <ProfileBackHeader searchKeyword={t('설정')} />
       <Container>
         {fonts.map((font, index) => (
           <FontWrapper key={index} isDarkMode={isDarkMode}>
