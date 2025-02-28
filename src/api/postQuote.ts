@@ -25,16 +25,19 @@ export const postQuote = async (quoteData: {
   category: string;
   hashtags: string[];
   content: string;
+  postId?: number;
 }) => {
   const token = await getAccessToken();
   if (!token) {
     throw new Error("인증 토큰이 없습니다. 로그인해주세요.");
   }
 
+  const newPostId = quoteData.postId || Date.now();
+
   try {
     const response = await apiClient.post(
       "/api/posts",
-      { ...quoteData },
+      { ...quoteData, postId: newPostId },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -42,6 +45,9 @@ export const postQuote = async (quoteData: {
         },
       }
     );
+
+    console.log("서버에서 받은 데이터", response.data);
+    console.log("생성된 postId", response.data?.data?.postId);
 
     return response.data.data;
   } catch (error: any) {

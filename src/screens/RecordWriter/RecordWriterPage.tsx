@@ -18,6 +18,7 @@ import {useTheme} from '@/context/ThemeContext';
 import {usePostQuote} from '@/hooks/usePostQuote';
 import BackHeader from '@/components/Header/BackHeader';
 import CustomModal from '@/components/Modal/CustomModal';
+import { QueryClient, useQueryClient } from 'react-query';
 
 type RootStackParamList = {
   RecordBookList: undefined;
@@ -54,6 +55,7 @@ export default function RecordWriter() {
   const [category, setCategory] = useState<string>('');
   const [hashtags, setHashtags] = useState<string>('');
   const [quote, setQuote] = useState<string>('');
+  const queryClient = useQueryClient();
 
   const isFormComplete =
     category !== '' && hashtags.trim() !== '' && quote.trim() !== '';
@@ -74,7 +76,11 @@ export default function RecordWriter() {
     };
 
     saveQuote(data, {
-      onSuccess: () => setModalVisible(true),
+      onSuccess: () => {
+        queryClient.invalidateQueries(['recordBookList']); 
+        queryClient.refetchQueries(['recordBookList']); 
+        setModalVisible(true);
+      },
     });
   };
 

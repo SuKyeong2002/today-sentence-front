@@ -134,6 +134,7 @@ export default function RecordBookListPage() {
       </>
     );
   }
+  
 
   return (
     <>
@@ -143,7 +144,7 @@ export default function RecordBookListPage() {
           styles.container,
           {flex: 1, backgroundColor: isDarkMode ? '#000000' : 'background'},
         ]}>
-        {/* 🔹 월 변경 버튼 */}
+        {/* 월 변경 버튼 */}
         <View style={styles.dateContainer}>
           <TouchableOpacity onPress={() => handleMonthChange(-1)}>
             <Text

@@ -46,6 +46,8 @@ export default function Sentence({post, interaction}: SentenceProps) {
   const {isDarkMode, theme} = useTheme();
 
   console.log('전달된 commentCount:', post.commentCount);
+  console.log("📢 Sentence 컴포넌트에서 전달된 post 데이터:", post);
+
 
   return (
     <ContentWrapper isDarkMode={isDarkMode}>

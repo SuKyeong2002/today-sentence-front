@@ -6,12 +6,13 @@ export const useRecordBookList = (year: number, month: number) => {
     ["recordBookList", year, month], 
     () => fetchRecordBookList(year, month),
     {
-      keepPreviousData: true,
+      staleTime: 0, 
+      cacheTime: 0, 
       onSuccess: (data) => {
-        console.log("기록 명언 목록 성공적으로 로드됨:", data);
+        console.log("최신 기록 목록 로드됨:", data);
       },
       onError: (error) => {
-        console.error("기록 명언 목록 로딩 실패:", error);
+        console.error("기록 목록 로딩 실패:", error);
       },
     }
   );

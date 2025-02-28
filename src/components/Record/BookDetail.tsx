@@ -21,6 +21,9 @@ const BookDetailScreen: React.FC<BookDetailScreenProps> = ({route}) => {
   const { isDarkMode, theme } = useTheme();
   const {book, loading, error} = useFetchBookDetail(postId);
 
+  console.log("📢 현재 postId:", postId); 
+  console.log("📢 불러온 책 정보:", book);
+
   if (loading) {
     return (
       <View style={styles.centeredContainer}>
