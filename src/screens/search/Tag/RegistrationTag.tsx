@@ -32,7 +32,9 @@ export default function RegistrationTag() {
   if (error) return <Text>{t('태그를 불러오지 못했습니다')}</Text>;
   if (!data) return <Text>{t('태그 데이터가 없습니다')}</Text>;
 
-  const recordTags: string[] = (data.record || []).slice(0, 6);
+  const recordTags: string[] = (data.record || [])
+    .filter((tag: string) => tag.trim() !== '')
+    .slice(0, 6);
 
   return (
     <KeyboardAvoidingView
@@ -53,7 +55,7 @@ export default function RegistrationTag() {
                   {recordTags.map((tag: string, index: number) => (
                     <TagText
                       key={index}
-                      onPress={() => navigation.navigate('BookSearch',{tag})}>
+                      onPress={() => navigation.navigate('BookSearch', {tag})}>
                       <TagTextLabel>
                         {tag.length > 3 ? `${tag.substring(0, 3)}...` : tag}
                       </TagTextLabel>
@@ -73,13 +75,13 @@ export default function RegistrationTag() {
 const getFontWeight = (fontFamily: string) => {
   switch (fontFamily) {
     case 'Pretendard-Regular':
-      return '700'; 
+      return '700';
     case 'BookendBataanRegular':
     case 'OnggeulipKimkonghae':
     case 'HakgyoansimGeurimilgiTTFR':
     case 'OnggeulipWicelist':
     case 'KyoboHandwriting2020pdy':
-      return '600'; 
+      return '600';
     default:
       return 'normal';
   }
@@ -98,7 +100,7 @@ const RegistrationTagContainer = styled(View)<{isDarkMode: boolean}>`
 
 const RegistrationText = styled(Text)<{isDarkMode: boolean; theme: any}>`
   font-size: ${({theme}) => theme.fontSizes.regular}px;
-  font-weight: ${({ theme }) => getFontWeight(theme.fontFamily)};
+  font-weight: ${({theme}) => getFontWeight(theme.fontFamily)};
   color: ${({isDarkMode, theme}) =>
     isDarkMode ? theme.colors.white : theme.colors.text};
   font-family: ${({theme}) => theme.fontFamily};

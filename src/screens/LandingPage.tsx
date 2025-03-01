@@ -34,19 +34,19 @@ const slides: Slide[] = [
   },
   {
     id: '2',
-    animation: require('@/assets/animation/landing_record2.json'),
+    animation: require('@/assets/animation/landing_record.json'),
   },
   {
     id: '3',
-    animation: require('@/assets/animation/landing_search2.json'),
+    animation: require('@/assets/animation/landing_search.json'),
   },
   {
     id: '4',
-    animation: require('@/assets/animation/landing_save2.json'),
+    animation: require('@/assets/animation/landing_save.json'),
   },
   {
     id: '5',
-    animation: require('@/assets/animation/landing_chat2.json'),
+    animation: require('@/assets/animation/landing_chat.json'),
   },
 ];
 
