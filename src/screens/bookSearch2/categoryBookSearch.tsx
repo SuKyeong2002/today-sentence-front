@@ -38,7 +38,7 @@ export default function CategoryBookSearch({route}: Props) {
   const [sortByLatest, setSortByLatest] = useState(false);
   const [isSwitchDisabled, setIsSwitchDisabled] = useState(false);
 
-  const size = 4;
+  const size = 10;
   const sortBy = sortByLatest ? 'create_at' : 'like_count';
 
   const {data, isLoading, fetchNextPage, hasNextPage} = useCategorySearch(
