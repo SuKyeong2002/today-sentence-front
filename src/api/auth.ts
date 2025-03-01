@@ -10,17 +10,17 @@ export interface AuthResponse {
   refreshToken?: string;
 }
 
-export const signUpUser = async (
-  username: string,
-  password: string,
-): Promise<AuthResponse> => {
-  const response = await axios.post<AuthResponse>(
-    `${API_URL}/api/member/sign-up`,
-    {username, password},
-  );
+// 회원가입 
+export const signUpUser = async (email: string, nickname: string, password: string) => {
+  const response = await axios.post(`${API_URL}/api/member/sign-up`, {
+    email,
+    nickname,
+    password,
+  });
   return response.data;
 };
 
+// 로그인
 export const signInUser = async (
   email?: string,
   password?: string,
