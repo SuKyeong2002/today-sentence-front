@@ -22,7 +22,7 @@ export const usePostQuote = () => {
       queryClient.invalidateQueries(["recordBookList"]);
     },
     onError: (error) => {
-      console.error("🚨 명언 글 기록 실패:", error);
+      console.error("명언 글 기록 실패:", error);
     },
   });
 };
