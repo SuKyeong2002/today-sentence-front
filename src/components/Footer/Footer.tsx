@@ -1,7 +1,7 @@
-import {useTheme} from '@/context/ThemeContext';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { useTheme } from '@/context/ThemeContext';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import CategoryScreen from '../../screens/category/CategoryPage';
 import HomeScreen from '../../screens/home/HomePage';
 import MyScreen from '../../screens/mypage/MyPage';
