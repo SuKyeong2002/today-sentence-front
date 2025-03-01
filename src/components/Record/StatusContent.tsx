@@ -51,7 +51,7 @@ const PieChart: React.FC<PieChartProps> = ({data, colors}) => {
       <Svg height="300" width="300" viewBox="0 0 300 300">
         <G>
           {Object.entries(data).map(([category, count], index) => {
-            const percentage: number = Number(count) / total;
+            const percentage: number = (Number(count) || 0) / (total || 1);
             const angle: number = percentage * 360;
             const endAngle: number = startAngle + angle;
 
@@ -113,10 +113,9 @@ const PieChart: React.FC<PieChartProps> = ({data, colors}) => {
 const Legend: React.FC<LegendProps> = ({data, colors}) => {
   const {isDarkMode, theme} = useTheme();
   const {t} = useTranslation();
-  const total: number = Object.values(data).reduce(
-    (sum, value) => sum + Number(value),
-    0,
-  );
+  const total: number = Object.values(data)
+  .filter(value => typeof value === 'number' && !isNaN(value)) // NaN 값 필터링
+  .reduce((sum, value) => sum + value, 0);
 
   return (
     <View style={styles.legendContainer}>
