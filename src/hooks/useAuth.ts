@@ -77,16 +77,20 @@ const useAuth = (): UseAuthReturn => {
     }
   }, [message]);
 
-  const signUpMutation = useMutation(() => signUpUser(username, password), {
-    onSuccess: () => {
-      setMessage('회원가입 성공!');
-      queryClient.invalidateQueries('auth');
-    },
-    onError: () => {
-      setMessage('회원가입 실패.');
-    },
-  });
-
+  // 회원가입 
+  const signUpMutation = useMutation(
+    ({ email, nickname, password }: { email: string; nickname: string; password: string }) =>
+      signUpUser(email, nickname, password),
+    {
+      onSuccess: () => {
+        console.log('회원가입 성공! 로그인 화면으로 이동합니다.');
+      },
+      onError: (error: any) => {
+        console.log(`회원가입 실패: ${error.response?.data?.message || '알 수 없는 오류'}`);
+      },
+    }
+  );
+  
   const loginMutation = useMutation(
     ({email, password}: {email: string; password: string}) =>
       signInUser(email, password),
@@ -327,10 +331,11 @@ const useAuth = (): UseAuthReturn => {
     },
   );
 
-  const handleSignUp = async () => {
-    signUpMutation.mutate();
+  // 회원가입 핸들러
+  const handleSignUp = async (email: string, nickname: string, password: string) => {
+    signUpMutation.mutate({ email, nickname, password });
   };
-
+  
   const handleLogin = async (email: string, password: string) => {
     if (!email || !password) {
       console.warn('이메일 또는 비밀번호가 없습니다.');
