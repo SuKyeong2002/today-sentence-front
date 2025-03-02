@@ -3,7 +3,7 @@ name: Build and Upload to TestFlight
 on:
   push:
     branches:
-      - main  # or master, depending on your branch name
+      - main  # 또는 master, 원하는 브랜치에 맞게 설정
 
 jobs:
   build:
@@ -11,16 +11,19 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # 코드를 체크아웃합니다.
         
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@v1  # Ruby를 설정합니다.
         
       - name: Install dependencies
         run: |
-          gem install fastlane
-          bundle install  # (필요시 Bundler 사용)
+          gem install fastlane  # Fastlane 설치
+          bundle install  # 필요시 Bundler로 의존성 설치
 
       - name: Build app and upload to TestFlight
         run: |
           fastlane beta  # fastlane을 사용하여 TestFlight에 업로드
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}  # GitHub Secrets에서 설정한 Apple ID
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}  # GitHub Secrets에서 설정한 App Store Connect 비밀번호
