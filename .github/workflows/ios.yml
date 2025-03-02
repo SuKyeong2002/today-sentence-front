@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'  # Java 버전 설정
-          distribution: 'adoptopenjdk'  # JDK 배포판을 지정 (예: AdoptOpenJDK)
+          distribution: 'temurin'
 
       - name: Set up Gradle
         run: |
