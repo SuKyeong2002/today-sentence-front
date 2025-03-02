@@ -1,19 +1,21 @@
 import {useTheme} from '@/context/ThemeContext';
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import CustomModal from '../Modal/CustomModal';
+import {useTranslation} from 'react-i18next';
 
 interface CustomHeaderProps {
-  title?: string;
   showLogo?: boolean;
   onNotificationPress?: () => void;
 }
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({
-  title,
   showLogo,
   onNotificationPress,
 }) => {
+  const {t} = useTranslation();
   const {isDarkMode, theme} = useTheme();
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View style={styles.headerContainer}>
@@ -29,8 +31,6 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
         )}
       </View>
 
-      {!showLogo && <Text style={styles.title}>{title}</Text>}
-
       <View style={styles.rightContainer}>
         <View style={styles.coinContainer}>
           <Text
@@ -43,7 +43,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             ]}>
             0
           </Text>
-          <TouchableOpacity onPress={() => console.log('Coin icon clicked')}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Image
               source={require('../../assets/image/coin.png')}
               style={styles.icon}
@@ -51,7 +51,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={onNotificationPress}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Image
             source={require('../../assets/image/notification.png')}
             style={[
@@ -60,6 +60,13 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             ]}
           />
         </TouchableOpacity>
+        <CustomModal
+          visible={modalVisible}
+          title={t('오픈 준비중')}
+          message={t('곧 이용하실 수 있어요 :)')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible(false)}
+        />
       </View>
     </View>
   );
