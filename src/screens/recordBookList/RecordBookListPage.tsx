@@ -130,6 +130,14 @@ export default function RecordBookListPage() {
           <View style={styles.noDataContainer}>
             <Text style={styles.noDataText}>{t('검색 결과가 없습니다.')}</Text>
           </View>
+          <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('RecordSearch')}>
+          <Image
+            source={require('@/assets/image/add_button.png')}
+            style={styles.addButtonImage}
+          />
+        </TouchableOpacity>
         </View>
       </>
     );
