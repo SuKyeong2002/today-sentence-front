@@ -25,7 +25,7 @@ export default function SearchContent() {
   const route = useRoute();
   const {bookTitle, tag} = route.params as {bookTitle?: string; tag?: string};
 
-  const size =4;
+  const size =10;
 
 
   const {
