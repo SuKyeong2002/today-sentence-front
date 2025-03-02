@@ -1,8 +1,10 @@
-import { useTheme } from '@/context/ThemeContext';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {useTheme} from '@/context/ThemeContext';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import CustomModal from '../Modal/CustomModal';
+import {useTranslation} from 'react-i18next';
 
 type RootStackParamList = {
   Search: undefined;
@@ -21,8 +23,10 @@ const BackHeader: React.FC<BackHeaderProps> = ({
   onBackPress,
   onNotificationPress,
 }) => {
-  const navigation = useNavigation<NavigationProp>();
+  const {t} = useTranslation();
   const {isDarkMode, theme} = useTheme();
+  const navigation = useNavigation<NavigationProp>();
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View
@@ -64,7 +68,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({
             ]}>
             0
           </Text>
-          <TouchableOpacity onPress={() => console.log('Coin icon clicked')}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Image
               source={require('../../assets/image/coin.png')}
               style={styles.icon}
@@ -72,7 +76,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={onNotificationPress}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Image
             source={require('../../assets/image/notification.png')}
             style={[
@@ -81,6 +85,14 @@ const BackHeader: React.FC<BackHeaderProps> = ({
             ]}
           />
         </TouchableOpacity>
+
+        <CustomModal
+          visible={modalVisible}
+          title={t('오픈 준비중')}
+          message={t('곧 이용하실 수 있어요 :)')}
+          rightButton={t('확인')}
+          onConfirm={() => setModalVisible(false)}
+        />
       </View>
     </View>
   );

@@ -30,6 +30,7 @@ export default function SettingPage() {
   const logoutMutation = useLogout();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisible3, setModalVisible3] = useState(false);
   const {isDarkMode, setThemeMode} = useTheme();
 
   useEffect(() => {
@@ -69,7 +70,14 @@ export default function SettingPage() {
           <SettingItem
             title={t('알림')}
             iconSource={require('@/assets/image/notification.png')}
-            onPress={() => navigation.navigate('Alert')}
+            onPress={() => setModalVisible3(true)}
+          />
+          <CustomModal
+            visible={modalVisible3}
+            title={t('오픈 준비중')}
+            message={t('곧 이용하실 수 있어요 :)')}
+            rightButton={t('확인')}
+            onConfirm={() => setModalVisible3(false)}
           />
           <SettingItem
             title={t('공지사항')}
