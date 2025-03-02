@@ -17,7 +17,7 @@ import PasswordFindPage from './screens/auth/PasswordFind';
 import SignUpScreen from './screens/auth/SignUpPage';
 import AuthenticationScreen from './screens/authentication/AuthenticationPage';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
-import CategoryBookSearchScreen2 from './screens/bookSearch2/CategoryBookSearch';
+import CategoryBookSearchScreen from './screens/bookSearch2/CategoryBookSearch';
 import EmailScreen from './screens/email/EmailPage';
 import BookDetailScreen from './components/Record/BookDetail';
 import FontScreen from './screens/font/FontPage';
@@ -173,7 +173,7 @@ function ThemedApp() {
           <Stack.Screen name="BookSearch" component={BookSearchScreen} />
           <Stack.Screen
             name="CategoryBookSearch"
-            component={CategoryBookSearchScreen2}
+            component={CategoryBookSearchScreen}
           />
           <Stack.Screen name="BookDetail" component={BookDetailScreen}/>
           <Stack.Screen name="Category" component={Footer} />
