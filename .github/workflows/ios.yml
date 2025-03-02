@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo gem install fastlane  # 관리자 권한으로 fastlane 설치
-          bundle install  # (필요시 Bundler 사용)
+          sudo gem install bundler  # bundler 설치
 
       - name: Build iOS app and upload to TestFlight
         run: |
@@ -50,7 +50,7 @@ jobs:
       - name: Set up fastlane for Google Play deployment
         run: |
           sudo gem install fastlane  # 관리자 권한으로 fastlane 설치
-          bundle install  # fastlane을 설치합니다.
+          sudo gem install bundler  # bundler 설치
 
       - name: Build Android app and upload to Google Play
         run: |
