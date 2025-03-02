@@ -21,9 +21,13 @@ jobs:
           sudo gem install fastlane  # 관리자 권한으로 fastlane 설치
           sudo gem install bundler  # bundler 설치
 
+      - name: Install gems with bundler
+        run: |
+          bundle install  # Gemfile에 정의된 의존성 설치
+
       - name: Build iOS app and upload to TestFlight
         run: |
-          fastlane beta  # fastlane을 사용하여 TestFlight에 업로드
+          bundle exec fastlane beta  # bundle exec을 사용하여 fastlane 실행
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}  # GitHub Secrets에서 설정한 Apple ID
           FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}  # GitHub Secrets에서 설정한 App Store Connect 비밀번호
@@ -41,19 +45,17 @@ jobs:
           java-version: '11'  # Java 버전 설정
           distribution: 'temurin'  # JDK 배포판 설정
 
-      - name: Set up Gradle
-        run: |
-          curl -s "https://get.sdkman.io" | bash
-          source "$HOME/.sdkman/bin/sdkman-init.sh"
-          sdk install gradle  # Gradle 설치
-
       - name: Set up fastlane for Google Play deployment
         run: |
           sudo gem install fastlane  # 관리자 권한으로 fastlane 설치
           sudo gem install bundler  # bundler 설치
 
+      - name: Install gems with bundler
+        run: |
+          bundle install  # Gemfile에 정의된 의존성 설치
+
       - name: Build Android app and upload to Google Play
         run: |
-          fastlane android beta  # fastlane을 사용하여 Google Play에 업로드
+          bundle exec fastlane android beta  # bundle exec을 사용하여 fastlane 실행
         env:
           GOOGLE_PLAY_JSON_KEY: ${{ secrets.GOOGLE_PLAY_JSON_KEY }}  # GitHub Secrets에서 설정한 Google Play 서비스 계정 JSON 키
