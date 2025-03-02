@@ -1,34 +1,26 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 default_platform(:ios)
 
 platform :ios do
-  desc "Description of what the lane does"
-  lane :custom_lane do
-    # add actions here: https://docs.fastlane.tools/actions
-  end
-
+  desc "Build and upload to TestFlight"
   lane :beta do
-    # 'TodaySentence' Scheme을 사용하여 앱 빌드
-    build_app(scheme: "TodaySentence")  
-
-    # Apple ID와 비밀번호를 환경 변수로 설정하여 TestFlight에 업로드
+    build_app(scheme: "TodaySentence")  # 'TodaySentence' Scheme을 사용하여 앱 빌드
     upload_to_testflight(
       username: ENV["APPLE_ID"],  # GitHub Secrets에서 설정한 Apple ID
       password: ENV["FASTLANE_PASSWORD"]  # GitHub Secrets에서 설정한 App Store Connect 비밀번호
+    )
+  end
+end
+
+platform :android do
+  desc "Build and upload to Google Play"
+  lane :beta do
+    # Android 앱 빌드 (release 빌드 생성)
+    gradle(task: "assembleRelease")  # release 빌드
+
+    # Google Play Store에 업로드 (서비스 계정 키가 GitHub Secrets에 있어야 함)
+    upload_to_play_store(
+      track: 'beta',  # 배포할 트랙 설정, 여기서는 'beta'로 설정
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"]  # Google Play 서비스 계정 JSON 키 (GitHub Secrets에 저장)
     )
   end
 end

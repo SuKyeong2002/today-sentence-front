@@ -1,4 +1,4 @@
-name: Build and Upload to TestFlight
+name: Build and Upload to TestFlight and Google Play
 
 on:
   push:
@@ -6,24 +6,53 @@ on:
       - main  # 또는 master, 원하는 브랜치에 맞게 설정
 
 jobs:
-  build:
+  build_ios:
     runs-on: macos-latest  # macOS 환경에서 실행
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # 코드를 체크아웃합니다.
+        uses: actions/checkout@v2
         
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1  # Ruby를 설정합니다.
+        uses: ruby/setup-ruby@v1
         
       - name: Install dependencies
         run: |
-          gem install fastlane  # Fastlane 설치
-          bundle install  # 필요시 Bundler로 의존성 설치
+          gem install fastlane
+          bundle install  # (필요시 Bundler 사용)
 
-      - name: Build app and upload to TestFlight
+      - name: Build iOS app and upload to TestFlight
         run: |
           fastlane beta  # fastlane을 사용하여 TestFlight에 업로드
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}  # GitHub Secrets에서 설정한 Apple ID
           FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}  # GitHub Secrets에서 설정한 App Store Connect 비밀번호
+
+  build_android:
+    runs-on: ubuntu-latest  # Android 빌드는 Ubuntu 환경에서 실행
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'  # Java 버전 설정
+
+      - name: Set up Gradle
+        run: |
+          curl -s "https://get.sdkman.io" | bash
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk install gradle  # Gradle 설치
+
+      - name: Set up fastlane for Google Play deployment
+        run: |
+          gem install fastlane
+          bundle install  # fastlane을 설치합니다.
+
+      - name: Build Android app and upload to Google Play
+        run: |
+          fastlane android beta  # fastlane을 사용하여 Google Play에 업로드
+        env:
+          GOOGLE_PLAY_JSON_KEY: ${{ secrets.GOOGLE_PLAY_JSON_KEY }}  # GitHub Secrets에서 설정한 Google Play 서비스 계정 JSON 키
