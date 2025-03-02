@@ -54,7 +54,7 @@ export const signInUser = async (
           'Content-Type': 'application/json',
           Accept: 'application/json',
           'Device-Id': deviceId,
-          ...(isRefreshLogin && { 'Authorization': `Bearer ${refreshToken}` })
+          ...(isRefreshLogin && { 'REFRESH-TOKEN': `Bearer ${refreshToken}` })
         },
       },
     );
