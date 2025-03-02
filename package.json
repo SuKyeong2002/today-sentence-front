@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "web": "webpack serve --mode development",
-    "test": "jest"
+    "test": "jest",
+    "build": "echo 'Skipping build step for now'"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.4",
