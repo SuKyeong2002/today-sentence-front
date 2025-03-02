@@ -17,7 +17,7 @@ import PasswordFindPage from './screens/auth/PasswordFind';
 import SignUpScreen from './screens/auth/SignUpPage';
 import AuthenticationScreen from './screens/authentication/AuthenticationPage';
 import BookSearchScreen from './screens/bookSearch/BookSearchPage';
-import CategoryBookSearchScreen from './screens/bookSearch2/CategoryBookSearch';
+import CategoryBookSearchScreen2 from './screens/bookSearch2/CategoryBookSearch';
 import EmailScreen from './screens/email/EmailPage';
 import BookDetailScreen from './components/Record/BookDetail';
 import FontScreen from './screens/font/FontPage';
@@ -149,7 +149,6 @@ function ThemedApp() {
   const [theme, setTheme] = useState({...lightTheme, fontFamily: selectedFont});
 
   useEffect(() => {
-    console.log(`🟡 Updating Theme with Font: ${selectedFont}`);
     setTheme(prevTheme => ({
       ...prevTheme,
       fontFamily: selectedFont,
@@ -173,7 +172,7 @@ function ThemedApp() {
           <Stack.Screen name="BookSearch" component={BookSearchScreen} />
           <Stack.Screen
             name="CategoryBookSearch"
-            component={CategoryBookSearchScreen}
+            component={CategoryBookSearchScreen2}
           />
           <Stack.Screen name="BookDetail" component={BookDetailScreen}/>
           <Stack.Screen name="Category" component={Footer} />
