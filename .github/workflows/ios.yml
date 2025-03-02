@@ -56,6 +56,7 @@ jobs:
 
       - name: Build Android app and upload to Google Play
         run: |
+          cd android && ./gradlew clean assembleRelease  # Android 디렉토리로 이동 후 gradlew 실행
           bundle exec fastlane android beta  # bundle exec을 사용하여 fastlane 실행
         env:
           GOOGLE_PLAY_JSON_KEY: ${{ secrets.GOOGLE_PLAY_JSON_KEY }}  # GitHub Secrets에서 설정한 Google Play 서비스 계정 JSON 키
