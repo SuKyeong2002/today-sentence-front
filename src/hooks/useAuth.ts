@@ -83,10 +83,10 @@ const useAuth = (): UseAuthReturn => {
       signUpUser(email, nickname, password),
     {
       onSuccess: () => {
-        console.log('회원가입 성공! 로그인 화면으로 이동합니다.');
+        // console.log('회원가입 성공! 로그인 화면으로 이동합니다.');
       },
       onError: (error: any) => {
-        console.log(`회원가입 실패: ${error.response?.data?.message || '알 수 없는 오류'}`);
+        // console.log(`회원가입 실패: ${error.response?.data?.message || '알 수 없는 오류'}`);
       },
     }
   );
@@ -122,7 +122,7 @@ const useAuth = (): UseAuthReturn => {
         }
       },
       onError: (error: any) => {
-        console.error('이메일 검증 실패:', error.message);
+        // console.error('이메일 검증 실패:', error.message);
         setMessage('이메일 검증 중 오류 발생');
       },
     },
@@ -154,7 +154,7 @@ const useAuth = (): UseAuthReturn => {
         }
       },
       onError: (error: any) => {
-        console.error('닉네임 검증 실패:', error.message);
+        // console.error('닉네임 검증 실패:', error.message);
         setMessage('닉네임 검증 중 오류 발생');
       },
     },
@@ -249,7 +249,7 @@ const useAuth = (): UseAuthReturn => {
         }
       },
       onError: (error: any) => {
-        console.error('아이디 찾기 실패:', error.message);
+        // console.error('아이디 찾기 실패:', error.message);
         setMessage('아이디 찾기 중 오류 발생');
       },
     },
@@ -269,7 +269,7 @@ const useAuth = (): UseAuthReturn => {
         }
       },
       onError: (error: any) => {
-        console.error('비밀번호 찾기 실패:', error.message);
+        // console.error('비밀번호 찾기 실패:', error.message);
         setMessage('비밀번호 찾기 중 오류 발생');
       },
     },
@@ -289,7 +289,7 @@ const useAuth = (): UseAuthReturn => {
         }
       },
       onError: (error: any) => {
-        console.error('비밀번호 일치 여부 확인 실패:', error.message);
+        // console.error('비밀번호 일치 여부 확인 실패:', error.message);
         setMessage('비밀번호 일치 여부 확인 중 오류 발생');
       },
     },
@@ -338,7 +338,7 @@ const useAuth = (): UseAuthReturn => {
   
   const handleLogin = async (email: string, password: string) => {
     if (!email || !password) {
-      console.warn('이메일 또는 비밀번호가 없습니다.');
+      // console.warn('이메일 또는 비밀번호가 없습니다.');
       return;
     }
     loginMutation.mutate({email, password});
@@ -375,9 +375,9 @@ const useAuth = (): UseAuthReturn => {
   const handleCheckedPassword = async (password: string) => {
     try {
       const response = await passwordCheckMutation.mutateAsync(password);
-      console.log('비밀번호 일치 여부 확인 성공', response);
+      // console.log('비밀번호 일치 여부 확인 성공', response);
     } catch (error: any) {
-      console.error('비밀번호 일치 여부 확인 실패:', error.message);
+      // console.error('비밀번호 일치 여부 확인 실패:', error.message);
       throw new Error(error.message || '비밀번호 일치 여부 확인 실패');
     }
   };
@@ -386,9 +386,9 @@ const useAuth = (): UseAuthReturn => {
   const handleChangeEmail = async (email: string) => {
     try {
       const response = await changeEmailMutation.mutateAsync(email);
-      console.log('이메일 인증번호 발송 성공', response);
+      // console.log('이메일 인증번호 발송 성공', response);
     } catch (error: any) {
-      console.error('이메일 인증 실패:', error.message);
+      // console.error('이메일 인증 실패:', error.message);
       throw new Error(error.message || '이메일 인증 실패');
     }
   };
@@ -397,9 +397,9 @@ const useAuth = (): UseAuthReturn => {
   const handleChangeEmail2 = async (email: string) => {
     try {
       const response = await changeEmailEditMutation.mutateAsync(email);
-      console.log('이메일 변경 성공:', response);
+      // console.log('이메일 변경 성공:', response);
     } catch (error: any) {
-      console.error('이메일 변경 실패:', error.message);
+      // console.error('이메일 변경 실패:', error.message);
       throw new Error(error.message || '이메일 변경 실패');
     }
   };
@@ -408,9 +408,9 @@ const useAuth = (): UseAuthReturn => {
   const handleChangeNickname = async (nickname: string) => {
     try {
       const response = await changeNicknameMutation.mutateAsync(nickname);
-      console.log('닉네임 변경 성공:', response);
+      // console.log('닉네임 변경 성공:', response);
     } catch (error: any) {
-      console.error('닉네임 변경 실패:', error.message);
+      // console.error('닉네임 변경 실패:', error.message);
       throw new Error(error.message || '닉네임 변경 실패');
     }
   };
@@ -419,9 +419,9 @@ const useAuth = (): UseAuthReturn => {
   const handleChangePassword = async (password: string) => {
     try {
       const response = await changePasswordMutation.mutateAsync(password);
-      console.log('비밀번호 변경 성공:', response);
+      // console.log('비밀번호 변경 성공:', response);
     } catch (error: any) {
-      console.error('비밀번호 변경 실패:', error.message);
+      // console.error('비밀번호 변경 실패:', error.message);
       throw new Error(error.message || '비밀번호 변경 실패');
     }
   };
@@ -430,9 +430,9 @@ const useAuth = (): UseAuthReturn => {
   const handleChangeStatusMessage = async (message: string) => {
     try {
       const response = await changeMessageMutation.mutateAsync(message);
-      console.log('상태메시지 변경 성공:', response);
+      // console.log('상태메시지 변경 성공:', response);
     } catch (error: any) {
-      console.error('상태메시지 변경 실패:', error.message);
+      // console.error('상태메시지 변경 실패:', error.message);
       throw new Error(error.message || '상태메시지 변경 실패');
     }
   };
@@ -453,9 +453,9 @@ const useAuth = (): UseAuthReturn => {
   const handleFindUsername = async (nickname: string) => {
     try {
       const response = await findEmailMutation.mutateAsync(nickname);
-      console.log('아이디 찾기 성공', response);
+      // console.log('아이디 찾기 성공', response);
     } catch (error: any) {
-      console.error('아이디 찾기 실패:', error.message);
+      // console.error('아이디 찾기 실패:', error.message);
       throw new Error(error.message || '아이디 찾기 실패');
     }
   };
@@ -464,16 +464,16 @@ const useAuth = (): UseAuthReturn => {
   const handleFindPassword = async (email: string) => {
     try {
       const response = await findPasswordMutation.mutateAsync(email);
-      console.log('비밀번호 찾기 성공', response);
+      // console.log('비밀번호 찾기 성공', response);
     } catch (error: any) {
-      console.error('비밀번호 찾기 실패:', error.message);
+      // console.error('비밀번호 찾기 실패:', error.message);
       throw new Error(error.message || '비밀번호 찾기 실패');
     }
   };
 
   const handleVerifyAuthCode = async (email: string, code: string) => {
     const verified = await verifyAuthCode(email, code);
-    console.log(verified);
+    // console.log(verified);
     setMessage(verified ? '코드 인증 성공!' : '코드 인증 실패.');
     return verified;
   };
@@ -486,7 +486,7 @@ const useAuth = (): UseAuthReturn => {
   const useAuth = (): UseAuthReturn => {
     const [searchResults, setSearchResults] = useState<any>(null);
 
-    // ✅ 검색 API 요청 (검색어 및 필터 전달)
+    // 검색 API 요청 (검색어 및 필터 전달)
     const searchMutation = useMutation(
       async ({query, filter}: {query: string; filter: string}) => {
         const response = await axios.get(`/api/search/books`, {
@@ -505,17 +505,17 @@ const useAuth = (): UseAuthReturn => {
       },
     );
 
-    // ✅ 검색 실행 함수 정의
+    // 검색 실행 함수 정의
     const handleSearch = async (query: string, filter: string) => {
       if (!query.trim() || !filter) {
-        console.warn('🚨 검색어 또는 필터가 비어 있습니다.');
+        // console.warn('🚨 검색어 또는 필터가 비어 있습니다.');
         return;
       }
       searchMutation.mutate({query, filter});
     };
 
     return {
-      handleSearch, // ✅ 검색 함수 반환
+      handleSearch, // 검색 함수 반환
     };
   };
 

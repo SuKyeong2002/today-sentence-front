@@ -34,17 +34,10 @@ export const signInUser = async (
     const requestData = isRefreshLogin ? {} : { email, password };
 
     if (!isRefreshLogin && (!email || !password)) {
-      console.warn("🚨 이메일 또는 비밀번호가 없습니다.");
+      // console.warn("🚨 이메일 또는 비밀번호가 없습니다.");
       return null;
     }
-
-
     const requestUrl = `${API_URL}/api/member/sign-in`
-    console.log("requestUrl : ",requestUrl)
-    console.log("requestData", requestData)
-    console.log("요청 email : ", email);
-    console.log("요청 email : ", password);
-
 
     const response = await axios.post(
       requestUrl,
@@ -58,18 +51,18 @@ export const signInUser = async (
         },
       },
     );
-    console.log("response",response)
+    // console.log("response",response)
 
     if (!response.headers['access-token'] || !response.headers['refresh-token']) {
-      console.error("서버 응답에 토큰이 없습니다.");
+      // console.error("서버 응답에 토큰이 없습니다.");
       return null;
     }
 
     // console.log('로그인 성공! 5분 후 액세스 토큰 자동 검증 시작...');
     // startTokenRefreshTimer();
 
-    console.log('ACCESS-TOKEN:', response.headers['access-token']);
-    console.log('REFRESH-TOKEN:', response.headers['refresh-token']);
+    // console.log('ACCESS-TOKEN:', response.headers['access-token']);
+    // console.log('REFRESH-TOKEN:', response.headers['refresh-token']);
 
     await AsyncStorage.setItem('accessToken', response.headers['access-token']);
     await AsyncStorage.setItem('refreshToken', response.headers['refresh-token']);
@@ -90,27 +83,26 @@ export const refreshAccessToken = async (): Promise<AuthResponse | null> => {
     const refreshToken = await AsyncStorage.getItem('refreshToken');
 
     if (!refreshToken) {
-      console.warn("리프레시 토큰이 없습니다. 재로그인 필요.");
+      // console.warn("리프레시 토큰이 없습니다. 재로그인 필요.");
       return null;
     }
 
     return await signInUser(undefined, undefined, refreshToken);
   } catch (error: any) {
-    console.error("액세스 토큰 재발급 실패:", error.response?.status, error.response?.data);
+    // console.error("액세스 토큰 재발급 실패:", error.response?.status, error.response?.data);
     return null;
   }
 };
 
 // 로그인 성공 시 5분 후 자동 실행되는 토큰 검증 및 갱신
 const startTokenRefreshTimer = () => {
-  console.log("⏳ 5분 후 액세스 토큰 자동 검증 및 갱신 테스트 시작...");
   setTimeout(async () => {
     const newTokens = await refreshAccessToken();
 
     if (newTokens?.accessToken) {
-      console.log("새롭게 받은 ACCESS-TOKEN:", newTokens.accessToken);
+      // console.log("새롭게 받은 ACCESS-TOKEN:", newTokens.accessToken);
     } else {
-      console.error("액세스 토큰 갱신 실패.");
+      // console.error("액세스 토큰 갱신 실패.");
     }
   }, 300000); // 5분 후 실행 (300,000ms)
 };
@@ -139,8 +131,6 @@ if (accessToken) {
  config.headers['ACCESS-TOKEN'] = accessToken;
 }
 
-console.log('Request Config:', config);
-
 return config;
 }, (error) => Promise.reject(error));
 
@@ -157,11 +147,11 @@ apiClient.interceptors.response.use(
       const deviceId = await AsyncStorage.getItem('deviceId');
 
       if (!refreshToken ) {
-        console.warn('리프레시토큰이 없습니다. 로그인 필요.');
+        // console.warn('리프레시토큰이 없습니다. 로그인 필요.');
         return Promise.reject(error);
       }
       if (!deviceId) {
-        console.warn('디바이스 아이디가 없습니다. 로그인 필요.');
+        // console.warn('디바이스 아이디가 없습니다. 로그인 필요.');
         return Promise.reject(error);
       }
 
@@ -182,7 +172,6 @@ apiClient.interceptors.response.use(
           return refreshResponse;
         }
       } catch (error) {
-        console.error(error);
         return Promise.reject(error);
       }
     }
@@ -197,7 +186,7 @@ export const VerifiedEmail = async (email: string): Promise<{ success: boolean; 
     const response = await axios.post(`${API_URL}/api/member/check-email`, { email });
     return response.data; 
   } catch (error: any) {
-    console.error("이메일 검증 실패:", error.response?.data?.message || error.message);
+    // console.error("이메일 검증 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "이메일 검증 중 오류 발생");
   }
 };
@@ -218,7 +207,7 @@ export const CheckedPassword = async (password: string): Promise<{ success: bool
     const response = await apiClient.post("/api/member/verify-password", { password });
     return response.data;
   } catch (error: any) {
-    console.error("비밀번호 일치 여부 확인 실패:", error.response?.data?.message || error.message);
+    // console.error("비밀번호 일치 여부 확인 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "비밀번호 일치 여부 확인 중 오류 발생");
   }
 };
@@ -229,7 +218,7 @@ export const verifiedNickName = async (nickname: string): Promise<{ success: boo
     const response = await axios.post(`${API_URL}/api/member/check-nickname`, { nickname });
     return response.data; 
   } catch (error: any) {
-    console.error("닉네임 검증 실패:", error.response?.data?.message || error.message);
+    // console.error("닉네임 검증 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "닉네임 검증 중 오류 발생");
   }
 };
@@ -243,10 +232,8 @@ export const userLogout = async (
 
 // 비밀번호 변경
 export const changePassword = async (password: string): Promise<{ success: boolean; message?: string }> => {
-  console.log(password);
   try {
     const token = await AsyncStorage.getItem('accessToken'); 
-
     if (!token) {
       throw new Error("토큰이 없습니다.");
     }
@@ -263,14 +250,13 @@ export const changePassword = async (password: string): Promise<{ success: boole
 
     return response.data; 
   } catch (error: any) {
-    console.error("비밀번호 변경 실패:", error.response?.data?.message || error.message);
+    // console.error("비밀번호 변경 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "비밀번호 변경 중 오류 발생");
   }
 };
 
 // 이메일 변경 
 export const changeEmailEdit = async (email: string): Promise<{ success: boolean; message?: string }> => {
-  console.log("이메일 변경 시도:", email);
   try {
     const token = await AsyncStorage.getItem('accessToken'); 
 
@@ -292,28 +278,24 @@ export const changeEmailEdit = async (email: string): Promise<{ success: boolean
     const newRefreshToken = response.headers["refresh-token"];
 
     if (newAccessToken && newRefreshToken) {
-      console.log(" 이메일 변경 후 새 토큰 저장:", newAccessToken);
+      // console.log(" 이메일 변경 후 새 토큰 저장:", newAccessToken);
       await AsyncStorage.setItem("accessToken", newAccessToken);
       await AsyncStorage.setItem("refreshToken", newRefreshToken);
     }
-
     return response.data; 
   } catch (error: any) {
-    console.error("이메일 변경 실패:", error.response?.data?.message || error.message);
+    // console.error("이메일 변경 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "이메일 변경 중 오류 발생");
   }
 };
 
 // 이메일 인증 코드 발송
 export const changeEmail = async (email: string): Promise<{ success: boolean; message?: string }> => {
-  console.log(email);
   try {
     const token = await AsyncStorage.getItem('accessToken'); 
-
     if (!token) {
       throw new Error("토큰이 없습니다.");
     }
-
     const response = await apiClient.post(
       "/api/member/verify-code",
       { email },
@@ -323,10 +305,9 @@ export const changeEmail = async (email: string): Promise<{ success: boolean; me
         },
       }
     );
-
     return response.data; 
   } catch (error: any) {
-    console.error("이메일 인증코드 발송 실패:", error.response?.data?.message || error.message);
+    // console.error("이메일 인증코드 발송 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "이메일 인증코드 발송 중 오류 발생");
   }
 };
@@ -353,21 +334,18 @@ export const changeNickname = async (nickname: string): Promise<{ success: boole
 
     return response.data; 
   } catch (error: any) {
-    console.error("닉네임 변경 실패:", error.response?.data?.message || error.message);
+    // console.error("닉네임 변경 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "닉네임 변경 중 오류 발생");
   }
 };
 
 // 상태메시지 변경 
 export const changeStatusMessage = async (message: string): Promise<{ success: boolean; message?: string }> => {
-  console.log(message);
   try {
     const token = await AsyncStorage.getItem('accessToken'); 
-
     if (!token) {
       throw new Error("토큰이 없습니다.");
     }
-
     const response = await apiClient.put(
       "/api/member/change-message",
       { message },
@@ -380,7 +358,7 @@ export const changeStatusMessage = async (message: string): Promise<{ success: b
 
     return response.data; 
   } catch (error: any) {
-    console.error("상태메시지 변경 실패:", error.response?.data?.message || error.message);
+    // console.error("상태메시지 변경 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "상태메시지 변경 중 오류 발생");
   }
 };
@@ -417,7 +395,7 @@ export const findEmail = async (nickname: string): Promise<{
     const response = await apiClient.post("/api/member/find-email", { nickname });
     return response.data;
   } catch (error: any) {
-    console.error("아이디 찾기 실패:", error.response?.data?.message || error.message);
+    // console.error("아이디 찾기 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "아이디 찾기 중 오류 발생");
   }
 };
@@ -428,7 +406,7 @@ export const findPassword = async (email: string): Promise<{ success: boolean; m
     const response = await apiClient.post("/api/member/find-password", { email });
     return response.data;
   } catch (error: any) {
-    console.error("비밀번호 찾기 실패:", error.response?.data?.message || error.message);
+    // console.error("비밀번호 찾기 실패:", error.response?.data?.message || error.message);
     throw new Error(error.response?.data?.message || "비밀번호 찾기 중 오류 발생");
   }
 };

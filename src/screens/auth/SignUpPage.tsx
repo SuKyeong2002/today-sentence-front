@@ -1,9 +1,9 @@
-import { verifiedNickName } from '@/api/auth';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {verifiedNickName} from '@/api/auth';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   Alert,
   Image,
@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useMutation } from 'react-query';
+import {useMutation} from 'react-query';
 import useAuth from '../../hooks/useAuth';
 
 type RootStackParamList = {
@@ -241,11 +241,11 @@ export default function SignUpSteps() {
     else if (step === 2) setStep(3);
     else if (step === 3) setStep(4);
     if (step === 4) {
-      await handleSignUp(email, nickname, password); 
+      await handleSignUp(email, nickname, password);
       setStep(5);
 
       setTimeout(() => {
-        navigation.navigate('Login'); 
+        navigation.navigate('Login');
       }, 2000);
     } else {
       setStep(step + 1);
@@ -321,7 +321,15 @@ export default function SignUpSteps() {
             </TouchableOpacity>
           </View>
           {emailMessage && (
-            <Text style={styles.emailMessage}>{emailMessage}</Text>
+            <Text
+              style={[
+                styles.message,
+                emailMessage.includes('❌')
+                  ? styles.errorMessage
+                  : styles.successMessage,
+              ]}>
+              {emailMessage}
+            </Text>
           )}
           <View style={styles.inputContainer1}>
             <TextInput
