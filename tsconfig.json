@@ -11,7 +11,8 @@
     },
     "types": [
       "styled-components",
-      "react-native"
+      "react-native",
+      "jest"
     ],
     "module": "esnext",
     "target": "es2017"
@@ -19,6 +20,8 @@
   "include": [
     "src",
     "src/styles/styled.d.ts",
-    "@types/env.d.ts" 
+    "@types/env.d.ts",
+    "**/__tests__/*.ts",
+    "**/__tests__/*.tsx"
   ]
 }

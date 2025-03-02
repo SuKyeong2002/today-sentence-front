@@ -129,7 +129,7 @@ type RootStackParamList = {
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-export default function App() {
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nextProvider i18n={i18n}>
@@ -212,3 +212,5 @@ function ThemedApp() {
     </ThemeProvider>
   );
 }
+
+export default App;
