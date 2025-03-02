@@ -52,7 +52,6 @@ export default function Interaction({
 
   // 공감 toggle
   const handleHeartClick = () => {
-
     if (isLikesDisabled) return;
 
     setIsLikesDisabled(true);
@@ -60,7 +59,6 @@ export default function Interaction({
 
     setIsLiked(!isLiked);
     setCurrentLikes(prev => (isLiked ? prev - 1 : prev + 1));
-
 
     likeMutation.mutate(postId, {
       onError: () => {
@@ -77,7 +75,6 @@ export default function Interaction({
 
   // 저장 toggle
   const handleBookmarkClick = () => {
-
     if (isBookmarkDisabled) return;
 
     setIsBookmarkDisabled(true);
@@ -102,15 +99,15 @@ export default function Interaction({
 
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
-          console.log(`공유됨: ${result.activityType}`);
+          // console.log(`공유됨: ${result.activityType}`);
         } else {
-          console.log('공유 완료!');
+          // console.log('공유 완료!');
         }
       } else if (result.action === Share.dismissedAction) {
-        console.log('공유 취소됨');
+        // console.log('공유 취소됨');
       }
     } catch (error) {
-      console.error('공유 오류:', error);
+      // console.error('공유 오류:', error);
       Alert.alert('공유 실패', '이미지를 공유하는 동안 문제가 발생했습니다.');
     }
   };
@@ -145,12 +142,15 @@ export default function Interaction({
             <ChatNumber isDarkMode={isDarkMode}>{commentCount}</ChatNumber>
           </BookmarkContainer>
         </TouchableOpacity>
-        <CommentModal
-          postId={postId}
-          isVisible={isCommentModalVisible}
-          onClose={() => setCommentModalVisible(false)}
-          onCommentAdded={handleCommentAdded}
-        />
+
+        {isCommentModalVisible && (
+          <CommentModal
+            postId={postId}
+            isVisible={isCommentModalVisible}
+            onClose={() => setCommentModalVisible(false)}
+            onCommentAdded={() => setCurrentCommentCount(prev => prev + 1)}
+          />
+        )}
 
         <TouchableOpacity onPress={handleBookmarkClick} activeOpacity={0.5}>
           <BookmarkContainer>
