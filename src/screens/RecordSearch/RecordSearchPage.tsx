@@ -44,16 +44,19 @@ const fetchBooksFromKakao = async (query: string): Promise<Book[]> => {
     }
 
     const data = await response.json();
-    return data.documents.map((book: any) => ({
+  return data.documents.map((book: any) => {
+    const isbnKey = Object.keys(book).find((key) => key.toLowerCase().includes('isbn'));
+    const isbnValue = isbnKey ? book[isbnKey] : '정보 없음';
+
+    return {
       title: book.title || '정보 없음',
       authors: book.authors.length > 0 ? book.authors : ['정보 없음'],
       publisher: book.publisher || '정보 없음',
       thumbnail: book.thumbnail || '',
-      isbn: book.isbn13 || book.isbn10 || '정보 없음',
-      bookPublishingYear: book.datetime
-        ? new Date(book.datetime).getFullYear()
-        : 0,
-    }));
+      isbn: isbnValue,
+      bookPublishingYear: book.datetime ? new Date(book.datetime).getFullYear() : 0,
+    };
+  });
   } catch (error) {
     console.error('카카오 API 요청 오류:', error);
     return [];
@@ -69,7 +72,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordWriter'>;
 export default function RecordSearchPage() {
   const {t} = useTranslation();
   const {isDarkMode, theme} = useTheme();
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('채식주의자');
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp>();
