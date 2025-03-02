@@ -23,6 +23,9 @@ target 'TodaySentence' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'lottie-ios', '4.5.0'
+  pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
+
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(

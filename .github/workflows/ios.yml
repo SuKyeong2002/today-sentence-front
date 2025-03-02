@@ -1,0 +1,26 @@
+name: Build and Upload to TestFlight
+
+on:
+  push:
+    branches:
+      - main  # or master, depending on your branch name
+
+jobs:
+  build:
+    runs-on: macos-latest  # macOS 환경에서 실행
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        
+      - name: Install dependencies
+        run: |
+          gem install fastlane
+          bundle install  # (필요시 Bundler 사용)
+
+      - name: Build app and upload to TestFlight
+        run: |
+          fastlane beta  # fastlane을 사용하여 TestFlight에 업로드

@@ -1,4 +1,10 @@
 {
   "name": "TodaySentence",
-  "displayName": "TodaySentence"
+  "displayName": "TodaySentence",
+  "extra": {
+    "eas": {
+      "projectId": "c1cf5b49-9933-4ae0-9710-e46b17dff99b"
+    }
+  },
+  "owner": "osukyeong"
 }
