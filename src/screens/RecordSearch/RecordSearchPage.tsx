@@ -72,7 +72,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList, 'RecordWriter'>;
 export default function RecordSearchPage() {
   const {t} = useTranslation();
   const {isDarkMode, theme} = useTheme();
-  const [searchTerm, setSearchTerm] = useState<string>('채식주의자');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp>();
