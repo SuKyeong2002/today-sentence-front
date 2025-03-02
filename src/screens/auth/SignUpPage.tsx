@@ -2,9 +2,10 @@ import {verifiedNickName} from '@/api/auth';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import LottieView from 'lottie-react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
+  ActivityIndicator,
   Alert,
   Image,
   StyleSheet,
@@ -46,6 +47,7 @@ export default function SignUpSteps() {
     useState(false);
   const [isCodeConfirmed, setIsCodeConfirmed] = useState(false);
   const navigation = useNavigation<NavigationProp>();
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
   const [emailMessage, setEmailMessage] = useState<string | null>(null);
   const [codeMessage, setCodeMessage] = useState<string | null>(null);
   const [nicknameMessage, setNicknameMessage] = useState<string | null>(null);
@@ -59,32 +61,44 @@ export default function SignUpSteps() {
     boolean | null
   >(null);
 
-  const handleEmailCheck = async () => {
-    if (!email.includes('@')) {
-      Alert.alert('오류', '유효한 이메일을 입력하세요.');
+  const validateEmail = (email: string) => {
+    const emailRegex =
+      /^[a-zA-Z0-9._%+-]+@(gmail\.com|naver\.com|daum\.net|hanmail\.net|hotmail\.com|outlook\.com|icloud\.com)$/;
+    return emailRegex.test(email);
+  };
+
+  // 이메일 전송 함수 (최적화)
+  const handleEmailCheck = useCallback(async () => {
+    if (!validateEmail(email)) {
+      setEmailMessage('❌ 올바른 이메일 형식을 입력해주세요. (예: @gmail.com)');
       return;
     }
 
-    setIsEmailSent(true);
-    setEmailMessage(null);
+    setIsEmailLoading(true);
+    setEmailMessage(null); // 기존 메시지 초기화
 
     try {
-      console.log('이메일 전송 시도:', email);
       const response = await handleSendAuthCode(email);
-
-      console.log('이메일 전송 응답:', response);
 
       if (response?.data === true) {
         setEmailMessage('✅ 인증번호를 전송하였습니다.');
+        setIsEmailSent(true);
+
+        // 30초 동안 버튼 비활성화
+        setTimeout(() => {
+          setIsEmailSent(false);
+        }, 30000);
       } else {
+        setEmailMessage('❌ 이미 존재하는 이메일입니다.');
         setIsEmailSent(false);
-        setEmailMessage('❌ 인증번호를 전송하는데 실패했습니다.');
       }
     } catch (error) {
+      setEmailMessage('❌ 이미 존재하는 이메일입니다.');
       setIsEmailSent(false);
-      setEmailMessage('❌ 인증번호를 전송하는데 실패했습니다.');
+    } finally {
+      setIsEmailLoading(false);
     }
-  };
+  }, [email, handleSendAuthCode]);
 
   // 이메일 변경 시 전송 버튼 다시 활성화
   useEffect(() => {
@@ -303,22 +317,30 @@ export default function SignUpSteps() {
               value={email.trim()}
               onChangeText={setEmail}
             />
-            <TouchableOpacity
-              style={[
-                styles.checkButton,
-                email.length > 0 && email.includes('@') && !isEmailSent
-                  ? styles.checkButtonEnabled
-                  : styles.checkButtonDisabled,
-              ]}
-              onPress={handleEmailCheck}
-              disabled={
-                !(email.length > 0 && email.includes('@')) || isEmailSent
-              } // 조건 만족 시에만 활성화
-            >
-              <Text style={styles.checkButtonText}>
-                {isEmailSent ? '전송됨' : '전송'}
-              </Text>
-            </TouchableOpacity>
+            {isEmailLoading ? (
+              <ActivityIndicator
+                size="small"
+                color="#8A715D"
+                style={{marginLeft: 20, marginRight: 20}}
+              />
+            ) : (
+              <TouchableOpacity
+                style={[
+                  styles.checkButton,
+                  email.length > 0 && email.includes('@') && !isEmailSent
+                    ? styles.checkButtonEnabled
+                    : styles.checkButtonDisabled,
+                ]}
+                onPress={handleEmailCheck}
+                disabled={
+                  !(email.length > 0 && email.includes('@')) || isEmailSent
+                } // 조건 만족 시에만 활성화
+              >
+                <Text style={styles.checkButtonText}>
+                  {isEmailSent ? '전송됨' : '전송'}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
           {emailMessage && (
             <Text
@@ -369,7 +391,7 @@ export default function SignUpSteps() {
       {step === 2 && (
         <View style={styles.titleContainer}>
           <Text style={styles.title}>닉네임을 설정해주세요</Text>
-          <Text style={styles.subtitle}>닉네임은 변경할 수 없어요!</Text>
+          <Text style={styles.subtitle}>닉네임은 하루 후에 변경할 수 있어요!</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
